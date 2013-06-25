@@ -13,6 +13,13 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
+#
+# TextParser - Text Parsing Library
+#
+# Copyright (C) 2012-2013 Institute of Industrial Science, The University of Tokyo.
+# All rights reserved.
+#
+
 @SET_MAKE@
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
@@ -36,7 +43,7 @@ host_triplet = @host@
 subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
-	$(top_srcdir)/configure AUTHORS COPYING INSTALL NEWS \
+	$(top_srcdir)/configure AUTHORS COPYING INSTALL NEWS ChangeLog LICENSE \
 	config.guess config.sub depcomp install-sh ltmain.sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \

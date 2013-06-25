@@ -1,3 +1,10 @@
+#
+# TextParser - Text Parsing Library
+#
+# Copyright (C) 2012-2013 Institute of Industrial Science, The University of Tokyo.
+# All rights reserved.
+#
+
 dist_noinst_DATA=\
 correct_range_list_1.tpp \
 incorrect_range_1.tpp \

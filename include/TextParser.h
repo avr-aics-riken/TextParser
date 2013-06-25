@@ -1,9 +1,11 @@
 // -*- mode: c++ -*-
-/****************************************************************************
-**
-** Copyright (C) 2012 Tokyo University.
-**
-****************************************************************************/
+/*
+ * TextParser - Text Parsing Library
+ *
+ * Copyright (C) 2012-2013 Institute of Industrial Science, The University of Tokyo.
+ * All rights reserved.
+ *
+ */
 
 /** @file TextParser.h
  * ここには TextParser クラス　と C用 Fortran 用 API 関数が定義されています。

@@ -1,11 +1,23 @@
-TextParser Library  Version 1.2
+/*
+ * TextParser - Text Parsing Library
+ *
+ * Copyright (C) 2012-2013 Institute of Industrial Science, The University of Tokyo.
+ * All rights reserved.
+ *
+ */
 
-ビルド方法 
+##############################
+How to build
+##############################
 
-(1) configure を利用する方法
+
+##############################
+(1) by configure
+
 $ ./configure 
 $　make 
 $ sudo make install or # make install 
+
 
 configureオプション
 prefix=PREFIX : インストール先です。 デフォルトは/usr/localです。
@@ -27,8 +39,12 @@ CXX にmpi 対応のコンパイラを指定してください。
 を指定すると、リンク時のオプション(-shared|-staric)によって、　.so または　.a がリンクされます。
 .so を利用する場合は、LD_LIBRARY_PATH か　ldconfigの設定が必要なので、適宜行ってください。
 
-(2) Makefile_hand を利用する方法 
-$make -f Makefile_hand でビルドできます。
+
+##############################
+(2) by Makefile_hand
+
+$ make -f Makefile_hand
+
 
 ※注意事項
   configureを利用してビルドした後に、Makefile_handを行う場合、必ず事前に

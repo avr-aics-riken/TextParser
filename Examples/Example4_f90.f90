@@ -1,4 +1,11 @@
-      program Example4
+!
+! TextParser - Text Parsing Library
+!
+! Copyright (C) 2012-2013 Institute of Industrial Science, The University of Tokyo.
+! All rights reserved.
+!
+
+program Example4
 
       implicit none 
 

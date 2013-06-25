@@ -1,10 +1,13 @@
-/****************************************************************************
- **
- ** Copyright (C) 2012 Tokyo University.
- **
- ****************************************************************************/
+/*
+ * TextParser - Text Parsing Library
+ *
+ * Copyright (C) 2012-2013 Institute of Industrial Science, The University of Tokyo.
+ * All rights reserved.
+ *
+ */
+
 /** @file TextParserTree.cpp
- * ここには TextParserTree クラスが実装されています。
+ * TextParserTree クラスが実装されています。
  *
  */
 #ifdef HAVE_CONFIG_H

@@ -1,8 +1,11 @@
-/****************************************************************************
-**
-** Copyright (C) 2012 Tokyo University.
-**
-****************************************************************************/
+/*
+ * TextParser - Text Parsing Library
+ *
+ * Copyright (C) 2012-2013 Institute of Industrial Science, The University of Tokyo.
+ * All rights reserved.
+ *
+ */
+
 /** @file TextParserElement.cpp
  * ここには TextParserElement クラス及びその派生クラス TextParserNode ,
  * TextParserLeaf が実装されています。

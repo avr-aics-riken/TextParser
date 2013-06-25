@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.59])
-AC_INIT([TextParser],[1.2],[keno@iis.u-tokyo.ac.jp],[TextParser])
+AC_INIT([TextParser],[1.3],[keno@iis.u-tokyo.ac.jp],[TextParser])
 
 AC_CONFIG_SRCDIR([include/TextParser.h])
 AC_CONFIG_HEADERS([config.h])

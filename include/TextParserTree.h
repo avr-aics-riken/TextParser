@@ -1,9 +1,12 @@
 // -*- mode: c++ -*-
-/****************************************************************************
- **
- ** Copyright (C) 2012 Tokyo University.
- **
- ****************************************************************************/
+/*
+ * TextParser - Text Parsing Library
+ *
+ * Copyright (C) 2012-2013 Institute of Industrial Science, The University of Tokyo.
+ * All rights reserved.
+ *
+ */
+
 /** @file TextParserTree.h
  * ここには TextParserTree クラスが定義されています。
  *

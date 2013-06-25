@@ -1,13 +1,13 @@
 /*
- * TextParser Library
+ * TextParser - Text Parsing Library
  *
- * Copyright (C) 2012 All rights reserved.
- *
- * Institute of Industrial Science, The University of Tokyo.
+ * Copyright (C) 2012-2013 Institute of Industrial Science, The University of Tokyo.
+ * All rights reserved.
  *
  */
 
 Release News
+
   2013-05-07  1.3  修正BSDライセンス
   2012-11-27  1.2  値記述方式、@range, @listを追加
   2012-10-09  1.1  Makefile_handでの手動ビルド時にlib/ディレクトリを自動作成
