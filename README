@@ -1,8 +1,9 @@
 これは、TextParser ライブラリ です。
-
+ver 1.1
 
 ビルド方法 
 
+(1) configure を利用する方法
 $ ./configure 
 $　make 
 $ sudo make install or # make install 
@@ -12,6 +13,38 @@ prefix=PREFIX : インストール先です。 デフォルトは/usr/localで�
 ライブラリが PREFIX/lib
 ヘッダファイルが PREFIX/include　
 にそれぞれインストールされます。
+
+--enable-fortran 
+fortran90 のAPIとExampleをビルドします。
+デフォルトでは無効になっています。
+
+--enable-mpi
+MPI用のAPIとExampleをビルドします。
+デフォルトでは無効になっています。
+CXX にmpi 対応のコンパイラを指定してください。
+
+作成/インストールされるライブラリは、*.so(shared library) *.a(static library) 双方です。
+リンク時に -LPREFIX/lib -lTextParser (-lTextParser_f90api -lTextParser_mpi)
+を指定すると、リンク時のオプション(-shared|-staric)によって、　.so または　.a がリンクされます。
+.so を利用する場合は、LD_LIBRARY_PATH か　ldconfigの設定が必要なので、適宜行ってください。
+
+(2) Makefile_hand を利用する方法 
+$make -f Makefile_hand でビルドできます。
+
+※注意事項
+  configureを利用してビルドした後に、Makefile_handを行う場合、必ず事前に
+  make distclean を実行して下さい。
+
+利用出来るターゲット
+・　mpi 
+MPI用のライブラリをビルドします。デフォルトでは無効になっています。
+Makefile_hand内部で　mpi 対応のコンパイラを指定してください。
+
+・　f90　api
+fortran90 のAPIとExampleをビルドします。
+デフォルトでは無効になっています。
+
+作成されるライブラリは　static library (.a) のみです。libディレクトリに作成されます。
 
 
 利用方法

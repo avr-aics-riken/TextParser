@@ -21,18 +21,37 @@
 #include <utility>
 #include "TextParserCommon.h"
 #include "TextParserElement.h"
+
+#ifndef WIN32
+#include "../config.h"
+#endif
+
+#include "TextParser.h"
 #include "TextParserTree.h"
 
-#include "../config.h"
+
 
 /** TextParserElement のコンストラクタ
  *
+ * @param[in] tpt_ptr このエレメントを保持しているTextParsetTree へのポインタ
  */
+TextParserElement::TextParserElement(TextParserTree* tpt_ptr)
+{
+  _label = "";
+  _parent = 0;
+  _type = TP_UNKNOWN_ELEMENT;
+  _tpt_ptr=tpt_ptr;
+
+}
+
+
 TextParserElement::TextParserElement()
 {
     _label = "";
     _parent = 0;
     _type = TP_UNKNOWN_ELEMENT;
+    //    _tpt_ptr=tpt_ptr;
+
 }
 
 /** TextParserNodeのコンストラクタ
@@ -47,6 +66,22 @@ TextParserNode::TextParserNode(const std::string label)
     _label = label;
     _parent = 0;
     _type = TP_NODE_ELEMENT;
+}
+
+/** TextParserNodeのコンストラクタ
+ *
+ * @param[in] label ディレクトリのラベル
+ * @param[in] tpt_ptr 所属するTextParserTree のポインタ
+ *
+ * ラベルは小文字に変換して保存
+ *
+ */
+TextParserNode::TextParserNode(const std::string label,TextParserTree* tpt_ptr)
+{
+    _label = label;
+    _parent = 0;
+    _type = TP_NODE_ELEMENT;
+    _tpt_ptr=tpt_ptr;
 }
 
 /** エレメントの追加
@@ -73,11 +108,12 @@ TextParserError TextParserNode::addElement(TextParserNode *node)
  * リーフエレメントを追加します
  *
  */
-TextParserError TextParserNode::addElement(TextParserLeaf *leaf)
+TextParserError TextParserNode::addElement(TextParserLeaf *leaf,unsigned int id)
 {
     std::string label = TextParserStringToLower(leaf->_label);
     _leaves.insert(str_leaf(label, leaf));
-    leaf->_id = TextParserTree::GetLeafID();
+    // leaf->_id = TextParserTree::GetLeafID(); GetLeafID();は利用不可になりました。
+    leaf->_id = id;
 
     return TP_NO_ERROR;
 }
@@ -94,6 +130,7 @@ TextParserError TextParserNode::removeElement()
         std::map<std::string, TextParserNode *>::iterator ni = _nodes.begin();
         while (ni != _nodes.end()) {
             TextParserNode *node = (ni)->second;
+	    //	    std::cout<< __FUNCTION__ <<node->_label <<std::endl;
             ret = node->removeElement();
             if (ret != TP_NO_ERROR) return ret;
             delete node;
@@ -104,7 +141,9 @@ TextParserError TextParserNode::removeElement()
         std::map<std::string, TextParserLeaf *>::iterator li = _leaves.begin();
         while (li != _leaves.end()) {
             TextParserLeaf *leaf = (li)->second;
+	    //	    std::cout<< __FUNCTION__ <<leaf->_label <<std::endl;
             ret = leaf->removeElement();
+
             if (ret != TP_NO_ERROR) return ret;
             delete leaf;
             li++;
@@ -115,6 +154,41 @@ TextParserError TextParserNode::removeElement()
     } catch (std::exception ex) {
         return TP_REMOVE_ELEMENT_ERROR;
     }
+
+    return TP_NO_ERROR;
+}
+
+
+/** リーフの削除
+ * Tree の　モディファイ用関数。
+ *
+ * @param[in] 
+ * @return エラーコード
+ *
+ */
+TextParserError TextParserNode::removeLeaf(TextParserLeaf* delleaf)
+{
+     TextParserError ret;
+     std::string key = delleaf->_label;
+     ret=delleaf->removeElement();
+     if (ret != TP_NO_ERROR) return ret;
+     delete delleaf;
+     _leaves.erase(key);
+    
+    // try {
+    //     std::map<std::string, TextParserLeaf *>::iterator li = _leaves.begin();
+    //     while (li != _leaves.end()) {
+    //         TextParserLeaf *leaf = (li)->second;
+    //         ret = leaf->removeElement();
+    //         if (ret != TP_NO_ERROR) return ret;
+    //         delete leaf;
+    //         li++;
+    //     }
+    // 	_leaves.clear()
+    //     _array_label_number.clear();
+    // } catch (std::exception ex) {
+    //     return TP_REMOVE_ELEMENT_ERROR;
+    // }
 
     return TP_NO_ERROR;
 }
@@ -171,10 +245,10 @@ TextParserLeaf *TextParserNode::getLeaf(const std::string& label)
  * 配列ラベル（末尾が[@]）だったらインデックスを割り当てる
  *
  */
-TextParserError TextParserNode::setArrayLabelIndex(std::string& label)
-{
-    return TextParserTree::SetArrayLabelIndex(label, _array_label_number);
-}
+//TextParserError TextParserNode::setArrayLabelIndex(std::string& label)
+//{
+//    return TextParserTree::SetArrayLabelIndex(label, _array_label_number);
+//}
 
 /** ディレクトリの書き出し
  *
@@ -208,8 +282,8 @@ TextParserError TextParserNode::writeNode(std::ostream& ofs, unsigned int level,
 	  std::vector<std::string>::iterator tmp_iter=tmplabel2.begin();
 	  while(tmp_iter !=tmplabel2.end()){
 	    TextParserNode *dir = _nodes[TextParserStringToLower(*tmp_iter)];
-	    //std::cout << __func__ << " 1 "<<*tmp_iter << std::endl;
-	    //std::cout << __func__ << " 2 "<<dir->_label << std::endl;
+	    //std::cout << __FUNCTION__ << " 1 "<<*tmp_iter << std::endl;
+	    //std::cout << __FUNCTION__ << " 2 "<<dir->_label << std::endl;
 	    dir->writeNode(ofs, level + 1,order);
 	    tmp_iter++;
 	  }
@@ -223,7 +297,7 @@ TextParserError TextParserNode::writeNode(std::ostream& ofs, unsigned int level,
 	    li = _leaves.begin();
 	  while (li != _leaves.end()) {
 	    TextParserLeaf *leaf = li->second;
-	    // std::cout << __func__<< __LINE__
+	    // std::cout << __FUNCTION__<< __LINE__
 	    // 	      <<" "<<leaf 
 	    // 	      << " label " << leaf->_label <<std::endl;
 	    tmplabel1.push_back(leaf->_label);
@@ -240,7 +314,7 @@ TextParserError TextParserNode::writeNode(std::ostream& ofs, unsigned int level,
 	    TextParserLeaf 
 	      *tmpleaf2 =_leaves[TextParserStringToLower(*tmp_iter)];
 	    if (tmpleaf2==0){	    
-	      return TextParserErrorHandler(TP_ERROR,*tmp_iter);
+	      return owner_tree()->TextParserErrorHandler(TP_ERROR,*tmp_iter);
 	    }
 	    tmpleaf2->writeLeaf(ofs, level + 1);
 
@@ -261,7 +335,7 @@ TextParserError TextParserNode::writeNode(std::ostream& ofs, unsigned int level,
 	  std::map<std::string, TextParserLeaf *>::iterator li = _leaves.begin();
 	  while (li != _leaves.end()) {
 	    TextParserLeaf *leaf = li->second;
-	    std::cout << __FUNCTION__ << " 5 leaf "<<leaf->_label << std::endl;
+	    //	    std::cout << __FUNCTION__ << " 5 leaf "<<leaf->_label << std::endl;
 	    leaf->writeLeaf(ofs, level + 1);
 	    li++;
 	  }
@@ -293,8 +367,8 @@ TextParserError TextParserNode::getLeafLabels(std::map<unsigned int, std::string
 	std::map<std::string, TextParserLeaf *>::iterator li = _leaves.begin();
 	while (li != _leaves.end()) {
         TextParserLeaf *leaf = li->second;
-        std::string path;
-        TextParserTree::GetElementAbsolutePath(leaf, path);
+        std::string path=GetElementAbsolutePath(leaf);
+	//        TextParserTree::GetElementAbsolutePath(leaf, path);
         labels.insert(int_str(leaf->_id, path));
         li++;
     }
@@ -344,6 +418,7 @@ TextParserError TextParserLeaf::removeElement()
 {
     try {
         if (_value != 0) {
+	  //	  std::cout<< __FUNCTION__ <<_value->_value <<std::endl;
             delete _value;
         }
     } catch (std::exception ex) {
@@ -394,7 +469,7 @@ TextParserValue::TextParserValue(const std::string& value, const TextParserValue
     _type = TP_VALUE_ELEMENT;
 }
 
-TextParserError element_node_sort(const std::vector<std::string>& input,
+TextParserError TextParserElement::element_node_sort(const std::vector<std::string>& input,
 				  std::vector<std::string>& output,
 		       int order)
 {
@@ -412,7 +487,7 @@ TextParserError element_node_sort(const std::vector<std::string>& input,
   return TP_ERROR ;
 }
 
-TextParserError element_label_sort(const std::vector<std::string>& input,
+TextParserError TextParserElement::element_label_sort(const std::vector<std::string>& input,
 				  std::vector<std::string>& output,
 		       int order)
 {
@@ -430,10 +505,10 @@ TextParserError element_label_sort(const std::vector<std::string>& input,
   return TP_ERROR ;
 }
 
-TextParserError element_labelSort_1(const std::vector<std::string>& input,
+TextParserError TextParserElement::element_labelSort_1(const std::vector<std::string>& input,
 				    std::vector<std::string>& output){
 
-  std::cout << "element_labelSort_1" <<std::endl;
+  //  std::cout << "element_labelSort_1" <<std::endl;
   TextParserError ret=TP_NO_ERROR;
   
   std::vector<TextParserElement*> velement; 
@@ -451,7 +526,7 @@ TextParserError element_labelSort_1(const std::vector<std::string>& input,
     int number=element_array_label_test(label,key);
     
     if( number==-10000 || number == -1000){
-      return TextParserErrorHandler(TP_ILLEGAL_LABEL_PATH_ERROR,label);
+      return owner_tree()->TextParserErrorHandler(TP_ILLEGAL_LABEL_PATH_ERROR,label);
     }
     
     if (number < 0){
@@ -506,7 +581,7 @@ TextParserError element_labelSort_1(const std::vector<std::string>& input,
 	 //	 std::cout << "bbb " <<  std::endl; 
 	 map_buffer_iter[order_switch[i]-1]++;
        } else {
-	 return TextParserErrorHandler(TP_ERROR,label);
+	 return owner_tree()->TextParserErrorHandler(TP_ERROR,label);
        }
      }
      ++iter;
@@ -514,7 +589,7 @@ TextParserError element_labelSort_1(const std::vector<std::string>& input,
    }
 
    //std::cout << "labelSort_1 end" <<std::endl;
-   std::cout << "element_labelSort_1 end" <<std::endl;
+   //   std::cout << "element_labelSort_1 end" <<std::endl;
  return ret;
 
 }
@@ -526,7 +601,7 @@ TextParserError element_labelSort_1(const std::vector<std::string>& input,
  * @return label id.
  */
 
-int element_array_label_test(const std::string& label,std::string& key){
+int TextParserElement::element_array_label_test(const std::string& label,std::string& key){
 
   int number=-10000 ;
   key="";
@@ -536,12 +611,12 @@ int element_array_label_test(const std::string& label,std::string& key){
     return lsb;
     //  output.push_back(label);
   } else if (lsb == 0) { 
-    TextParserErrorHandler(TP_ILLEGAL_LABEL_PATH_ERROR,label);
+    owner_tree()->TextParserErrorHandler(TP_ILLEGAL_LABEL_PATH_ERROR,label);
     return lsb;
   } else {
     int rsb=label.find("]");
     if(rsb<0 || lsb >= rsb ){
-      TextParserErrorHandler(TP_ILLEGAL_LABEL_PATH_ERROR,label); 
+      owner_tree()->TextParserErrorHandler(TP_ILLEGAL_LABEL_PATH_ERROR,label); 
       return -1000;
     } else {
       key=label.substr(0,lsb);
@@ -560,3 +635,22 @@ int element_array_label_test(const std::string& label,std::string& key){
   return number;
 }
 
+
+
+
+std::string TextParserElement::GetElementAbsolutePath(TextParserElement* element){
+  std::string path="";
+  std::vector<std::string> nodes;
+  nodes.push_back(element->_label);
+  TextParserElement *parent = element->_parent;
+  while (parent != 0) {
+    nodes.push_back(parent->_label);
+    parent = parent->_parent;
+  }
+    for (int id = nodes.size() - 1; id >= 0; id--) {
+    path += "/" + nodes[id];
+  }
+    
+    return path;
+
+} 

@@ -32,37 +32,61 @@
 
 class TextParserTree{
 
- private:
+ // private:
+ //  // constructors. not for using.
+ //  TextParserTree(){} //!< デフォルトコンストラクタ 利用禁止
+ //  TextParserTree(const TextParserTree& rhs){} //!< コピーコンストラクタ 利用禁止
+ //  TextParserTree& operator=(const TextParserTree& rhs); //!< 代入演算子 利用禁止
+
+
+
+public:
   // constructors. not for using.
-  TextParserTree(){} //!< デフォルトコンストラクタ 利用禁止
-  TextParserTree(const TextParserTree& rhs){} //!< コピーコンストラクタ 利用禁止
-  TextParserTree& operator=(const TextParserTree& rhs); //!< 代入演算子 利用禁止
+
+  //  TextParserTree(const TextParserTree& rhs){} //!< コピーコンストラクタ 
+  //  TextParserTree& operator=(const TextParserTree& rhs); //!< 代入演算子 
+
+  TextParserTree(); //!< デフォルトコンストラクタ 
+  ~TextParserTree(); //!< デストラクタ
+  void status();
 
   // private valiables
 
-  static  bool _initialized;    //!< 初期化判定フラッグ
-  bool _is_ready;    //!< アクセス可否判定フラッグ
+  //  static  bool _initialized;    //!< 初期化判定フラッグ
+private:
+  bool _initialized;    //!< 初期化判定フラッグ
+
   std::string _input_filename;   //!< 入力ファイル名
   TextParserParseMode _parse_mode;   //!< 現在の解析モード
   TextParserParseMode _return_parse_mode; //!< 戻り先のパースモード
-  std::map<std::string, unsigned int> _array_label_number; //!< 配列形式ラベルの使用数
+  std::map<std::string, int> _array_label_number; //!< 配列形式ラベルの使用数
   TextParserBool _result_bool;   //!< 条件式の評価結果
   TextParserBool _current_bool; //!< 依存関係の : の左又は右を表す（左はTextParserTRUE、右はTestParserFALSE）
   std::map<unsigned int, TextParserLeaf *> _unresolved_leaves;  //!< 未解決の依存関係付き値
   bool _node_open;    //!< ノードの開閉状態
-  
+
+
+  bool _is_ready;    //!< アクセス可否判定フラッグ  
 
  public:
-  static TextParserTree* get_instance(); //!< インスタンスの取得
+  //  static TextParserTree* get_instance(); //!< インスタンスの取得
   bool isReady();//!< データ構造にアクセス可能かどうか
   void read(const std::string* file); //!< 指定したファイルからのパラメータ読み込み
 
 
   // スタティックな関数
-  static TextParserError SetArrayLabelIndex(std::string& label, std::map<std::string, unsigned int>& array_label_number);
-  static TextParserError GetElementAbsolutePath(TextParserElement* element, std::string& path);//!< エレメント（相対パス）の絶対パスを取得
-  static unsigned int GetLeafID();//!< リーフ固有のIDを取得
- 
+  // static TextParserError SetArrayLabelIndex(std::string& label, std::map<std::string, unsigned int>& array_label_number);
+  // static TextParserError GetElementAbsolutePath(TextParserElement* element, std::string& path);//!< エレメント（相対パス）の絶対パスを取得
+  // static unsigned int GetLeafID();//!< リーフ固有のIDを取得
+
+  // アンスタティック化
+  TextParserError SetArrayLabelIndex(std::string& label, std::map<std::string, int>& array_label_number);
+  TextParserError decrementArrayLabelIndex(std::string& label, std::map<std::string, int>& array_label_number);
+  TextParserError GetElementAbsolutePath(TextParserElement* element, std::string& path);//!< エレメント（相対パス）の絶対パスを取得
+  unsigned int GetLeafID();//!< リーフ固有のIDを取得
+
+
+  
   // these should be private...
   std::string _label;  //!< ルートディレクトリのラベル
   std::map<std::string, TextParserNode *>_nodes; //!< TextParserNodeクラスのキー付き配列
@@ -70,12 +94,23 @@ class TextParserTree{
   TextParserElement* _current_element;  //!< 現在のエレメント
   bool _debug_write;  //!< デバッグ文の表示スイッチ
 
+
+
   //  unsigned int _current_line;   //!< 入力中のファイルの現在の行
   //  unsigned int _current_leaf_id;  //!< 現在のリーフのID
-  // static化
-  static  unsigned int _current_line; //!< 入力中のファイルの現在の行
-  static  unsigned int _current_leaf_id; //!< 現在のリーフのID
 
+  // static化
+  // static  unsigned int _current_line; //!< 入力中のファイルの現在の行
+  // static  unsigned int _current_leaf_id; //!< 現在のリーフのID
+
+  // local化
+private:
+  unsigned int _current_line; //!< 入力中のファイルの現在の行
+  unsigned int _current_leaf_id; //!< 現在のリーフのID
+
+public:
+  unsigned int current_line(){return _current_line;} //!< 入力中のファイルの現在の行
+  
  
    // エレメントの追加、削除と取得
   
@@ -87,9 +122,16 @@ class TextParserTree{
 			  TextParserNode **dirtectory);//!< ノードの取得
   
   
+  // tree モディファイ用
+  TextParserError updateValue(const  std::string& label,const std::string& value);
+  TextParserError deleteLeaf(const std::string& label);
+  TextParserError createLeaf(const std::string& label,const std::string& value);
+
+
  // パラメータの入力
   void initialize();//!< パラメータデータ構造の初期化
-  TextParserError readParameters(const std::string& filename);//<! 指定したファイルからパラメータを読み込む。
+  TextParserError readParameters(const std::string& filename);//<! 指定したファイルからパラメータを読み込む。MPI版はrank0がファイルを読み込む
+  TextParserError readParameters_local(const std::string& filename);//<! 指定したファイルからパラメータを読み込む。非MPI版は利用不可。MPI版では、それぞれのプロセスが与えられたファイル名のファイルを読み、パースする。
 
 
   // パラメータのパース
@@ -199,6 +241,11 @@ public:
   TextParserError nodeSort_2(const std::vector<std::string>& input,
 			     std::vector<std::string>& output);
   
+
+// エラー処理 //moved into TextParserTree
+  TextParserError TextParserErrorHandler(const TextParserError error_code, const std::string& sub_message);
+
+
 };
 
 //文字列処理
@@ -207,10 +254,6 @@ std::string TextParserRemoveHeadSpaces(std::string buffer);
 std::string TextParserRemoveTailSpaces(std::string buffer);
 std::string TextParserStringToLower(const std::string& str);
 bool TextParserStringCompare(const std::string& str0, const std::string& str1);
-
-// エラー処理
-TextParserError TextParserErrorHandler(const TextParserError error_code, const std::string& sub_message);
-
 
 
 #endif // __TEXTPARSER_TREE_H__

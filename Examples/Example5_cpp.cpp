@@ -1,4 +1,4 @@
-/** @file Example4_cpp.cpp
+/** @file Example5_cpp.cpp
  * サンプルプログラム
  */
 
@@ -11,8 +11,10 @@ int get_node_parameters(std::string filename, std::string label)
 {
     int ierror;
     //    TextParser* tp=TextParser::get_instance();
-     TextParser* tp=TextParser::get_instance_singleton();
+         TextParser* tp=TextParser::get_instance_singleton();
+	 // TextParser* tp=new TextParser;
 
+     //     std::cout << "label start:" << label<< std::endl;
     ierror=tp->changeNode(label);
     if (ierror != 0) {
         std::cout <<  "ERROR in TextParser::changeDirector: " << filename 
@@ -21,6 +23,7 @@ int get_node_parameters(std::string filename, std::string label)
     }
 
     ierror = tp->currentNode(label);
+    //     std::cout << "label2:" << label<< std::endl;
     if (ierror != 0) {
         std::cout <<  "ERROR in TextParser::currentNode: " << filename 
 	        << " ERROR CODE "<< ierror << std::endl;
@@ -41,6 +44,9 @@ int get_node_parameters(std::string filename, std::string label)
 
     for (int i = 0; i < dir_labels.size(); i++) {
         ierror = get_node_parameters(filename, dir_labels[i]);
+	//	ierror=tp->currentNode(label);
+	//	std::cout << "label in for dir_labels loop:" << label<< std::endl;
+
     }
 
     std::vector<std::string> parm_labels;
@@ -70,15 +76,20 @@ int get_node_parameters(std::string filename, std::string label)
             return ierror;
         }
         std::cout << i << " value type: " << type << std::endl;
+	//    ierror=tp->currentNode(label);
+	//    std::cout << "label in for value type loop:" << label<< std::endl;
     }
 
     //    label = MGPPCurrentNode(&ierror);
     ierror=tp->currentNode(label);
+    //     std::cout << "label:" << label<< std::endl;
     if (label.compare("/")) {
-        ierror=tp->changeNode("..");
+      //      std::cout << "labela:" << label<< std::endl;
+      ierror=tp->changeNode("..");
+      //      std::cout << "labelb:" << label<< std::endl;
         if (ierror != 0) {
             std::cout <<  "ERROR in TextParser::changeNode: " << filename 
-	            << " ERROR CODE "<< ierror << std::endl;
+		      << " ERROR CODE "<< ierror << "hoge"<<std::endl;
             return ierror;
         }
 
@@ -97,7 +108,7 @@ int move_and_get_parameters(std::string filename)
     std::cout << "filename: " << filename << std::endl;
     ierror=tp->read(filename);
     if (ierror != 0) {
-        std::cout <<  "ERROR in MgppReadParameters file: " << filename 
+        std::cout <<  "ERROR in TextParser ReadParameters file: " << filename 
 	        << " ERROR CODE "<< ierror << std::endl;
         return ierror;
     }
@@ -107,11 +118,11 @@ int move_and_get_parameters(std::string filename)
     get_node_parameters(filename, label);
 
     // パラメータの削除
-    ierror=tp->remove();
-    if (ierror != 0) {
-        std::cout <<  "ERROR in TextParser::Remove file: " << filename 
-	        << " ERROR CODE "<< ierror << std::endl;
-    }
+    // ierror=tp->remove();
+    // if (ierror != 0) {
+    //     std::cout <<  "ERROR in TextParser::Remove file: " << filename 
+    // 	        << " ERROR CODE "<< ierror << std::endl;
+    // }
     std::cout << std::endl;
 
     return ierror;
@@ -127,16 +138,50 @@ int main(int argc, char* argv[])
     // filename = "Input0-9.txt";
     // move_and_get_parameters(filename);
 
-    filename = "./tpp_examples/correct_basic_1.txt";
+    //    filename = "./tpp_examples/correct_basic_1.txt";
+
+    filename = "./tpp_examples/correct_label_4.txt";
     move_and_get_parameters(filename);
-    filename = "./tpp_examples/correct_string_1.txt";
-    move_and_get_parameters(filename);
-    filename = "./tpp_examples/correct_label_2.txt";
-    move_and_get_parameters(filename);
-    filename = "./tpp_examples/correct_cond_10.txt";
-    move_and_get_parameters(filename);
-    filename = "./tpp_examples/correct_cond_9.txt";
-    move_and_get_parameters(filename);
+    TextParser* tp = TextParser::get_instance_singleton();
+    std::string label;
+    int ierror=tp->currentNode(label);
+    std::cout << "label:" << label<< std::endl;
+
+    label="/foo/qux/baz";
+    std::string value="10";
+    tp->updateValue(label,value);
+    label="/foo/qux/baz1";
+    tp->deleteLeaf(label);
+
+    label="/foo";
+    tp->changeNode(label);
+    label="cdf";
+    //    value="filename";
+    value="\"filename\"";
+    std::cout<< label << " "<< value<<std::endl;
+    TextParserError error = tp->createLeaf(label,value);
+    if(error!=TP_NO_ERROR) std::cout<< "error1"<<std::endl;
+    std::string value2;
+    label="/foo/cdf";
+    std::cout<< label <<std::endl;
+    error = tp->getValue(label,value2);
+    std::cout<< label <<std::endl;
+    if(error!=TP_NO_ERROR) std::cout<< "error2"<<std::endl;
+    std::cout<< value2 <<std::endl;
+
+    tp->write("tmp.tpp");
+    tp->remove();
+
+    delete tp;
+
+    // filename = "./tpp_examples/correct_string_1.txt";
+    // move_and_get_parameters(filename);
+    // filename = "./tpp_examples/correct_label_2.txt";
+    // move_and_get_parameters(filename);
+    // filename = "./tpp_examples/correct_cond_10.txt";
+    // move_and_get_parameters(filename);
+    // filename = "./tpp_examples/correct_cond_9.txt";
+    // move_and_get_parameters(filename);
 
     return 0;
 }

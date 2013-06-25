@@ -10,6 +10,7 @@
 ! *
 
 integer TP_READ
+integer TP_READ_LOCAL
 integer TP_WRITE
 integer TP_REMOVE
 integer TP_GET_NUMBER_OF_LEAVES
@@ -39,7 +40,17 @@ integer TP_GET_ITH_LEAF
 integer TP_GET_ITH_NODE_ORDER
 integer TP_GET_ITH_LEAF_ORDER
 
+integer TP_GET_INSTANCE_SINGLETON
+integer TP_CREATE_INSTANCE
+integer TP_DELETE_INSTANCE
+integer TP_UPDATE_VALUE
+integer TP_DELETE_LEAF
+integer TP_CREATE_LEAF
+
+
+
 external TP_READ
+external TP_READ_LOCAL
 external TP_write
 external TP_REMOVE
 external TP_GET_NUMBER_OF_LEAVES
@@ -69,3 +80,13 @@ external TP_CONVERT_INT1
 external TP_CONVERT_INT2
 external TP_CONVERT_INT4
 external TP_CONVERT_INT8
+
+
+external TP_GET_INSTANCE_SINGLETON
+external TP_CREATE_INSTANCE
+external TP_DELETE_INSTANCE
+external TP_UPDATE_VALUE
+external TP_DELETE_LEAF
+external TP_CREATE_LEAF
+
+

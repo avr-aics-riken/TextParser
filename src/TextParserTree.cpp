@@ -24,9 +24,9 @@
 
 #include "TextParserTree.h"
 
-unsigned int TextParserTree::_current_line=0;
-unsigned int TextParserTree::_current_leaf_id=0;
-bool TextParserTree::_initialized=false;
+//unsigned int TextParserTree::_current_line=0;
+//unsigned int TextParserTree::_current_leaf_id=0;
+//bool TextParserTree::_initialized=false;
 
 // 値の次に来る可能性のある文字
 // 　通常だと'\t' '\n' '\r'
@@ -42,7 +42,7 @@ char charTextParserValueNext[] = {'\t', '\n', '\r', ',', ')', '\"', ':', '/'};
 
 
 
-
+#if 0
 /** プロセス内唯一の TextParserTree インスタンスを返します。
  *
  * @return TextParserTree インスタンスのアドレス
@@ -66,7 +66,7 @@ TextParserTree* TextParserTree::get_instance(){
     instance._label = "/";
     instance._parse_mode = TP_NO_PARSE;
     instance._return_parse_mode = TP_NO_PARSE;
-    instance._current_element = 0;
+    //    instance._current_element = 0;
     instance._current_line = 0;
     instance._current_leaf_id = 0;
     instance._node_open = false;
@@ -81,6 +81,66 @@ TextParserTree* TextParserTree::get_instance(){
   }
   return &instance;
 }
+#endif
+
+
+/** コンストラクタ
+ *
+ */
+TextParserTree::TextParserTree(){
+
+
+  _is_ready = false;
+  _label = "/";
+  _parse_mode = TP_NO_PARSE;
+  _return_parse_mode = TP_NO_PARSE;
+  //  _current_element = 0;
+  _current_line = 0;
+  _current_leaf_id = 0;
+  _node_open = false;
+  _result_bool = TP_UNDEFINED_BOOL;
+  _current_bool = TP_UNDEFINED_BOOL;
+  _debug_write = false;
+  _initialized=true;
+  //  status();
+
+}
+
+/** デストラクタ
+ *
+ */
+TextParserTree::~TextParserTree(){
+
+  //  std::cout << __FUNCTION__ <<std::endl;
+  _is_ready = false;
+  _label = "/";
+  _parse_mode = TP_NO_PARSE;
+  _return_parse_mode = TP_NO_PARSE;
+  //  _current_element = 0;
+  _current_line = 0;
+  _current_leaf_id = 0;
+  _node_open = false;
+  _result_bool = TP_UNDEFINED_BOOL;
+  _current_bool = TP_UNDEFINED_BOOL;
+  _debug_write = false;
+  _initialized=true;
+  
+}
+
+void TextParserTree::status(){
+  std::cout << "_is_ready " <<_is_ready <<std::endl;
+  std::cout << " _label " <<  _label <<std::endl;
+  std::cout << " _parse_mode " <<  _parse_mode <<std::endl;
+  std::cout << " _return_parse_mode " <<  _return_parse_mode <<std::endl;
+  //  std::cout << " _current_element " <<  _current_element <<std::endl;
+  std::cout << " _current_line " <<  _current_line <<std::endl;
+  std::cout << " _current_leaf_id " <<  _current_leaf_id <<std::endl;
+  std::cout << " _node_open " <<  _node_open <<std::endl;
+  std::cout << " _result_bool " <<  _result_bool <<std::endl;
+  std::cout << " _debug_write " <<  _debug_write <<std::endl;
+  std::cout << " _initialized " <<  _initialized <<std::endl;
+
+}
 
 
 
@@ -93,20 +153,33 @@ TextParserTree* TextParserTree::get_instance(){
  * 配列ラベル（末尾が[@]）だったらインデックスを割り当てる
  *
  */
-TextParserError TextParserTree::SetArrayLabelIndex(std::string& label, std::map<std::string, unsigned int>& array_label_number)
+TextParserError TextParserTree::SetArrayLabelIndex(std::string& label, std::map<std::string,int>& array_label_number)
 {
   int a = label.find("[@]");
   if (a >= 0) { // 配列タイプのラベル
     if (a == label.size() - 3) {
+      std::string cur_node;
+      getCurrentNode(cur_node);
       std::string label0 = TextParserStringToLower(label.substr(0, a)); // ラベルの文字列部分を取り出し小文字に変換
-      unsigned int number = 0;
-      std::map<std::string, unsigned int>::iterator li = array_label_number.find(label0);
+      std::string label1 = cur_node+"/"+label0;
+      int number = 0;
+      // std::cout << __FUNCTION__ << " cur_node "<<cur_node 
+      // 		<< " label0 "<<label0
+      // 		<< " label1 "<<label1<<std::endl;
+      
+      std::map<std::string, int>::iterator li = array_label_number.find(label1);
       if (li != array_label_number.end()) {  // ラベルが既に存在する
 	number = li->second;            // 配列添え字を更新
+	if (number <0) {
+	  //	  std::string emess = __FUNCTION__;
+	  	  std::string emess = __FUNCTION__;
+	  emess+=" negative index number do not use this key.";
+	  return TextParserErrorHandler(TP_ILLEGAL_ARRAY_LABEL_ERROR,emess);
+	}
 	number++;
 	li->second = number;
       } else {                                // ラベルを登録
-	array_label_number.insert(str_int(label0, number));
+	array_label_number.insert(str_int(label1, number));
       }
 #if 0
       std::ostringstream os;
@@ -127,6 +200,85 @@ TextParserError TextParserTree::SetArrayLabelIndex(std::string& label, std::map<
 
 
 
+/** 配列ラベルのインデックス設定 decrement  する。
+ *
+ * @param[in] label ラベル
+ * @param[in] array_label_number 配列形式ラベルの使用数格納データ
+ * @return リターンコード
+ *
+ * 
+ *
+ */
+TextParserError TextParserTree::decrementArrayLabelIndex(std::string& label, std::map<std::string, int>& array_label_number)
+{
+
+  std::string emess=__FUNCTION__;
+  emess+=" bracket does'nt match.";
+  int a = label.find("[");
+  int b = label.find("]");
+  //  std::cout << a << b<< __FUNCTION__<<std::endl;
+
+  if( a<0 ) return TP_NO_ERROR;
+  if( b<0 ) {
+    return     TextParserErrorHandler(TP_ILLEGAL_ARRAY_LABEL_ERROR, emess);
+  }
+
+  std::string key = TextParserStringToLower(label.substr(0,a));
+  //  std::cout<< key <<std::endl;
+
+  //key should be full path 
+  std::string current_node;
+  getCurrentNode(current_node);
+
+  key=current_node+"/"+key;
+
+
+  std::map<std::string, int>::iterator li = array_label_number.find(key);
+  //  std::cout <<__FUNCTION__ << " key "<<  key << " # " <<li->second<< std::endl;
+  if(li==array_label_number.end()) {
+    std::string emess=__FUNCTION__;
+    emess+=" really arrayed label ?";
+    return TextParserErrorHandler(TP_ILLEGAL_ARRAY_LABEL_ERROR, emess);
+  }
+
+  if(li->second == 0)array_label_number.erase(key); 
+
+  //negative number means do not use arrray 
+  li->second= -(abs( li->second)-1);
+  //if number ==0 means it has been not used label any more.
+  //  if(li->second==0) array_label_number.erase(key);
+
+//   if (a >= 0) { // 配列タイプのラベル
+//     if (a == label.size() - 3) {
+//       std::string label0 = TextParserStringToLower(label.substr(0, a)); // ラベルの文字列部分を取り出し小文字に変換
+//       unsigned int number = 0;
+//       std::map<std::string, unsigned int>::iterator li = array_label_number.find(label0);
+//       if (li != array_label_number.end()) {  // ラベルが既に存在する
+// 	number = li->second;            // 配列添え字を更新
+// 	number++;
+// 	li->second = number;
+//       } else {                                // ラベルを登録
+// 	array_label_number.insert(str_int(label0, number));
+//       }
+// #if 0
+//       std::ostringstream os;
+//       os << number;
+//       label = label0 + "[" + os.str() + "]";
+// #else
+//       char os[20];
+//       sprintf(os, "%d", number);
+//       label = label0 + "[" + os + "]";
+// #endif
+//     } else {
+//       return TP_ILLEGAL_ARRAY_LABEL_ERROR;
+//     }
+//   }
+
+  return TP_NO_ERROR;
+}
+
+
+
 
 /** パラメータファイルの読み込み
  *
@@ -138,9 +290,11 @@ TextParserError TextParserTree::readParameters(const std::string& filename)
 {
 
   TextParserError ret = TP_NO_ERROR;  // 戻り値
-  if (_is_ready) {
-    return TextParserErrorHandler(TP_DATABASE_ALREADY_SET_ERROR, "");
-  }
+  
+  
+    if (_is_ready) {
+      return TextParserErrorHandler(TP_DATABASE_ALREADY_SET_ERROR, "");
+      }
   try{
     std::string line;
     std::stringstream ss;
@@ -180,6 +334,154 @@ TextParserError TextParserTree::readParameters(const std::string& filename)
 	if( mpi_buffer ) delete[] mpi_buffer;
 #endif
     
+    // now ss has an entire file contents.
+    
+    if (ss)
+      {
+	_unresolved_leaves.clear();
+	_leaf_paths.clear();
+	_parse_mode = TP_NODE_PARSE; // ノード解析モード
+	_current_element = 0;   // カレントエレメントをルートディレクトリに設定
+	_current_line = 0;       // ファイルのカレント行を初期化
+	_current_leaf_id = 0;   // 現在のリーフのIDを初期化
+	_node_open = false; // ノードの開閉状態を閉に設定
+	_is_ready=false;
+	
+	std::string buffer;
+	while (getline(ss, buffer)) {
+	  _current_line++;
+	  //	  std::cout<<buffer<<std::endl;
+//	  TextParserError ret = parseLine(ifs, buffer);     // 一行のパラメータ解析
+	  TextParserError ret = parseLine(ss, buffer);     // 一行のパラメータ解析
+	  //	  std::cout<<buffer<<std::endl;
+	  if (ret != TP_NO_ERROR) {
+	    initialize();
+	    return ret;
+	  }
+	} //while(getline(loop))
+
+	//! 未解決の依存関係付き値の解決
+	if (_unresolved_leaves.size() > 0) {
+#ifdef TP_DEBUG
+	  if (_debug_write) {
+	    std::cout << "☆ 未解決の依存関係付き値の総数 = " << _unresolved_leaves.size() << std::endl;
+	  }
+#endif
+	  while (_unresolved_leaves.size() > 0) {
+	    unsigned int unresolved_number = _unresolved_leaves.size();
+	    std::map<unsigned int, TextParserLeaf *>::iterator li = _unresolved_leaves.begin();
+	    while (li != _unresolved_leaves.end()) {
+	      _current_line = li->first;
+	      _current_element = li->second;
+	      ret = parseDependenceExpression(li->second);
+	      if (ret == TP_NO_ERROR) {
+#ifdef TP_DEBUG
+		if (_debug_write) {
+		  std::cout << "★ 解決した依存関係付き値 = " << li->second->_label << std::endl;
+		}
+#endif
+		std::map<unsigned int, TextParserLeaf *>::iterator lt = li;
+		li++;
+		_unresolved_leaves.erase(lt);   // 削除
+	      } else {
+		if (ret == TP_MISSING_PATH_ELEMENT_ERROR
+		    || ret == TP_UNRESOLVED_LABEL_USED_WARNING) {
+		  li++;
+		} else {
+		  initialize();
+		  return ret;
+		}
+	      }
+	    }
+	    // 解決されなかったら終了
+	    if (unresolved_number == _unresolved_leaves.size()) break;
+	  }
+	  if (_unresolved_leaves.size() > 0) {
+	    // 未解決の依存関係付き値が残った場合未定義値を設定
+	    std::map<unsigned int, TextParserLeaf *>::iterator li = _unresolved_leaves.begin();
+	    while (li != _unresolved_leaves.end()) {
+	      _current_line = li->first;
+	      _current_element = li->second;
+	      ret = parseDependenceExpression(li->second);
+	      std::string expression = "";
+	      TextParserValue *value = li->second->_value;
+	      expression = li->second->_label + " = " + value->_value;
+	      if (ret != TP_NO_ERROR) {
+		if (ret == TP_UNRESOLVED_LABEL_USED_WARNING) {
+		  TextParserErrorHandler(TP_UNRESOLVED_LABEL_USED_WARNING, expression);
+		  ret = setUndefinedValue();                  // 未定義値の設定
+		  if (ret != TP_NO_ERROR) {
+		    initialize();
+		    return ret;
+		  }
+		} else {
+		  if (ret == TP_MISSING_PATH_ELEMENT_ERROR) {
+		    TextParserErrorHandler(TP_MISSING_PATH_ELEMENT_ERROR, expression);
+		  }
+		  initialize();
+		  return ret;
+		}
+	      }
+	      li++;   // 最初のリーフでエラーになるはずだから本来不要
+	    }
+	  }
+	}
+      } else {
+      ret = TextParserErrorHandler(TP_FILEOPEN_ERROR, filename);
+      initialize();
+      return ret;
+    }
+    if (_node_open) {
+      ret = TextParserErrorHandler(TP_NODE_END_MISSING_ERROR, filename);
+      initialize();
+      return ret;
+    }
+    ret = getLeafLabels(_leaf_paths);
+    if (ret != TP_NO_ERROR) {
+      initialize();
+      return ret;
+    }
+    _input_filename = filename;
+    _is_ready = true;  // データへのアクセスを許可
+  } catch (std::ios_base::failure) {
+    ret = TextParserErrorHandler(TP_FILEINPUT_ERROR, filename);
+  } catch (std::exception ex) {
+    ret = TextParserErrorHandler(TP_FILEINPUT_ERROR, filename);
+  }
+  initialize();
+
+#ifdef MYDEBUG
+  std::cout<< "readParameters(const std::string& filename) end." <<std::endl;
+#endif
+  return ret;
+}
+
+
+
+
+/** パラメータファイルの読み込み MPI版でそれぞれのプロセスがそれぞれのファイルを読んでパースする。
+ *
+ * @param[in] filename ファイル名
+ * @return エラーコード
+ *
+ */
+TextParserError TextParserTree::readParameters_local(const std::string& filename)
+{
+
+  TextParserError ret = TP_NO_ERROR;  // 戻り値
+  if (_is_ready) {
+    return TextParserErrorHandler(TP_DATABASE_ALREADY_SET_ERROR, "");
+  }
+  try{
+    std::string line;
+    std::stringstream ss;
+    
+    std::ifstream ifs(filename.c_str());
+    while (getline(ifs,line)){
+      ss << line << '\n';
+    }
+    ifs.close();
+      
     // now ss has an entire file contents.
     
     if (ss)
@@ -297,10 +599,11 @@ TextParserError TextParserTree::readParameters(const std::string& filename)
   initialize();
 
 #ifdef MYDEBUG
-  std::cout<< "readParameters(const std::string& filename) end." <<std::endl;
+  std::cout<< "readParameters_local(const std::string& filename) end." <<std::endl;
 #endif
   return ret;
 }
+
 
 
 /** エレメントのパスを取得
@@ -461,6 +764,8 @@ bool TextParserStringCompare(const std::string& str0, const std::string& str1)
   return (str0_cpy == str1_cpy);
 }
 
+
+// moved to TextParserTree class. 2nd-Aug-2012 
 /** エラーメッセージを表示する
  *
  * @param[in] error_code エラーコード
@@ -468,7 +773,7 @@ bool TextParserStringCompare(const std::string& str0, const std::string& str1)
  * @return エラーコード
  *
  */
-TextParserError TextParserErrorHandler(const TextParserError error_code, const std::string& sub_message)
+TextParserError TextParserTree::TextParserErrorHandler(const TextParserError error_code, const std::string& sub_message)
 {
 #ifdef MYDEBUG    
   std::cout<< "TextParserErrorHandler() start"<<std::endl;
@@ -610,7 +915,7 @@ TextParserError TextParserErrorHandler(const TextParserError error_code, const s
       std::cerr << "Undefined error code";
       break;
     }
-    unsigned int current_line = (TextParserTree::get_instance())->_current_line;
+    unsigned int current_line = _current_line;
     //unsigned int current_line = TextParserTree::getInstance()->_current_line;
     if (sub_message.size() > 0) std::cerr << " : " + sub_message;
     if (current_line > 0) std::cerr << " : line " << current_line;
@@ -626,6 +931,7 @@ TextParserError TextParserErrorHandler(const TextParserError error_code, const s
 }
 
 
+
 /** 一行のパラメータ解析
  *
  * @param[in] ss 入力ファイルポインタ
@@ -635,6 +941,7 @@ TextParserError TextParserErrorHandler(const TextParserError error_code, const s
  */
 TextParserError TextParserTree::parseLine(std::stringstream& ss, std::string& buffer)
 {
+  //#define MYDEBUG
 #ifdef MYDEBUG
   std::cout << "parseLine(std::stringstream& ss, std::string& buffer) start" 
 	    <<std::endl;
@@ -667,7 +974,9 @@ TextParserError TextParserTree::parseLine(std::stringstream& ss, std::string& bu
 	ret = parseNode(ss, buffer, answer);
 	if (ret != TP_NO_ERROR) return ret;
 	if (answer) {                  // ディレクトリ?
+	  //	  std::cout << "tmp"  << std::endl;
 	  ret = openNode(label);             // ディレクトリの開始
+	  //	  std::cout << "tmp"  << std::endl;
 	  if (ret != TP_NO_ERROR) return ret;
 	  _parse_mode = TP_NODE_PARSE;     // ディレクトリ解析モード
 	  break;
@@ -715,9 +1024,13 @@ TextParserError TextParserTree::parseLine(std::stringstream& ss, std::string& bu
       ret = parseDependValue(ss, buffer, answer);
       if (ret != TP_NO_ERROR) return ret;
       if (answer) {   // 依存関係付き値?
+	//	std::cout << "TP_LEAF_PARSE Depend Value 1"<< buffer << std::endl;
 	ret = setDependenceExpression(ss, buffer);
+	//	std::cout << "TP_LEAF_PARSE Depend Value 2"<< buffer << std::endl;
 	if (ret != TP_NO_ERROR) return ret;
+	//	std::cout << "TP_LEAF_PARSE Depend Value 3"<< _current_element->_label << std::endl;
 	ret = parseDependenceExpression((TextParserLeaf *)_current_element);
+	//	std::cout << "TP_LEAF_PARSE Depend Value 3"<< buffer << std::endl;
 	if (ret != TP_NO_ERROR) {
 	  if (ret == TP_MISSING_PATH_ELEMENT_ERROR
 	      || ret == TP_UNRESOLVED_LABEL_USED_WARNING) {
@@ -767,10 +1080,10 @@ TextParserError TextParserTree::parseLine(std::stringstream& ss, std::string& bu
     }
   }
 #ifdef MYDEBUG
-  std::cout << "parseLine(std::stringstream& ss, std::string& buffer) start" 
+  std::cout << "parseLine(std::stringstream& ss, std::string& buffer) end" 
 	    <<std::endl;
 #endif //MYDEBUG
-
+  //#undef MYDEBUG
   return TP_NO_ERROR;
 }
 
@@ -930,8 +1243,8 @@ TextParserNode *TextParserTree::getNode(const std::string& label)
 TextParserError TextParserTree::getNode(std::string& label, TextParserElement *parent_element, TextParserNode **node)
 {
   *node = 0;
-  if (parent_element == 0) {							// 親エレメントがルートディレクトリ
-    *node = getNode(label);               // 既存のディレクトリを取得
+  if (parent_element == 0) {	// 親エレメントがルートディレクトリ
+    *node = getNode(label);      // 既存のディレクトリを取得
     if (*node == 0) {   // 存在しない
       return TextParserErrorHandler(TP_NODE_NOT_FOUND_ERROR, label);
     }
@@ -1528,14 +1841,16 @@ TextParserError TextParserTree::openNode(const std::string& label)
   if (ret != TP_NO_ERROR) return ret;
   if (path.size() == 0) {
     node->_return_elements.push_back(_current_element);    // カレントエレメントを戻り先にスタック
-    _current_element = parent_element;                               // カレントエレメントに設定
+    _current_element = parent_element;                         // カレントエレメントに設定
   } else {
     // ラベルの異常検出
     if (!isCorrectLabel(path, false)) {
-      std::cout << "test "<< std::endl;
+      //      std::cout << "test "<< std::endl;
       return TextParserErrorHandler(TP_ILLEGAL_LABEL_ERROR, label);
     }
+    //  std::cout << __FUNCTION__ <<" tmp1"  << std::endl;
     ret = getOrAddNode(path, parent_element, &node);   // ディレクトリの取得又は追加
+    //  std::cout << __FUNCTION__ << " tmp2"  << std::endl;
     if (ret != TP_NO_ERROR) return ret;
     node->_return_elements.push_back(_current_element);    // カレントエレメントを戻り先にスタック
     _current_element = node;                               // カレントエレメントに設定
@@ -1603,25 +1918,40 @@ TextParserError TextParserTree::closeNode()
 TextParserError TextParserTree::getOrAddNode(std::string& label, TextParserElement *parent_element, TextParserNode **node)
 {
   TextParserError ret;
+  //  std::cout << __FUNCTION__ << " tmp1"  << std::endl;
   *node = 0;
-  if (parent_element == 0) {							// 親エレメントがルートディレクトリ
+  //  std::cout << __FUNCTION__ << " tmp2 "  <<parent_element<< std::endl;
+  
+  if (parent_element == 0) {	// 親エレメントがルートディレクトリ
     if (isArrayLabelExist(label, parent_element, TP_LEAF_ELEMENT)) {
       return TextParserErrorHandler(TP_LABEL_ALREADY_USED_ERROR, label);
     }
+    //    std::cout << __FUNCTION__ << " tmp3"  << std::endl;
     ret = setArrayLabelIndex(label);                // 配列型ラベルのインデックス設定
+    //    std::cout << __FUNCTION__ << " tmp4"  << std::endl;
     if (ret != TP_NO_ERROR) {
       return TextParserErrorHandler(ret, label);
     }
+    //    std::cout << __FUNCTION__ << " tmp5"  << std::endl;
     *node = getNode(label);               // 既存のディレクトリを取得
+    //    std::cout << __FUNCTION__ << " tmp6"  << std::endl;
     if (*node == 0) {   // 存在しない
       try {
-	*node = new TextParserNode(label);      // 新規にディレクトリを作成
+	//	std::cout << __FUNCTION__ << " tmp1"  << std::endl;
+	//*node = new TextParserNode(label);      // 新規にディレクトリを作成
+	*node = new TextParserNode(label,this);      // 新規にディレクトリを作成
+	// 追加
+	//	node->SetTree(this);
+	//	std::cout << __FUNCTION__ << " tmp2"  << std::endl;
+
+
 	if (*node == 0) {
 	  return TextParserErrorHandler(TP_MEMORY_ALLOCATION_ERROR, label);
 	}
       } catch (std::exception ex) {
 	return TextParserErrorHandler(TP_MEMORY_ALLOCATION_ERROR, label);
       }
+
       addElement(*node);                     // ルートディレクトリに追加
       (*node)->_parent = parent_element;		// 親エレメントを設定
 #ifdef TP_DEBUG
@@ -1631,14 +1961,20 @@ TextParserError TextParserTree::getOrAddNode(std::string& label, TextParserEleme
 #endif
     }
   } else if (parent_element->_type == TP_NODE_ELEMENT) {
+    //    std::cout << __FUNCTION__ << " tmp10"  << std::endl;
     TextParserNode *parent_dir = (TextParserNode *)parent_element;
+    //    std::cout << __FUNCTION__ << " tmp11"  << std::endl;
     if (isIncludedInPath(label, parent_dir)) {
       return TextParserErrorHandler(TP_LABEL_ALREADY_USED_PATH_ERROR, label);
     }
     if (isArrayLabelExist(label, parent_element, TP_LEAF_ELEMENT)) {
       return TextParserErrorHandler(TP_LABEL_ALREADY_USED_ERROR, label);
     }
-    ret = parent_dir->setArrayLabelIndex(label);    // 配列型ラベルのインデックス設定
+
+    //    ret = parent_dir->setArrayLabelIndex(label);    // 配列型ラベルのインデックス設定
+    //    std::cout << __FUNCTION__ << " tmp12"  << std::endl;
+    ret = setArrayLabelIndex(label);    // 配列型ラベルのインデックス設定
+    //    std::cout << __FUNCTION__ << " tmp13"  << std::endl;
     if (ret != TP_NO_ERROR) {
       return TextParserErrorHandler(ret, label);
     }
@@ -1666,6 +2002,7 @@ TextParserError TextParserTree::getOrAddNode(std::string& label, TextParserEleme
 #endif
     }
   } else {
+    //    std::cout << __FUNCTION__ << " tmp20"  << std::endl;
     return TextParserErrorHandler(TP_ILLEGAL_CURRENT_ELEMENT_ERROR, "");
   }
 
@@ -1741,7 +2078,8 @@ TextParserError TextParserTree::openLeaf(const std::string& label)
     if (isArrayLabelExist(path, parent_element, TP_NODE_ELEMENT)) {
       return TextParserErrorHandler(TP_LABEL_ALREADY_USED_ERROR, path);
     }
-    ret = parent_dir->setArrayLabelIndex(path);// 配列型ラベルのインデックス設定
+    //    ret = parent_dir->setArrayLabelIndex(path);// 配列型ラベルのインデックス設定
+    ret = setArrayLabelIndex(path);// 配列型ラベルのインデックス設定
     if (ret != TP_NO_ERROR) {
       return TextParserErrorHandler(ret, path);
     }
@@ -1760,7 +2098,8 @@ TextParserError TextParserTree::openLeaf(const std::string& label)
       } catch (std::exception ex) {
 	return TextParserErrorHandler(TP_MEMORY_ALLOCATION_ERROR, "leaf");
       }
-      parent_dir->addElement(leaf);               // 親ディレクトリに追加
+      // parent_dir->addElement(leaf);               // 親ディレクトリに追加
+      parent_dir->addElement(leaf,GetLeafID());               // 親ディレクトリに追加
       leaf->_parent = parent_element;             // 親エレメントを設定
       leaf->setLineN(_current_line);
     } else {
@@ -1999,6 +2338,7 @@ TextParserError TextParserTree::parseValue(std::string& buffer,
 					   std::string& value,
 					   TextParserValueType& value_type)
 {
+  //#define MYDEBUG3
 #ifdef MYDEBUG3
   std::cout << "parseValue start buffer|"<<buffer<<"|"<<std::endl;
 #endif //MYDEBUG3
@@ -2139,7 +2479,7 @@ TextParserError TextParserTree::parseValue(std::string& buffer,
 	    << "| value=|"<<value<<"|"<<std::endl;
 #endif //MYDEBUG3
 
-
+  //#undef MYDEBUG3
 
   answer = true;
 
@@ -3309,6 +3649,8 @@ TextParserError TextParserTree::parseDependenceExpression(TextParserLeaf *leaf)
   bool answer;
   TextParserValue *value_element = 0;
   TextParserBool result;
+  //#define MYDEBUG3
+
 #ifdef MYDEBUG3
   std::cout << "parseDependenceExpression start" <<std::endl;
 #endif //MYDEBUG3
@@ -3339,7 +3681,7 @@ TextParserError TextParserTree::parseDependenceExpression(TextParserLeaf *leaf)
 
   ret = parseOpenBrancket(buffer, answer);
 #ifdef MYDEBUG3
-  std::cout << "buffer1 |"<<buffer<<"|" <<std::endl;
+  std::cout << "buffer1 |"<<buffer<<"|" <<answer<<std::endl;
 #endif //MYDEBUG3
 
   if (ret != TP_NO_ERROR) return ret;
@@ -3398,7 +3740,7 @@ TextParserError TextParserTree::parseDependenceExpression(TextParserLeaf *leaf)
 #endif
     return TextParserErrorHandler(TP_ILLEGAL_DEPENDENCE_EXPRESSION_ERROR, buffer);
   }
-
+  //#undef MYDEBUG3
   return TP_NO_ERROR;
 }
 
@@ -3411,12 +3753,12 @@ TextParserError TextParserTree::parseDependenceExpression(TextParserLeaf *leaf)
  */
 TextParserError TextParserTree::parseConditionalExpression(std::string& buffer, TextParserBool& result)
 {
+  //    std::cout << "<条件式の解析>" << std::endl;
+
 #ifdef TP_DEBUG
-  /*
-    if (_debug_write) {
-    std::cout << "<条件式の解析>" << std::endl;
-    }
-  */
+    // if (_debug_write) {
+    // std::cout << "<条件式の解析>" << std::endl;
+    // }
 #endif
   TextParserError ret;
   bool answer = false;
@@ -3427,6 +3769,8 @@ TextParserError TextParserTree::parseConditionalExpression(std::string& buffer, 
 
   std::string label;
   ret = parseLabel(buffer, answer, label);
+  //  std::cout << __FUNCTION__<<" "<< buffer <<" "<< answer <<" "<<label<< std::endl;
+
   if (ret != TP_NO_ERROR) return ret;
   if (answer) {
     ret = parseEqual(buffer, answer);
@@ -3446,7 +3790,10 @@ TextParserError TextParserTree::parseConditionalExpression(std::string& buffer, 
 	  if (!isCorrectValue(value, value_type)) {    // 値のチェック
 	    return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, value);
 	  }
+	  //	  std::cout << __FUNCTION__<<" "<<label <<" "<< value <<" "<<value_type<< std::endl;
 	  ret = resolveConditionalExpression(label, value, value_type, TP_TRUE, result);
+	  //	  std::cout << __FUNCTION__<<" "<<label <<" "
+	  //		    << value <<" "<<value_type<< " "<< result <<std::endl;
 	  if (ret != TP_NO_ERROR) return ret;
 	  if (result == TP_UNDEFINED_BOOL) {
 	    TextParserErrorHandler(TP_UNDEFINED_VALUE_USED_WARNING, label);
@@ -3549,7 +3896,7 @@ TextParserError TextParserTree::parseConditionalExpression(std::string& buffer, 
       return TextParserErrorHandler(TP_ILLEGAL_CONDITION_EXPRESSION_ERROR, buffer);
     }
   }
-
+  //    std::cout << "<条件式の解析> end" << std::endl;
   return TP_NO_ERROR;
 }
 
@@ -3655,8 +4002,9 @@ TextParserError TextParserTree::parseDependenceValue(std::string& buffer, TextPa
  */
 TextParserError TextParserTree::resolveConditionalExpression(std::string& label, std::string& value, TextParserValueType& value_type, const TextParserBool is_equal, TextParserBool& result)
 {
+  //#define TP_DEBUG
 #ifdef TP_DEBUG
-  if (_debug_write) {
+    if (_debug_write) {
     std::cout << "条件式 (" + label;
     if (is_equal == TP_TRUE) {
       std::cout << " == ";
@@ -3665,7 +4013,7 @@ TextParserError TextParserTree::resolveConditionalExpression(std::string& label,
     }
     debugWriteValue(value, value_type);
     std::cout << ")" << std::endl;
-  }
+    }
 #endif
   TextParserError ret;
   std::string path = label;
@@ -3694,78 +4042,86 @@ TextParserError TextParserTree::resolveConditionalExpression(std::string& label,
       return TextParserErrorHandler(TP_ILLEGAL_CURRENT_ELEMENT_ERROR, label);
     }
   }
+  //  std::cout << __FUNCTION__ << " "<<path<<std::endl;
+
   TextParserValue *leaf_value = 0;
   ret = getLeafValue(path, &leaf_value);
+  //  std::cout << __FUNCTION__ << path<<std::endl;
   if (ret != TP_NO_ERROR) return ret;
   if (leaf_value == 0) {
-    return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, label);
-  }
+    std::cout << "leaf_value is not ready."<<std::endl;
+      return TextParserErrorHandler(TP_UNRESOLVED_LABEL_USED_WARNING, label);
+      //    return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, label);
+  } 
 
-  if (leaf_value->_value_type == TP_DEPENDENCE_VALUE) {
+    if (leaf_value->_value_type == TP_DEPENDENCE_VALUE) {
+
+#ifdef TP_DEBUG
+        if (_debug_write) {
+      std::cout << "未解決の依存関係付き値：" + label << std::endl;
+        }
+#endif
+      return TP_UNRESOLVED_LABEL_USED_WARNING;
+    } else if (leaf_value->_value_type == TP_STRING_VALUE) {
+      if (TextParserStringCompare(value, leaf_value->_value)) {
+	result = TP_TRUE;
+      } else {
+	result = TP_FALSE;
+      }
+    } else if (leaf_value->_value_type == TP_NUMERIC_VALUE) {
+      // 数値はdoubleに変換して比較
+      std::string val0 = CorrectValueString(value);
+      std::string val1 = CorrectValueString(leaf_value->_value);
+      double dval0, dval1;
+// #if 0
+//     try {
+//       std::stringstream ss;
+//       ss << val0;
+//       ss >> dval0;
+//       ss.clear();
+//       ss << val1;
+//       ss >> dval1;
+//       if (dval0 == dval1) {
+// 	result = TP_TRUE;
+//       } else {
+// 	result = TP_FALSE;
+//       }
+//     } catch (std::exception ex) {
+//       return TextParserErrorHandler(TP_ILLEGAL_NUMERIC_VALUE_ERROR, value);
+//     }
+// #else
+	try {
+	  sscanf(val0.c_str(), "%lf", &dval0);
+	  sscanf(val1.c_str(), "%lf", &dval1);
+	  if (dval0 == dval1) {
+	    result = TP_TRUE;
+	  } else {
+	    result = TP_FALSE;
+	  }
+	} catch (std::exception ex) {
+	  return TextParserErrorHandler(TP_ILLEGAL_NUMERIC_VALUE_ERROR, value);
+	}
+	//#endif
+	  } else if (leaf_value->_value_type == TP_UNDEFFINED_VALUE) {
+      result = TP_UNDEFINED_BOOL;
+    } else {
+      return TextParserErrorHandler(TP_ILLEGAL_VALUE_TYPE_ERROR, value);
+    }
+    if (result != TP_UNDEFINED_BOOL) {
+      if (is_equal == TP_FALSE) {
+	result = (result == TP_TRUE) ? TP_FALSE : TP_TRUE;   // 不等号の場合は反転
+      }
+    }
+    
+
 #ifdef TP_DEBUG
     if (_debug_write) {
-      std::cout << "未解決の依存関係付き値：" + label << std::endl;
-    }
-#endif
-    return TP_UNRESOLVED_LABEL_USED_WARNING;
-  } else if (leaf_value->_value_type == TP_STRING_VALUE) {
-    if (TextParserStringCompare(value, leaf_value->_value)) {
-      result = TP_TRUE;
-    } else {
-      result = TP_FALSE;
-    }
-  } else if (leaf_value->_value_type == TP_NUMERIC_VALUE) {
-    // 数値はdoubleに変換して比較
-    std::string val0 = CorrectValueString(value);
-    std::string val1 = CorrectValueString(leaf_value->_value);
-    double dval0, dval1;
-#if 0
-    try {
-      std::stringstream ss;
-      ss << val0;
-      ss >> dval0;
-      ss.clear();
-      ss << val1;
-      ss >> dval1;
-      if (dval0 == dval1) {
-	result = TP_TRUE;
-      } else {
-	result = TP_FALSE;
-      }
-    } catch (std::exception ex) {
-      return TextParserErrorHandler(TP_ILLEGAL_NUMERIC_VALUE_ERROR, value);
-    }
-#else
-    try {
-      sscanf(val0.c_str(), "%lf", &dval0);
-      sscanf(val1.c_str(), "%lf", &dval1);
-      if (dval0 == dval1) {
-	result = TP_TRUE;
-      } else {
-	result = TP_FALSE;
-      }
-    } catch (std::exception ex) {
-      return TextParserErrorHandler(TP_ILLEGAL_NUMERIC_VALUE_ERROR, value);
-    }
-#endif
-  } else if (leaf_value->_value_type == TP_UNDEFFINED_VALUE) {
-    result = TP_UNDEFINED_BOOL;
-  } else {
-    return TextParserErrorHandler(TP_ILLEGAL_VALUE_TYPE_ERROR, value);
-  }
-  if (result != TP_UNDEFINED_BOOL) {
-    if (is_equal == TP_FALSE) {
-      result = (result == TP_TRUE) ? TP_FALSE : TP_TRUE;   // 不等号の場合は反転
-    }
-  }
-
-#ifdef TP_DEBUG
-  if (_debug_write) {
     std::cout << "☆ 結果 == ";
     debugWriteTextParserBool(result);
     std::cout << std::endl;
-  }
+    }
 #endif
+    //#undef TP_DEBUG
   return TP_NO_ERROR;
 }
 
@@ -3845,9 +4201,9 @@ TextParserBool TextParserTree::resolveOr(TextParserBool& left, TextParserBool& r
  */
 TextParserError TextParserTree::getElementRelativePath (std::string& path, bool add, TextParserElement **parent_element)
 {
-#ifdef MYDEBUG
+  #ifdef MYDEBUG
   std::cout << "getElementRelativePath (std::string& path, bool add, TextParserElement **parent_element) start" <<std::endl;
-#endif //MYDEBUG
+  #endif //MYDEBUG
 
   TextParserError ret = TP_NO_ERROR;
   TextParserNode *node;
@@ -3917,17 +4273,17 @@ TextParserError TextParserTree::getElement(const std::string& label, const TextP
 {
   TextParserError ret = TP_NO_ERROR;
   *element = 0;
-  //  std::cout << "getElement 0" << label <<std::endl;
+  //    std::cout << "getElement 0" << label <<std::endl;
   if (type != TP_NODE_ELEMENT && type != TP_LEAF_ELEMENT) {
     return TextParserErrorHandler(TP_ILLEGAL_ELEMENT_ERROR, label);
   }
-  //  std::cout << "getElement 1" << label <<std::endl;
+  //    std::cout << "getElement 1" << label <<std::endl;
   TextParserElement *parent_element = 0;
   std::string path = label;
   ret = getElementRelativePath (path, false, &parent_element);
-  //  std::cout << "getElement 2" << label <<std::endl;
+  //  std::cout << "getElement 2" << label << " "<< parent_element->_label<<std::endl;
   if (ret != TP_NO_ERROR) return ret;
-  //  std::cout << "getElement 3" << label <<std::endl;
+  //   std::cout << "getElement 3" << label <<std::endl;
   if (path.size() == 0) { // "/"や".."の場合
     if (type == TP_NODE_ELEMENT) {
       *element = 0;
@@ -3936,35 +4292,43 @@ TextParserError TextParserTree::getElement(const std::string& label, const TextP
       return TP_MISSING_PATH_ELEMENT_ERROR;
     }
   }
-  //  std::cout << "getElement 4" << label <<std::endl;
+  //    std::cout << "getElement 4" << label <<std::endl;
   TextParserNode *parent_dir = 0;
   if (parent_element == 0) {  // ルートディレクトリ
     *element = getNode(path);
-    //  std::cout << "getElement 5" << label <<std::endl;
+    //      std::cout << "getElement 5" << label <<std::endl;
     if (*element == 0) {
-      //  std::cout << "getElement 6" << label <<std::endl;
+      //      std::cout << "getElement 6" << label <<std::endl;
       return TP_MISSING_PATH_ELEMENT_ERROR;
     }
   } else if (parent_element->_type == TP_NODE_ELEMENT) {
     parent_dir = (TextParserNode *)parent_element;
     if (type == TP_NODE_ELEMENT) {
-      //  std::cout << "getElement 7" << label <<std::endl;
       *element = parent_dir->getNode(path);
+      //      std::cout << "getElement 7" << label << path 
+      //		<<parent_dir->_label<<" "<<(*element) <<std::endl;
+
     } else if (type == TP_LEAF_ELEMENT) {
-      //      std::cout << "getElement 8" << label <<std::endl;
+      //          std::cout << "getElement 8" << label <<std::endl;
       *element = parent_dir->getLeaf(path);
-      //      std::cout << "getElement 8" << path << *element <<std::endl;
+      //    std::cout << "getElement 8" << path << *element <<std::endl;
     }
-    if (*element == 0) {
-      //      std::cout << "getElement 9" << label <<std::endl;
+    // if (*element == 0) {
+    //       std::cout << "getElement 9" << label <<std::endl;
+    //   return TP_MISSING_PATH_ELEMENT_ERROR;
+    // }
+
+    if (element==NULL && *element == 0) {
+          std::cout << "getElement 9" << label <<std::endl;
       return TP_MISSING_PATH_ELEMENT_ERROR;
     }
+
   } else {
-    //  std::cout << "getElement 10" << label <<std::endl;
+      std::cout << "getElement 10" << label <<std::endl;
     return TextParserErrorHandler(TP_ILLEGAL_PATH_ELEMENT_ERROR, "");
   }
-  //  std::cout << "getElement 11" << label <<std::endl;
-  //  std::cout << "getElement " << path << " " <<(*element) << std::endl;
+  //    std::cout << "getElement 11" << label <<std::endl;
+  //    std::cout << "getElement " << path << " " <<(*element) << std::endl;
   return ret;
 }
 
@@ -3982,26 +4346,42 @@ TextParserError TextParserTree::getElement(const std::string& label, const TextP
 TextParserError TextParserTree::getLeafValue(const  std::string& path, TextParserValue **value)
 //TextParserError TextParserTree::getLeafValue(cosnt std::string* path, TextParserValue **value)
 {
+  //  std::cout<<__FUNCTION__<<" 1 "<<path<<std::endl;
+  *value=0;
   TextParserError ret;
   TextParserElement* element = 0;
   ret = getElement(path, TP_LEAF_ELEMENT, &element); // パスからエレメントを取得
-  if (ret != TP_NO_ERROR) return ret;
-  if (element->_type == TP_LEAF_ELEMENT) {
-    TextParserLeaf *leaf = (TextParserLeaf *)element;
-    if (leaf->_value == 0) {
-      return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, "");
-    } else {
-      *value = leaf->_value;
-    }
-  } else {
-    return TextParserErrorHandler(TP_ILLEGAL_PATH_ELEMENT_ERROR, "");
-  }
+  //  std::cout<<__FUNCTION__<<" 2 "<<path<<std::endl;
 
-#ifdef TP_DEBUG
-  if (_debug_write) {
-    std::cout << "リーフの値（" + path + " = " + (*value)->_value + ")" << std::endl;
+  if (ret != TP_NO_ERROR){
+    //    std::cout<<__FUNCTION__<<" 3 "<<path<<std::endl;
+    return ret;}
+  //  std::cout<<__FUNCTION__<<" 3-1 "<<path<<" "<< element <<std::endl;
+  if(element!=0){
+    if (element->_type == TP_LEAF_ELEMENT) {
+
+      //      std::cout<<__FUNCTION__<<" 4 "<<path<<std::endl;
+      TextParserLeaf *leaf = (TextParserLeaf *)element;
+      //      std::cout<<__FUNCTION__<<" 5 "<<path<<std::endl;
+      if (leaf->_value == 0) {
+	//	std::cout<<__FUNCTION__<<" 6 "<<path<<std::endl;
+	return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, "");
+      } else {
+	//	std::cout<<__FUNCTION__<<" 7 "<<path<<std::endl;
+	*value = leaf->_value;
+
+      }
+    } else {
+      return TextParserErrorHandler(TP_ILLEGAL_PATH_ELEMENT_ERROR, "");
+    }
   }
-#endif
+  //#ifdef TP_DEBUG
+  //  if (_debug_write) {
+  //  std::cout<<__FUNCTION__<<" 7 "<<path<<" "<<(*value) <<std::endl;
+  //  if(*value!=0) std::cout << "リーフの値（" + path + " = " + (*value)->_value + ")" << std::endl;
+  //  std::cout<<__FUNCTION__<<" 7 "<<path<<" "<<(*value) <<std::endl;
+    //  }
+    //#endif
   return TP_NO_ERROR;
 }
 
@@ -4692,3 +5072,190 @@ TextParserTree::nodeSort_2(const std::vector<std::string>& input,
 
   return ret;
 }
+
+// Tree 更新用関数
+
+// tree モディファイ用
+TextParserError TextParserTree::updateValue(const std::string& label,
+					    const std::string& value){
+
+  TextParserError error=TP_NO_ERROR;
+  //  std::cout << __FUNCTION__ << std::endl;
+  std::string path=label;
+  TextParserElement* element = 0;
+  std::string tmpvalue;
+  error = getElement(path, TP_LEAF_ELEMENT, &element); // パスからエレメントを取得
+  if (error != TP_NO_ERROR) return error;
+  if (element->_type == TP_LEAF_ELEMENT) {
+    TextParserLeaf *leaf = (TextParserLeaf *)element;
+    if (leaf->_value == 0) {
+      return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, "");
+    } else {
+      //value = leaf->_value;
+
+      //      tmpvalue = leaf->_value->_value;
+      leaf->_value->_value=value;
+    }
+  } else {
+    return TextParserErrorHandler(TP_ILLEGAL_PATH_ELEMENT_ERROR, "");
+  }
+
+  //  std::cout << "label: " << label  << "value: " << tmpvalue<< std::endl;
+
+
+// #ifdef TP_DEBUG
+//   if (_debug_write) {
+//     std::cout << "リーフの値（" + path + " = " + (*value)->_value + ")" << std::endl;
+//   }
+// #endif
+    return error;
+
+}
+
+// leafの削除用
+
+TextParserError TextParserTree::deleteLeaf(const std::string& label){
+  TextParserError error=TP_NO_ERROR;
+  //  std::cout << __FUNCTION__ << std::endl;
+  TextParserElement* element = 0;
+  std::string path=label;
+  error = getElement(path, TP_LEAF_ELEMENT, &element); // パスからエレメントを取得
+  if (error != TP_NO_ERROR) return error;
+  if (element->_type == TP_LEAF_ELEMENT) {
+    TextParserLeaf *leaf = (TextParserLeaf *)element;
+    //    if (leaf->_value == 0){ 
+    //    if (leaf->_parent == 0) {
+    //      return TextParserErrorHandler(TP_ILLEGAL_element_ERROR, "");
+    //    } else {
+      //value = leaf->_value;
+
+      //      tmpvalue = leaf->_value->_value;
+    TextParserNode* parent=(TextParserNode*)leaf->_parent;
+      std::string key =leaf->_label;
+      // check if key is array label;
+      error=decrementArrayLabelIndex(key, _array_label_number);
+
+      // std::cout << "parent "<< parent->_label <<std::endl;
+      parent->removeLeaf(leaf);
+      //    }
+  } else {
+    return TextParserErrorHandler(TP_ILLEGAL_PATH_ELEMENT_ERROR, "");
+  }
+
+
+
+  return error;
+}
+TextParserError TextParserTree::createLeaf(const std::string& label,const std::string& value){
+  TextParserError error=TP_NO_ERROR;
+
+  error = openLeaf(label);
+  std::string leaf_label=_current_element->_label;
+  //  std::cout<<__FUNCTION__ << " ::  "<<leaf_label<<std::endl;
+
+
+  if (error != TP_NO_ERROR) return error;
+  std::string buffer = value;
+  std::string value2=value;
+  bool answer, answer2, answer3;
+  std::stringstream ssdummy;
+  TextParserValueType value_type;                               // 値のタイプ
+  //std::cout << __FUNCTION__ << "ddd" << label << buffer<< std::endl;
+  error = parseVectorValue(buffer, answer);
+  if (error != TP_NO_ERROR) return error;
+  if (answer) {             // ベクトル値?
+    //std::cout << __FUNCTION__ << "Vector?" << std::endl;
+    error = setVectorValue(ssdummy, buffer);
+    if (error != TP_NO_ERROR) return error;
+    error = closeLeaf();                          // リーフの終了
+    if (error != TP_NO_ERROR) return error;
+  } else {
+    //std::cout << __FUNCTION__ << " not Vector?" << std::endl;
+    error = parseUndefinedValue(buffer, answer2);  
+    
+    if (error != TP_NO_ERROR) return error;
+    if (answer2) {          // 未定義の値?
+          std::cout << __FUNCTION__ << "UNDEF?" << std::endl;
+      error = setUndefinedValue();                  // 未定義値の設定
+      if (error != TP_NO_ERROR) return error;
+      error = closeLeaf();                          // リーフの終了
+      if (error != TP_NO_ERROR) return error;
+    } else {
+      //std::cout << __FUNCTION__ << "not UNDEF?" << std::endl;
+      error = parseValue(buffer, answer3, value2, value_type);
+      if (error != TP_NO_ERROR) return error;
+      if (answer3) {// スカラー値?
+	//std::cout << __FUNCTION__ << " SCALAR? " << value2 << value_type<< std::endl;
+      	if (!isCorrectValue(value2, value_type)) {    // 値のチェック
+      	  return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, value);
+      	}
+      	error = setValue(value2, value_type);          // 値の設定
+      	if (error != TP_NO_ERROR) return error;
+      	error = closeLeaf();                          // リーフの終了
+      	if (error != TP_NO_ERROR) return error;
+      } else{
+	//std::cout << __FUNCTION__ << " not SCALAR?" << value2 << std::endl;
+      }
+    }
+  }
+  //  std::cout << __FUNCTION__ << " END?" << std::endl;
+  return error;
+}
+
+
+
+
+      // line = _current_line; // 現在の行数の保存（未解決の依存関係付き値の保存時に使用するため）
+      // ret = parseDependValue(ss, buffer, answer);
+      // if (ret != TP_NO_ERROR) return ret;
+      // if (answer) {   // 依存関係付き値?
+      // 	ret = setDependenceExpression(ss, buffer);
+      // 	if (ret != TP_NO_ERROR) return ret;
+      // 	ret = parseDependenceExpression((TextParserLeaf *)_current_element);
+      // 	if (ret != TP_NO_ERROR) {
+      // 	  if (ret == TP_MISSING_PATH_ELEMENT_ERROR
+      // 	      || ret == TP_UNRESOLVED_LABEL_USED_WARNING) {
+      // 	    _unresolved_leaves.insert(uint_leaf(line, (TextParserLeaf *)_current_element));
+      // 	  } else {
+      // 	    return ret;
+      // 	  }
+      // 	} 
+      // 	ret = closeLeaf();                          // リーフの終了
+      // 	if (ret != TP_NO_ERROR) return ret;
+      // 	break;
+      // } // parseDependValue answer end
+
+
+      // ret = parseVectorValue(ss, buffer, answer);
+      // if (ret != TP_NO_ERROR) return ret;
+      // if (answer) {             // ベクトル値?
+      // 	ret = setVectorValue(ss, buffer);
+      // 	if (ret != TP_NO_ERROR) return ret;
+      // 	ret = closeLeaf();                          // リーフの終了
+      // 	if (ret != TP_NO_ERROR) return ret;
+      // 	break;
+      // }
+      // ret = parseUndefinedValue(ss, buffer, answer);
+      // if (ret != TP_NO_ERROR) return ret;
+      // if (answer) {          // 未定義の値?
+      // 	ret = setUndefinedValue();                  // 未定義値の設定
+      // 	if (ret != TP_NO_ERROR) return ret;
+      // 	ret = closeLeaf();                          // リーフの終了
+      // 	if (ret != TP_NO_ERROR) return ret;
+      // 	break;
+      // }
+      // ret = parseValue(ss, buffer, answer, value, value_type);
+      // if (ret != TP_NO_ERROR) return ret;
+      // if (answer) {// スカラー値?
+      // 	if (!isCorrectValue(value, value_type)) {    // 値のチェック
+      // 	  return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, value);
+      // 	}
+      // 	ret = setValue(value, value_type);          // 値の設定
+      // 	if (ret != TP_NO_ERROR) return ret;
+      // 	ret = closeLeaf();                          // リーフの終了
+      // 	if (ret != TP_NO_ERROR) return ret;
+      // 	break;
+      // }
+      // return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, buffer);
+//  std::string value;                                      // 値
+//  TextParserValueType value_type;                               // 値のタイプ

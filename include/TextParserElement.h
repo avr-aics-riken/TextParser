@@ -19,20 +19,27 @@
 #include <vector>
 #include "TextParserCommon.h"
 
+
 class TextParserNode;
 class TextParserLeaf;
 class TextParserValue;
 
+
+class TextParser;
+class TextParserTree;
+
 /** TextParserElementクラスはパラメータデータの要素を保持します
  *
- * パラメータの要素としてはノ＝ド（TextParserNodeクラス）、
+ * パラメータの要素としてはノード（TextParserNodeクラス）、
  * リーフ（TextParserLeafクラス）、値（TextParserValueクラス）が有ります
  *
  */
 class TextParserElement
 {
 public:
-    TextParserElement(); 
+  //  TextParserElement(TextParserTree* tpt_ptr=TextParser::get_instance_singleton()->dataTree()); 
+  TextParserElement(TextParserTree* tpt_ptr); 
+  TextParserElement(); 
 
 //private:
 public:
@@ -43,12 +50,28 @@ public:
 
     void setLineN(int nline){_nline=nline;} //!< パラメータファイルでの行数を設定する。
     int line(){return _nline;} //!< パラメータファイルの行数を返す。
+    TextParserTree* owner_tree(){return _tpt_ptr;} //!< 自分が所属する。　TPTree pointer 
 
+    std::string GetElementAbsolutePath(TextParserElement* element);
+    void SetTree(TextParserTree* tp){_tpt_ptr=tp;}
+    TextParserTree* _tpt_ptr; //!< 自分が所属する。　TPTree pointer 
 
  private :
     int  _nline; //!< line# in text file.
 
     
+ public:
+    TextParserError element_node_sort(const std::vector<std::string>& input,
+				      std::vector<std::string>& output,
+				      int order);
+    TextParserError element_label_sort(const std::vector<std::string>& input,
+				       std::vector<std::string>& output,
+				       int order);
+    TextParserError element_labelSort_1(const std::vector<std::string>& input,
+					std::vector<std::string>& output);
+
+    int element_array_label_test(const std::string& label,std::string& key);
+
 };
 
 /** TextParserNodeクラスはパラメータデータのノードを保持します
@@ -58,14 +81,16 @@ class TextParserNode : public TextParserElement
 {
 public:
     TextParserNode(const std::string label);
+    TextParserNode(const std::string label,TextParserTree* tpt_ptr);
 
 public:
     TextParserError addElement(TextParserNode *node);
-    TextParserError addElement(TextParserLeaf *leaf);
+    TextParserError addElement(TextParserLeaf *leaf,unsigned int id);
     TextParserError removeElement();
+    TextParserError removeLeaf(TextParserLeaf* delleaf);
     TextParserNode *getNode(const std::string& label);
     TextParserLeaf *getLeaf(const std::string& label);
-    TextParserError setArrayLabelIndex(std::string& label);
+    //    TextParserError setArrayLabelIndex(std::string& label);
     TextParserError writeNode(std::ostream& ofs, unsigned int level,int order=0);
     TextParserError getLeafLabels(std::map<unsigned int, std::string>& labels);
 
@@ -135,16 +160,7 @@ typedef std::pair<unsigned int, std::string> int_str; //!< stringとunsigned int
 typedef std::pair<unsigned int, TextParserLeaf *> uint_leaf; //!< unsigned intとTextParserLeafのpair
 
 
-TextParserError element_node_sort(const std::vector<std::string>& input,
-				  std::vector<std::string>& output,
-				  int order);
-TextParserError element_label_sort(const std::vector<std::string>& input,
-				  std::vector<std::string>& output,
-				  int order);
-TextParserError element_labelSort_1(const std::vector<std::string>& input,
-				    std::vector<std::string>& output);
 
-int element_array_label_test(const std::string& label,std::string& key);
 
 #endif //__TEXTPARSER_ELEMENT_H__
 

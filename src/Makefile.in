@@ -70,32 +70,34 @@ am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libTextParser_la_LIBADD =
-am_libTextParser_la_OBJECTS = libTextParser_la-TextParser.lo \
-	libTextParser_la-TextParserTree.lo \
-	libTextParser_la-TextParserElement.lo
-libTextParser_la_OBJECTS = $(am_libTextParser_la_OBJECTS)
-libTextParser_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CXXLD) \
-	$(libTextParser_la_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
-libTextParser_f90api_la_LIBADD =
-am_libTextParser_f90api_la_OBJECTS = TextParser_fapi.lo
-libTextParser_f90api_la_OBJECTS =  \
-	$(am_libTextParser_f90api_la_OBJECTS)
-libTextParser_mpi_la_LIBADD =
-am__libTextParser_mpi_la_SOURCES_DIST = TextParser.cpp \
+___lib_libTextParser_la_LIBADD =
+am____lib_libTextParser_la_OBJECTS = TextParser.lo TextParserTree.lo \
+	TextParserElement.lo
+___lib_libTextParser_la_OBJECTS =  \
+	$(am____lib_libTextParser_la_OBJECTS)
+am__dirstamp = $(am__leading_dot)dirstamp
+___lib_libTextParser_f90api_la_LIBADD =
+am_____lib_libTextParser_f90api_la_SOURCES_DIST = TextParser_fapi.f90
+@FORTRAN_TRUE@am____lib_libTextParser_f90api_la_OBJECTS =  \
+@FORTRAN_TRUE@	TextParser_fapi.lo
+___lib_libTextParser_f90api_la_OBJECTS =  \
+	$(am____lib_libTextParser_f90api_la_OBJECTS)
+@FORTRAN_TRUE@am____lib_libTextParser_f90api_la_rpath = -rpath \
+@FORTRAN_TRUE@	$(libdir)
+___lib_libTextParser_mpi_la_LIBADD =
+am_____lib_libTextParser_mpi_la_SOURCES_DIST = TextParser.cpp \
 	TextParserTree.cpp TextParserElement.cpp
-@MPI_TRUE@am_libTextParser_mpi_la_OBJECTS =  \
-@MPI_TRUE@	libTextParser_mpi_la-TextParser.lo \
-@MPI_TRUE@	libTextParser_mpi_la-TextParserTree.lo \
-@MPI_TRUE@	libTextParser_mpi_la-TextParserElement.lo
-libTextParser_mpi_la_OBJECTS = $(am_libTextParser_mpi_la_OBJECTS)
-libTextParser_mpi_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CXXLD) \
-	$(libTextParser_mpi_la_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
-@MPI_TRUE@am_libTextParser_mpi_la_rpath = -rpath $(libdir)
+@MPI_TRUE@am____lib_libTextParser_mpi_la_OBJECTS =  \
+@MPI_TRUE@	___lib_libTextParser_mpi_la-TextParser.lo \
+@MPI_TRUE@	___lib_libTextParser_mpi_la-TextParserTree.lo \
+@MPI_TRUE@	___lib_libTextParser_mpi_la-TextParserElement.lo
+___lib_libTextParser_mpi_la_OBJECTS =  \
+	$(am____lib_libTextParser_mpi_la_OBJECTS)
+___lib_libTextParser_mpi_la_LINK = $(LIBTOOL) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+	$(___lib_libTextParser_mpi_la_CXXFLAGS) $(CXXFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+@MPI_TRUE@am____lib_libTextParser_mpi_la_rpath = -rpath $(libdir)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -116,12 +118,12 @@ FCLD = $(FC)
 FCLINK = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(FCLD) $(AM_FCFLAGS) $(FCFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(libTextParser_la_SOURCES) \
-	$(libTextParser_f90api_la_SOURCES) \
-	$(libTextParser_mpi_la_SOURCES)
-DIST_SOURCES = $(libTextParser_la_SOURCES) \
-	$(libTextParser_f90api_la_SOURCES) \
-	$(am__libTextParser_mpi_la_SOURCES_DIST)
+SOURCES = $(___lib_libTextParser_la_SOURCES) \
+	$(___lib_libTextParser_f90api_la_SOURCES) \
+	$(___lib_libTextParser_mpi_la_SOURCES)
+DIST_SOURCES = $(___lib_libTextParser_la_SOURCES) \
+	$(am_____lib_libTextParser_f90api_la_SOURCES_DIST) \
+	$(am_____lib_libTextParser_mpi_la_SOURCES_DIST)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -155,8 +157,7 @@ EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 F77 = @F77@
 FC = @FC@
-#libTextParser_f90api_la_FCFLAGS=-I../include
-FCFLAGS = -I../include
+FCFLAGS = -I../include 
 FFLAGS = @FFLAGS@
 FGREP = @FGREP@
 GREP = @GREP@
@@ -186,7 +187,6 @@ PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
-PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 RANLIB = @RANLIB@
@@ -250,15 +250,26 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+EXTRA_DIST = Makefile_hand
 @MPI_FALSE@LIBFORMPI = 
-@MPI_TRUE@LIBFORMPI = libTextParser_mpi.la
-@MPI_TRUE@libTextParser_mpi_la_SOURCES = TextParser.cpp TextParserTree.cpp TextParserElement.cpp
-@MPI_TRUE@libTextParser_mpi_la_CXXFLAGS = -I../include -DBUILD_MPI
-lib_LTLIBRARIES = libTextParser.la libTextParser_f90api.la ${LIBFORMPI}
-libTextParser_la_SOURCES = TextParser.cpp TextParserTree.cpp TextParserElement.cpp
-libTextParser_la_CXXFLAGS = -I../include 
-libTextParser_f90api_la_SOURCES = TextParser_fapi.f90
-DISTCLEANFILES = *~
+
+#libdir=../lib
+@MPI_TRUE@LIBFORMPI = ../lib/libTextParser_mpi.la
+@MPI_TRUE@___lib_libTextParser_mpi_la_SOURCES = TextParser.cpp TextParserTree.cpp TextParserElement.cpp
+@MPI_TRUE@___lib_libTextParser_mpi_la_CXXFLAGS = -I../include -DBUILD_MPI
+libTextParser_mpi_la_OBJ = $(___lib_libTextParser_mpi_la_SOURCES:.cpp=.o)
+@FORTRAN_FALSE@LIBFORFORTRAN = 
+@FORTRAN_TRUE@LIBFORFORTRAN = ../lib/libTextParser_f90api.la
+@FORTRAN_TRUE@___lib_libTextParser_f90api_la_SOURCES = TextParser_fapi.f90
+libTextParser_f90api_la_OBJ = $(___lib_libTextParser_f90api_la_SOURCES:.f90=.o)
+lib_LTLIBRARIES = ../lib/libTextParser.la ${LIBFORFORTRAN} ${LIBFORMPI}
+dotalibs = $(lib_LTLIBRARIES:.la=.a)
+___lib_libTextParser_la_SOURCES = TextParser.cpp TextParserTree.cpp TextParserElement.cpp
+libTextParser_la_OBJ = $(___lib_libTextParser_la_SOURCES:.cpp=.o)
+#libTextParser_la_CXXFLAGS=-I../include 
+#libTextParser_f90api_la_FCFLAGS=-I../include
+CLEANFILES = ${lib_LTLIBRARIES} ${dotalibs} 
+DISTCLEANFILES = *~ ${lib_LTLIBRARIES} ${dotalibs}
 all: all-am
 
 .SUFFIXES:
@@ -324,12 +335,15 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libTextParser.la: $(libTextParser_la_OBJECTS) $(libTextParser_la_DEPENDENCIES) 
-	$(libTextParser_la_LINK) -rpath $(libdir) $(libTextParser_la_OBJECTS) $(libTextParser_la_LIBADD) $(LIBS)
-libTextParser_f90api.la: $(libTextParser_f90api_la_OBJECTS) $(libTextParser_f90api_la_DEPENDENCIES) 
-	$(FCLINK) -rpath $(libdir) $(libTextParser_f90api_la_OBJECTS) $(libTextParser_f90api_la_LIBADD) $(LIBS)
-libTextParser_mpi.la: $(libTextParser_mpi_la_OBJECTS) $(libTextParser_mpi_la_DEPENDENCIES) 
-	$(libTextParser_mpi_la_LINK) $(am_libTextParser_mpi_la_rpath) $(libTextParser_mpi_la_OBJECTS) $(libTextParser_mpi_la_LIBADD) $(LIBS)
+../lib/$(am__dirstamp):
+	@$(MKDIR_P) ../lib
+	@: > ../lib/$(am__dirstamp)
+../lib/libTextParser.la: $(___lib_libTextParser_la_OBJECTS) $(___lib_libTextParser_la_DEPENDENCIES) ../lib/$(am__dirstamp)
+	$(CXXLINK) -rpath $(libdir) $(___lib_libTextParser_la_OBJECTS) $(___lib_libTextParser_la_LIBADD) $(LIBS)
+../lib/libTextParser_f90api.la: $(___lib_libTextParser_f90api_la_OBJECTS) $(___lib_libTextParser_f90api_la_DEPENDENCIES) ../lib/$(am__dirstamp)
+	$(FCLINK) $(am____lib_libTextParser_f90api_la_rpath) $(___lib_libTextParser_f90api_la_OBJECTS) $(___lib_libTextParser_f90api_la_LIBADD) $(LIBS)
+../lib/libTextParser_mpi.la: $(___lib_libTextParser_mpi_la_OBJECTS) $(___lib_libTextParser_mpi_la_DEPENDENCIES) ../lib/$(am__dirstamp)
+	$(___lib_libTextParser_mpi_la_LINK) $(am____lib_libTextParser_mpi_la_rpath) $(___lib_libTextParser_mpi_la_OBJECTS) $(___lib_libTextParser_mpi_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -337,12 +351,12 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libTextParser_la-TextParser.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libTextParser_la-TextParserElement.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libTextParser_la-TextParserTree.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libTextParser_mpi_la-TextParser.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libTextParser_mpi_la-TextParserElement.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libTextParser_mpi_la-TextParserTree.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TextParser.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TextParserElement.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TextParserTree.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/___lib_libTextParser_mpi_la-TextParser.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/___lib_libTextParser_mpi_la-TextParserElement.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/___lib_libTextParser_mpi_la-TextParserTree.Plo@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -365,47 +379,26 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ $<
 
-libTextParser_la-TextParser.lo: TextParser.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libTextParser_la_CXXFLAGS) $(CXXFLAGS) -MT libTextParser_la-TextParser.lo -MD -MP -MF $(DEPDIR)/libTextParser_la-TextParser.Tpo -c -o libTextParser_la-TextParser.lo `test -f 'TextParser.cpp' || echo '$(srcdir)/'`TextParser.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libTextParser_la-TextParser.Tpo $(DEPDIR)/libTextParser_la-TextParser.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TextParser.cpp' object='libTextParser_la-TextParser.lo' libtool=yes @AMDEPBACKSLASH@
+___lib_libTextParser_mpi_la-TextParser.lo: TextParser.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(___lib_libTextParser_mpi_la_CXXFLAGS) $(CXXFLAGS) -MT ___lib_libTextParser_mpi_la-TextParser.lo -MD -MP -MF $(DEPDIR)/___lib_libTextParser_mpi_la-TextParser.Tpo -c -o ___lib_libTextParser_mpi_la-TextParser.lo `test -f 'TextParser.cpp' || echo '$(srcdir)/'`TextParser.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/___lib_libTextParser_mpi_la-TextParser.Tpo $(DEPDIR)/___lib_libTextParser_mpi_la-TextParser.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TextParser.cpp' object='___lib_libTextParser_mpi_la-TextParser.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libTextParser_la_CXXFLAGS) $(CXXFLAGS) -c -o libTextParser_la-TextParser.lo `test -f 'TextParser.cpp' || echo '$(srcdir)/'`TextParser.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(___lib_libTextParser_mpi_la_CXXFLAGS) $(CXXFLAGS) -c -o ___lib_libTextParser_mpi_la-TextParser.lo `test -f 'TextParser.cpp' || echo '$(srcdir)/'`TextParser.cpp
 
-libTextParser_la-TextParserTree.lo: TextParserTree.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libTextParser_la_CXXFLAGS) $(CXXFLAGS) -MT libTextParser_la-TextParserTree.lo -MD -MP -MF $(DEPDIR)/libTextParser_la-TextParserTree.Tpo -c -o libTextParser_la-TextParserTree.lo `test -f 'TextParserTree.cpp' || echo '$(srcdir)/'`TextParserTree.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libTextParser_la-TextParserTree.Tpo $(DEPDIR)/libTextParser_la-TextParserTree.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TextParserTree.cpp' object='libTextParser_la-TextParserTree.lo' libtool=yes @AMDEPBACKSLASH@
+___lib_libTextParser_mpi_la-TextParserTree.lo: TextParserTree.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(___lib_libTextParser_mpi_la_CXXFLAGS) $(CXXFLAGS) -MT ___lib_libTextParser_mpi_la-TextParserTree.lo -MD -MP -MF $(DEPDIR)/___lib_libTextParser_mpi_la-TextParserTree.Tpo -c -o ___lib_libTextParser_mpi_la-TextParserTree.lo `test -f 'TextParserTree.cpp' || echo '$(srcdir)/'`TextParserTree.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/___lib_libTextParser_mpi_la-TextParserTree.Tpo $(DEPDIR)/___lib_libTextParser_mpi_la-TextParserTree.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TextParserTree.cpp' object='___lib_libTextParser_mpi_la-TextParserTree.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libTextParser_la_CXXFLAGS) $(CXXFLAGS) -c -o libTextParser_la-TextParserTree.lo `test -f 'TextParserTree.cpp' || echo '$(srcdir)/'`TextParserTree.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(___lib_libTextParser_mpi_la_CXXFLAGS) $(CXXFLAGS) -c -o ___lib_libTextParser_mpi_la-TextParserTree.lo `test -f 'TextParserTree.cpp' || echo '$(srcdir)/'`TextParserTree.cpp
 
-libTextParser_la-TextParserElement.lo: TextParserElement.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libTextParser_la_CXXFLAGS) $(CXXFLAGS) -MT libTextParser_la-TextParserElement.lo -MD -MP -MF $(DEPDIR)/libTextParser_la-TextParserElement.Tpo -c -o libTextParser_la-TextParserElement.lo `test -f 'TextParserElement.cpp' || echo '$(srcdir)/'`TextParserElement.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libTextParser_la-TextParserElement.Tpo $(DEPDIR)/libTextParser_la-TextParserElement.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TextParserElement.cpp' object='libTextParser_la-TextParserElement.lo' libtool=yes @AMDEPBACKSLASH@
+___lib_libTextParser_mpi_la-TextParserElement.lo: TextParserElement.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(___lib_libTextParser_mpi_la_CXXFLAGS) $(CXXFLAGS) -MT ___lib_libTextParser_mpi_la-TextParserElement.lo -MD -MP -MF $(DEPDIR)/___lib_libTextParser_mpi_la-TextParserElement.Tpo -c -o ___lib_libTextParser_mpi_la-TextParserElement.lo `test -f 'TextParserElement.cpp' || echo '$(srcdir)/'`TextParserElement.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/___lib_libTextParser_mpi_la-TextParserElement.Tpo $(DEPDIR)/___lib_libTextParser_mpi_la-TextParserElement.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TextParserElement.cpp' object='___lib_libTextParser_mpi_la-TextParserElement.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libTextParser_la_CXXFLAGS) $(CXXFLAGS) -c -o libTextParser_la-TextParserElement.lo `test -f 'TextParserElement.cpp' || echo '$(srcdir)/'`TextParserElement.cpp
-
-libTextParser_mpi_la-TextParser.lo: TextParser.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libTextParser_mpi_la_CXXFLAGS) $(CXXFLAGS) -MT libTextParser_mpi_la-TextParser.lo -MD -MP -MF $(DEPDIR)/libTextParser_mpi_la-TextParser.Tpo -c -o libTextParser_mpi_la-TextParser.lo `test -f 'TextParser.cpp' || echo '$(srcdir)/'`TextParser.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libTextParser_mpi_la-TextParser.Tpo $(DEPDIR)/libTextParser_mpi_la-TextParser.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TextParser.cpp' object='libTextParser_mpi_la-TextParser.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libTextParser_mpi_la_CXXFLAGS) $(CXXFLAGS) -c -o libTextParser_mpi_la-TextParser.lo `test -f 'TextParser.cpp' || echo '$(srcdir)/'`TextParser.cpp
-
-libTextParser_mpi_la-TextParserTree.lo: TextParserTree.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libTextParser_mpi_la_CXXFLAGS) $(CXXFLAGS) -MT libTextParser_mpi_la-TextParserTree.lo -MD -MP -MF $(DEPDIR)/libTextParser_mpi_la-TextParserTree.Tpo -c -o libTextParser_mpi_la-TextParserTree.lo `test -f 'TextParserTree.cpp' || echo '$(srcdir)/'`TextParserTree.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libTextParser_mpi_la-TextParserTree.Tpo $(DEPDIR)/libTextParser_mpi_la-TextParserTree.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TextParserTree.cpp' object='libTextParser_mpi_la-TextParserTree.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libTextParser_mpi_la_CXXFLAGS) $(CXXFLAGS) -c -o libTextParser_mpi_la-TextParserTree.lo `test -f 'TextParserTree.cpp' || echo '$(srcdir)/'`TextParserTree.cpp
-
-libTextParser_mpi_la-TextParserElement.lo: TextParserElement.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libTextParser_mpi_la_CXXFLAGS) $(CXXFLAGS) -MT libTextParser_mpi_la-TextParserElement.lo -MD -MP -MF $(DEPDIR)/libTextParser_mpi_la-TextParserElement.Tpo -c -o libTextParser_mpi_la-TextParserElement.lo `test -f 'TextParserElement.cpp' || echo '$(srcdir)/'`TextParserElement.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libTextParser_mpi_la-TextParserElement.Tpo $(DEPDIR)/libTextParser_mpi_la-TextParserElement.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TextParserElement.cpp' object='libTextParser_mpi_la-TextParserElement.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libTextParser_mpi_la_CXXFLAGS) $(CXXFLAGS) -c -o libTextParser_mpi_la-TextParserElement.lo `test -f 'TextParserElement.cpp' || echo '$(srcdir)/'`TextParserElement.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(___lib_libTextParser_mpi_la_CXXFLAGS) $(CXXFLAGS) -c -o ___lib_libTextParser_mpi_la-TextParserElement.lo `test -f 'TextParserElement.cpp' || echo '$(srcdir)/'`TextParserElement.cpp
 
 .f90.o:
 	$(FCCOMPILE) -c -o $@ $<
@@ -421,6 +414,7 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
+	-rm -rf ../lib/.libs ../lib/_libs
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -528,10 +522,12 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-rm -f ../lib/$(am__dirstamp)
 	-test -z "$(DISTCLEANFILES)" || rm -f $(DISTCLEANFILES)
 
 maintainer-clean-generic:
@@ -624,11 +620,11 @@ uninstall-am: uninstall-libLTLIBRARIES
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags uninstall uninstall-am uninstall-libLTLIBRARIES
 
+@FORTRAN_TRUE@TextParser_fapi.o:../include/TextParser.inc ../include/TextParser.h
 
 TextParser.o : ../include/TextParser.h ../include/TextParserTree.h ../include/TextParserCommon.h ../include/TextParserElement.h
 TextParserTree.o: ../include/TextParserTree.h ../include/TextParserCommon.h ../include/TextParserElement.h
 TextParserElement.o: ../include/TextParserCommon.h ../include/TextParserElement.h
-TextParser_fapi.o:../include/TextParser.inc ../include/TextParser.h
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

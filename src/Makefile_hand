@@ -16,9 +16,11 @@ ARFLAGS=
 .PHONY: all clean mpi 
 
 
-all: $(TARGET) $(FTARGET)
+all: $(TARGET) 
 
-mpi: $(MPITARGET) $(FTARGET)
+mpi: $(MPITARGET) 
+
+f90api: $(FTARGET)
 
 CXXFLAGS+=-I../include
 FFLAGS+=-I../include

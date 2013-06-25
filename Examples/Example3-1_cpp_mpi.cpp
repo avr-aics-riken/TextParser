@@ -19,7 +19,7 @@ int scan_all_parameters(std::string filename)
 
     // ファイルの読み込み
     std::cout << "filename: " << filename << std::endl;
-    ierror=tp->read(filename);
+    ierror=tp->read_local(filename);
     if (ierror != 0) {
       std::cout <<  "ERROR in TextParser::read  file: " << filename 
 	        << " ERROR CODE "<< ierror << std::endl;
@@ -217,7 +217,13 @@ int main(int argc, char* argv[])
 #endif //ENABLE_MPI
 
   //    std::string filename = "Input0-1.txt";
-  std::string filename = "./tpp_examples/correct_label_1.txt";
+  std::string filename;
+  if(myrank==0) {
+    filename = "./tpp_examples/correct_label_1.txt";
+  } else {
+    filename = "./tpp_examples/correct_label_10.txt";
+  }
+
     scan_all_parameters(filename);
     //    filename = "Input1-1.txt";
     //    scan_all_parameters(filename);

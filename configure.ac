@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.59])
-AC_INIT([TextParser],[0.9c_devel2],[tba@tba.tba])
+AC_INIT([TextParser],[1.1],[keno@iis.u-tokyo.ac.jp],[TextParser])
 
 AC_CONFIG_SRCDIR([include/TextParser.h])
 AC_CONFIG_HEADERS([config.h])
@@ -29,6 +29,23 @@ else
 fi
    AM_CONDITIONAL(MPI,test $enable_mpi != "no")	
 
+dnl fortran option
+AC_MSG_CHECKING(whether to enable fortran feature)
+AC_ARG_ENABLE(fortran,AS_HELP_STRING([--enable-fortran],
+	[turn on fortran feature [default no]]),
+	[enable_fortran="$enableval"],[enable_mpi="no"])
+if test $enable_fortran != "no"; then
+   AC_MSG_RESULT(yes)
+   AC_DEFINE(ENABLE_MPI, ,
+   Enable mpi. Please set FC to fortran 90 compiler.)
+
+#   AC_SUBST(enablempi,[yes])
+else
+   AC_MSG_RESULT(no)
+#   AC_SUBST(enablempi,[no])
+fi
+   AM_CONDITIONAL(FORTRAN,test $enable_fortran != "no")	
+
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
@@ -54,7 +71,7 @@ dnl AC_LIBLTDL_INSTALLABLE
 
 
 # Checks for libraries.
-# FIXME: Replace `main' with a function in `-ltextparser':
+# FIXME: Replace `main' with a function in `-lTextParser':
 AC_CHECK_LIB([TextParser], [TextParser::get_instance()])
 
 # Checks for header files.
@@ -65,8 +82,10 @@ AC_HEADER_STDBOOL
 
 # Checks for library functions.
 
-AC_CONFIG_FILES([Examples/Makefile
-                 Makefile
+AC_CONFIG_FILES([
+                 Makefile	
+		 Examples/Makefile
+		 Examples/tpp_examples/Makefile
                  include/Makefile
-                 src/Makefile])
+		 src/Makefile])
 AC_OUTPUT

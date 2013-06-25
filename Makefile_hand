@@ -13,6 +13,7 @@ CC = gcc
 FC= gfortran
 AR = ar crv
 RANLIB =ranlib
+
 ##############################################
 # Setting for FX10
 # 
@@ -20,8 +21,19 @@ RANLIB =ranlib
 #CXX = FCCpx
 #CC = FCCpx
 #FC=frtpx
-#AR = /opt/FJSVfxlang/1.2.0/util/bin/sparc64-unknown-linux-gnu-ar crv
-#RANLIB = /opt/FJSVfxlang/1.2.0/util/bin/sparc64-unknown-linux-gnu-ranlib
+#AR = ar crv
+#RANLIB = ranlib
+
+##############################################
+# Setting for BG/P
+# 
+#MPICXX = mpixlcxx_r
+#CXX    = mpixlcxx
+#CC     = mpixlc
+#FC     = mpixlf90
+#AR     = ar crv
+#RANLIB = ranlib
+
 ##############################################
 
 export MPICXX CXX CC FC AR RANLIB
@@ -29,25 +41,33 @@ export MPICXX CXX CC FC AR RANLIB
 ###################################
 
 TARGET_DIR=./src
+DEST_DIR=./lib
 EXAMPLE_DIR=./Examples
 
 ###################################
 SSTATIC_TARGET=$(TARGET_DIR)/libTextParser.a
 
-EXAMPLE_TARGET=$(EXAMPLE_DIR)/Example1_f90
+EXAMPLE_TARGET=$(EXAMPLE_DIR)/Example1_cpp $(EXAMPLE_DIR)/Example2_cpp $(EXAMPLE_DIR)/Example3_cpp $(EXAMPLE_DIR)/Example4_cpp $(EXAMPLE_DIR)/Example5_cpp $(EXAMPLE_DIR)/Example6_cpp $(EXAMPLE_DIR)/Example1_c $(EXAMPLE_DIR)/Example2_c $(EXAMPLE_DIR)/Example3_c $(EXAMPLE_DIR)/Example4_c
 
 MPI_TARGET=$(TARGET_DIR)/libTextParser_mpi.a
 MPI_EXAMPLE=$(EXAMPLE_DIR)/Example3_cpp_mpi
 
+F90API_TARGET=$(TARGET_DIR)/libTextParser_f90api.a
+F90API_EXAMPLE=$(EXAMPLE_DIR)/Example1_f90 $(EXAMPLE_DIR)/Example2_f90 $(EXAMPLE_DIR)/Example3_f90 $(EXAMPLE_DIR)/Example4_f90
+
 .PHONY: all clean mpi
 
-all:$(SSTATIC_TARGET) $(EXAMPLE_TARGET) 
-
+all:$(DEST_DIR) $(SSTATIC_TARGET) $(EXAMPLE_TARGET) 
 mpi:$(MPI_TARGET) $(MPI_EXAMPLE)
+f90api:$(F90API_TARGET) $(F90API_EXAMPLE)
+
+$(DEST_DIR):
+	mkdir $(DEST_DIR)
 
 $(SSTATIC_TARGET):
 	touch config.h;\
 	cd $(TARGET_DIR) && $(MAKE) -f Makefile_hand
+	cp $(TARGET_DIR)/*.a $(DEST_DIR)
 
 $(EXAMPLE_TARGET):
 	cd $(EXAMPLE_DIR) && $(MAKE) -f Makefile_hand
@@ -59,7 +79,15 @@ $(MPI_TARGET):
 $(MPI_EXAMPLE):
 	cd $(EXAMPLE_DIR) && $(MAKE) -f Makefile_hand mpi
 
+$(F90API_TARGET):
+	touch config.h;\
+	cd $(TARGET_DIR) && $(MAKE) -f Makefile_hand f90api
+
+$(F90API_EXAMPLE):
+	cd $(EXAMPLE_DIR) && $(MAKE) -f Makefile_hand f90api
+
 clean:
 	-rm config.h
 	cd $(TARGET_DIR) && $(MAKE) -f Makefile_hand clean 
 	cd $(EXAMPLE_DIR) && $(MAKE) -f Makefile_hand clean
+	cd $(DEST_DIR) && rm *.a

@@ -10,7 +10,8 @@
 int scan_all_parameters(std::string filename)
 {
     int ierror = 0;
-    TextParser* tp=TextParser::get_instance();
+    //    TextParser* tp=TextParser::get_instance();
+    TextParser* tp=TextParser::get_instance_singleton();
 
     // ファイルの読み込み
     std::cout << "filename: " << filename << std::endl;
@@ -182,16 +183,21 @@ int scan_all_parameters(std::string filename)
 
 int main(int argc, char* argv[])
 {
-    std::string filename = "Input0-1.txt";
-    scan_all_parameters(filename);
-    filename = "Input1-1.txt";
-    scan_all_parameters(filename);
-    filename = "Input4-1.txt";
-    scan_all_parameters(filename);
-    filename = "Input4-2.txt";
-    scan_all_parameters(filename);
-    filename = "Input0-8.txt";
-    scan_all_parameters(filename);
+  //    std::string filename = "Input0-1.txt";
+  std::string filename = "./tpp_examples/correct_basic_1.txt";
+  scan_all_parameters(filename);
+  //    filename = "Input1-1.txt";
+  filename="./tpp_examples/correct_string_1.txt";
+  scan_all_parameters(filename);
+  //    filename = "Input4-1.txt";
+  filename="./tpp_examples/correct_label_2.txt";
+  scan_all_parameters(filename);
+  //    filename = "Input4-2.txt";
+  filename="./tpp_examples/correct_cond_10.txt";
+  scan_all_parameters(filename);
+  //    filename = "Input0-8.txt";
+  filename="./tpp_examples/correct_cond_9.txt";
+  scan_all_parameters(filename);
 
     return 0;
 }
