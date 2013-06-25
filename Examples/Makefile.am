@@ -1,13 +1,20 @@
+###################################################################################
 #
 # TextParser - Text Parsing Library
 #
 # Copyright (C) 2012-2013 Institute of Industrial Science, The University of Tokyo.
 # All rights reserved.
 #
+###################################################################################
+#
+
+noinst_PROGRAMS = test test2 test_mpi test_mpi2 test_mpi3
 
  
 SUBDIRS = tpp_examples
 EXTRA_DIST=Makefile_hand
+
+
 
 if MPI
 MPIPROGRAMS=Example3_cpp_mpi Example3-1_cpp_mpi

@@ -1,22 +1,33 @@
 /*
- * TextParser Library
+ * TextParser - Text Parsing Library
  *
- * Copyright (C) 2012 All rights reserved.
- *
- * Institute of Industrial Science, The University of Tokyo.
+ * Copyright (C) 2012-2013 Institute of Industrial Science, The University of Tokyo.
+ * All rights reserved.
  *
  */
 
-Release News
-  2013-05-07  1.3  修正BSDライセンス
-  2012-11-27  1.2  値記述方式、@range, @listを追加
-  2012-10-09  1.1  Makefile_handでの手動ビルド時にlib/ディレクトリを自動作成
-                   configure時のパッケージ名、バージョン番号不整合の修正
-  2012-10-08  1.0e AUTHORS, COPYING, NEWSファイルを追加
-  2012-09-04  1.0d BG/P対応
-  2012-06-22  1.0  build方法の変更
-                   singletonに加え，インスタンス方式追加
-                   京, FX10対応
-                   パッケージ方法変更
-  2012-04-27  0.9  pre release Version
+
+Release
+=======
+
+  2013-06-25  1.3.1 Modify README, NEWS, ChangeLog, INSTALL files.
+
+  2013-05-07  1.3   Add BSD (2-clause) license.
+
+  2012-11-27  1.2   Add @range, @list for description of values.
+
+  2012-10-09  1.1   Create lib/ directory at using Makefile_hand.
+                    Modify the name of package at configure.
+                    Correct version number.
+
+  2012-10-08  1.0e  Add AUTHORS, COPYING, NEWS files.
+
+  2012-09-04  1.0d  compile test for BG/P.
+
+  2012-06-22  1.0   Change build method.
+                    Add instance method in addition to singleton policy.
+                    Build for K-computer and FX10.
+                    Change packaging.
+
+  2012-04-27  0.9   Pre-release Version.
 
