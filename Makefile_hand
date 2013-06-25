@@ -1,0 +1,65 @@
+# -*- mode: makefile -*-
+###################################
+# 手動設定でのライブラリ作成用 Makefile
+#
+#
+
+##############################################
+# Setting for Generic environment
+# 
+MPICXX = mpicc
+CXX = g++
+CC = gcc
+FC= gfortran
+AR = ar crv
+RANLIB =ranlib
+##############################################
+# Setting for FX10
+# 
+#MPICXX = mpiFCCpx
+#CXX = FCCpx
+#CC = FCCpx
+#FC=frtpx
+#AR = /opt/FJSVfxlang/1.2.0/util/bin/sparc64-unknown-linux-gnu-ar crv
+#RANLIB = /opt/FJSVfxlang/1.2.0/util/bin/sparc64-unknown-linux-gnu-ranlib
+##############################################
+
+export MPICXX CXX CC FC AR RANLIB
+
+###################################
+
+TARGET_DIR=./src
+EXAMPLE_DIR=./Examples
+
+###################################
+SSTATIC_TARGET=$(TARGET_DIR)/libTextParser.a
+
+EXAMPLE_TARGET=$(EXAMPLE_DIR)/Example1_f90
+
+MPI_TARGET=$(TARGET_DIR)/libTextParser_mpi.a
+MPI_EXAMPLE=$(EXAMPLE_DIR)/Example3_cpp_mpi
+
+.PHONY: all clean mpi
+
+all:$(SSTATIC_TARGET) $(EXAMPLE_TARGET) 
+
+mpi:$(MPI_TARGET) $(MPI_EXAMPLE)
+
+$(SSTATIC_TARGET):
+	touch config.h;\
+	cd $(TARGET_DIR) && $(MAKE) -f Makefile_hand
+
+$(EXAMPLE_TARGET):
+	cd $(EXAMPLE_DIR) && $(MAKE) -f Makefile_hand
+
+$(MPI_TARGET):
+	touch config.h;\
+	cd $(TARGET_DIR) && $(MAKE) -f Makefile_hand mpi
+
+$(MPI_EXAMPLE):
+	cd $(EXAMPLE_DIR) && $(MAKE) -f Makefile_hand mpi
+
+clean:
+	-rm config.h
+	cd $(TARGET_DIR) && $(MAKE) -f Makefile_hand clean 
+	cd $(EXAMPLE_DIR) && $(MAKE) -f Makefile_hand clean

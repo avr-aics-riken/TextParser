@@ -1,0 +1,78 @@
+TextParser ライブラリの手動設定でのビルド
+
+TextParser ライブラリのビルド時にコマンド等を手動で設定して行うには、
+以下の様にします。また、このビルドではスタティックライブラリを生成します。
+生成されたライブラリファイルは適当な場所にコピーしてお使いください。
+
+ライブラリファイル
+src/libTextParser.a (通常版)
+src/libTextParser_mpi.a (MPI版)
+src/libTextParser_f90api.a (FORTRAN用)
+
+インクルードファイル
+include/TextParser.h　(C/C++用)
+include/TextParserCommon.h 
+include/TextParserTree.h
+include/TextParserElement.h
+include/TextParser.inc (FORTRAN用)
+
+1) 手動設定用　Makefileの編集
+
+手動設定用にMakefile_handというファイルをそれぞれ
+topディレクトリ(このファイルがあるディレクトリ)とsrcディレクトリ、
+Examplesディレクトリに配置してあります。
+手動設定時のビルドはこれらのファイルを用います。
+
+topディレクトリのMakefile_handに記述されているコマンド等の設定を、
+お使いのシステム、環境に合わせて適宜変更してください。
+配布している例では、
+mpi用C++ コンパイラ MPICXX:mpicxx
+Fortranコンパイラ FC:gfortran
+の様に変数を設定し、この変数の設定を
+src,Examplesディレクトリのビルドにも反映させています。
+
+MPICXXは、mpi用ライブラリ、使用例をビルドする場合は、必ず設定してください。
+それ以外のコマンド変数等は、makeのデフォルトに準拠しており、
+CXX CXXFLAGS AR ARFLAGS RANLIB等を用いることができます。
+また、指定しない場合は、makeのデフォルトに置き換えられます。
+配布例では、通常のc++コードは、makeのデフォルトの c++ コンパイラを用います。
+それ以外のコンパイラを使用しようとする場合は、必ずその設定をしてください。
+
+2) make の実行（通常版）
+makeは、パッケージのtopディレクトリで、次の様に実行します。
+
+$ make -f Makefile_hand
+
+これによって次のものが作成されます。
+
+src ディレクトリ　
+src/libTextParser.a
+src/libTextParser_f90api.a
+
+Examples ディレクトリ
+
+Examples/Example1_cpp     
+Examples/Example2_cpp
+Examples/Example3_cpp
+Examples/Example4_cpp
+Examples/Example1_c
+Examples/Example2_c
+Examples/Example3_c
+Examples/Example4_c
+Examples/Example1_f90
+Examples/Example2_f90
+Examples/Example3_f90
+Examples/Example4_f90
+
+3) make の実行（MPI版）
+makeは、パッケージのtopディレクトリで、次の様に実行します。
+$ make -f Makefile_hand mpi
+
+これによって次のものが作成されます。
+
+src ディレクトリ　
+src/libTextParser_mpi.a
+src/libTextParser_f90api.a
+
+Examples ディレクトリ
+Examples/Example3_cpp_mpi

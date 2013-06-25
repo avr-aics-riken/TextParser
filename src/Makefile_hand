@@ -1,0 +1,45 @@
+# -*- mode: makefile -*-
+
+TARGET=libTextParser.a
+MPITARGET=libTextParser_mpi.a
+FTARGET=libTextParser_f90api.a
+SRCS=TextParser.cpp  TextParserElement.cpp TextParserTree.cpp
+MPISRCS=TextParser.cpp  TextParserElement.cpp
+MPISRCS2=TextParserTree.cpp
+FSRCS=TextParser_fapi.f90
+OBJS=$(SRCS:.cpp=.o)
+MPIOBJS=$(MPISRCS:.cpp=.o)
+MPIOBJS2=TextParserTree_mpi.o
+FOBJS=$(FSRCS:.f90=.o)
+ARFLAGS=
+
+.PHONY: all clean mpi 
+
+
+all: $(TARGET) $(FTARGET)
+
+mpi: $(MPITARGET) $(FTARGET)
+
+CXXFLAGS+=-I../include
+FFLAGS+=-I../include
+
+$(TARGET):$(OBJS)
+	$(AR) $(ARFLAGS) $@ $?
+	$(RANLIB) $@
+
+$(FTARGET):$(FOBJS)
+	$(AR) $(ARFLAGS) $@ $?
+	$(RANLIB) $@
+
+$(MPITARGET):$(MPIOBJS) $(MPIOBJS2)
+	$(AR) $(ARFLAGS) $@ $?
+	$(RANLIB) $@
+
+$(FOBJS):$(FSRCS)
+	$(FC) -c $^ -o $@  $(FFLAGS) 
+
+$(MPIOBJS2):$(MPISRCS2)
+	$(MPICXX) -DENABLE_MPI -DBUILD_MPI $(CXXFLAGS) -c $^ -o$@ 
+
+clean:
+	-rm *.o $(TARGET) $(FTARGET) $(MPITARGET)
