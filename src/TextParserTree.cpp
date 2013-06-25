@@ -20,20 +20,19 @@
 #else
 #endif
 
-
-
 #include "TextParserTree.h"
+#include "TextParserElement.h"
 
 //unsigned int TextParserTree::_current_line=0;
 //unsigned int TextParserTree::_current_leaf_id=0;
 //bool TextParserTree::_initialized=false;
 
 // 値の次に来る可能性のある文字
-// 　通常だと'\t' '\n' '\r'
-// 　ベクトルの次の値だと','ベクトルの終わりだと ')'
-// 　次のディレクトリやリーフだと '\"'
-// 　依存関係付き値だと ':"'
-//   コメントだと'/'
+// 通常だと'\t' '\n' '\r'
+// ベクトルの次の値だと','ベクトルの終わりだと ')'
+// 次のディレクトリやリーフだと '\"'
+// 依存関係付き値だと ':"'
+//  コメントだと'/'
 // std::string MgppValueNext[] = {"\t", "\n", "\r", ",", ")", "\"", ":", "/"};
 // unsigned int MgppNumValueNext = 8;
 std::string TextParserValueNext[] = {"\t", "\n", "\r", ",", ")", "\"", ":", "/"};
@@ -103,6 +102,9 @@ TextParserTree::TextParserTree(){
   _debug_write = false;
   _initialized=true;
   //  status();
+
+  // 
+  _owner=0;
 
 }
 
@@ -292,9 +294,9 @@ TextParserError TextParserTree::readParameters(const std::string& filename)
   TextParserError ret = TP_NO_ERROR;  // 戻り値
   
   
-    if (_is_ready) {
-      return TextParserErrorHandler(TP_DATABASE_ALREADY_SET_ERROR, "");
-      }
+  if (_is_ready) {
+    return TextParserErrorHandler(TP_DATABASE_ALREADY_SET_ERROR, "");
+  }
   try{
     std::string line;
     std::stringstream ss;
@@ -350,7 +352,8 @@ TextParserError TextParserTree::readParameters(const std::string& filename)
 	std::string buffer;
 	while (getline(ss, buffer)) {
 	  _current_line++;
-	  //	  std::cout<<buffer<<std::endl;
+	  //	  std::cout<<__func__<<buffer<<std::endl;
+	  
 //	  TextParserError ret = parseLine(ifs, buffer);     // 一行のパラメータ解析
 	  TextParserError ret = parseLine(ss, buffer);     // 一行のパラメータ解析
 	  //	  std::cout<<buffer<<std::endl;
@@ -751,7 +754,7 @@ std::string TextParserStringToLower(const std::string& str)
  *
  * @param[in] str0 文字列
  * @param[in] str1 文字列
- * @return 比較結果　（true : 等しい、false : 異なる）
+ * @return 比較結果　true : 等しい、false : 異なる）
  *
  */
 bool TextParserStringCompare(const std::string& str0, const std::string& str1)
@@ -902,6 +905,15 @@ TextParserError TextParserTree::TextParserErrorHandler(const TextParserError err
     case TP_GET_PARAMETER_ERROR:
       std::cerr << "Get parameter failed";
       break;
+    case TP_RANGE_STEP_SIGN_ERROR:
+      std::cerr << "Wrong sign of step at @range";
+      break;
+    case  TP_ILLEGAL_RANGE_ERROR:
+      std::cerr << "Illegal expression of @range";
+      break;
+    case  TP_ILLEGAL_LIST_ERROR:
+      std::cerr << "Illegal expression of @range";
+      break;
     case TP_UNSUPPORTED_ERROR:
       std::cerr << "Unsupported function";
       break;
@@ -1043,6 +1055,29 @@ TextParserError TextParserTree::parseLine(std::stringstream& ss, std::string& bu
 	if (ret != TP_NO_ERROR) return ret;
 	break;
       } // parseDependValue answer end
+
+      // @range 
+      ret = parseRangeValue(ss, buffer, answer);
+      if (ret != TP_NO_ERROR) return ret;
+      if (answer) {   // 依存関係付き値?
+	ret=setRangeValue(ss,buffer);
+	if (ret != TP_NO_ERROR) return ret;
+	ret = closeLeaf();                          // リーフの終了
+	if (ret != TP_NO_ERROR) return ret;
+	break;
+      } // parseRangeValue answer end
+
+      // @range 
+      ret = parseListValue(ss, buffer, answer);
+      if (ret != TP_NO_ERROR) return ret;
+      if (answer) {   // 依存関係付き値?
+	ret=setListValue(ss,buffer);
+	if (ret != TP_NO_ERROR) return ret;
+	ret = closeLeaf();                          // リーフの終了
+	if (ret != TP_NO_ERROR) return ret;
+	break;
+      } // parseListValue answer end
+
       ret = parseVectorValue(ss, buffer, answer);
       if (ret != TP_NO_ERROR) return ret;
       if (answer) {             // ベクトル値?
@@ -1063,8 +1098,11 @@ TextParserError TextParserTree::parseLine(std::stringstream& ss, std::string& bu
       }
       ret = parseValue(ss, buffer, answer, value, value_type);
       if (ret != TP_NO_ERROR) return ret;
+
       if (answer) {// スカラー値?
+	
 	if (!isCorrectValue(value, value_type)) {    // 値のチェック
+	  std::cerr<< "TextParserTree::parseLine" <<" isCorrectValue returns false"<<std::endl;
 	  return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, value);
 	}
 	ret = setValue(value, value_type);          // 値の設定
@@ -1073,9 +1111,16 @@ TextParserError TextParserTree::parseLine(std::stringstream& ss, std::string& bu
 	if (ret != TP_NO_ERROR) return ret;
 	break;
       }
+
+      //      std::cout<< __func__ <<" in TP_PARSE_LEAF"<<std::endl;
       return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, buffer);
       break;
+
     default:
+
+      //      std::cout<< __func__ <<" in TP_PARSE_LEAF"<<std::endl;
+      return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, buffer);
+
       break;
     }
   }
@@ -1323,6 +1368,7 @@ TextParserError TextParserTree::removeComment(std::stringstream& ss, std::string
  */
 TextParserError TextParserTree::parseLabel(std::stringstream& ss, std::string& buffer, bool& answer, std::string& label)
 {
+  //#define MYDEBUG
 #ifdef MYDEBUG
   std::cout << "parseLabel(std::stringstream& ss, std::string& buffer, bool& answer, std::string& label) start"<<std::endl;
   std::cout << "label" << label <<std::endl;
@@ -2194,6 +2240,315 @@ TextParserError TextParserTree::parseDependValue(std::stringstream& ss, std::str
   return TP_NO_ERROR;
 }
 
+/** 値範囲指定値の判定 (@range)
+ *
+ * @param[in] ss 入力ファイルポインタ
+ * @param[in,out] buffer 入力文字列
+ * @param[out] answer 値範囲指定値の判定結果
+ * @return リターンコード
+ *
+ */
+TextParserError TextParserTree::parseRangeValue(std::stringstream& ss, std::string& buffer, bool& answer)
+{
+  TextParserError ret;
+  answer = false;
+
+  ret = removeCommentsAndSpaces(ss, buffer);
+  if (ret != TP_NO_ERROR) return ret;
+
+  // 最初が @range ?
+  if (!TextParserStringCompare(buffer.substr(0, 6), "@range")) return TP_NO_ERROR;  // @ragneから始まらないので依存関係付き値ではない 
+
+  // parse 時に値のチェックを入れるので、bufferには括弧"(",")"までをあらかじめ入れる。
+  //
+
+  while(true){
+    std::string::size_type lp = buffer.find("(");
+    std::string::size_type rp = buffer.find(")");
+    std::string line;
+    if(lp == std::string::npos){
+      ++_current_line;
+      getline(ss,line);
+      line = TextParserRemoveHeadSpaces(line);
+      buffer+=line;
+    } else {
+      if(rp == std::string::npos){
+	++_current_line;
+	getline(ss,line);
+	line = TextParserRemoveHeadSpaces(line);
+	buffer+=line;
+      } else {
+	if(lp >= rp ){
+	  return TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR,
+					" @range expression is wrong.");
+	  break;
+	} else {
+	  // buffer contain a pair of parenthesis with right order.
+	    break;
+	}
+      }
+    }
+
+  } // end of while(true)
+
+  
+  ret = removeCommentsAndSpaces(ss,buffer);
+
+  if(ret!=TP_NO_ERROR){
+    return TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR," @range expression is wrong.");
+  }
+
+  //  std::cout<<__func__<<" "<<buffer<< std::endl;
+  std::string dummy = buffer.substr(6);
+
+  //@rangeの後ろはVector様
+  ret = checkRangeVectorValue(ss,dummy,answer);
+  if (ret!=TP_NO_ERROR){
+    return TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR," @range expression is wrong.");
+  }
+  if(answer) {
+    //     std::cout << __func__ << " "<<buffer << std::endl;
+  } else {
+      return TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR," @range expression is wrong.");
+  }
+
+
+  answer = true;
+  //  buffer = buffer.substr(4); //@range は切らない。
+ 
+
+#ifdef TP_DEBUG
+  if (_debug_write) {
+    std::cout << "値範囲指定値 @range" << std::endl;
+  }
+#endif //TP_DEBUG
+  return TP_NO_ERROR;
+}
+
+/** 値範囲指定値の判定 (@range)
+ *
+ * @param[in,out] buffer 入力文字列
+ * @param[out] answer 値範囲指定値の判定結果
+ * @return リターンコード
+ *
+ */
+TextParserError TextParserTree::parseRangeValue(std::string& buffer, bool& answer)
+{
+  TextParserError ret;
+  answer = false;
+  
+
+
+  // 最初が @range ?
+  if (!TextParserStringCompare(buffer.substr(0, 6), "@range")) return TP_NO_ERROR;  // @ragneから始まらないので依存関係付き値ではない 
+
+  // parse 時に値のチェックを入れるので、bufferには括弧"(",")"までをあらかじめ入れる。
+  //
+
+    std::string::size_type lp = buffer.find("(");
+    std::string::size_type rp = buffer.find(")");
+
+    if(lp == std::string::npos){
+      return TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR,
+				    " @range expression is wrong.");
+    } else {
+      if(rp == std::string::npos){
+	  return TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR,
+					" @range expression is wrong.");
+
+      } else {
+	if(lp >= rp ){
+	  return TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR,
+					" @range expression is wrong.");
+	} else {
+	  
+	}
+      }
+    }
+
+  std::string dummy = buffer.substr(6);
+
+  //@rangeの後ろはVector様
+  ret = checkRangeVectorValue(dummy,answer);
+  if (ret!=TP_NO_ERROR){
+    return TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR," @range expression is wrong.");
+  }
+  if(answer) {
+    //     std::cout << __func__ << " "<<buffer << std::endl;
+  } else {
+      return TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR," @range expression is wrong.");
+  }
+
+
+  answer = true;
+  //  buffer = buffer.substr(4); //@range は切らない。
+ 
+
+#ifdef TP_DEBUG
+  if (_debug_write) {
+    std::cout << "値範囲指定値 @range" << std::endl;
+  }
+#endif //TP_DEBUG
+  return TP_NO_ERROR;
+}
+
+
+/** 値範囲指定値の判定 (@list)
+ *
+ * @param[in] ss 入力ファイルポインタ
+ * @param[in,out] buffer 入力文字列
+ * @param[out] answer 値範囲指定値の判定結果
+ * @return リターンコード
+ *
+ */
+TextParserError TextParserTree::parseListValue(std::stringstream& ss, std::string& buffer, bool& answer)
+{
+  TextParserError ret;
+  answer = false;
+
+  ret = removeCommentsAndSpaces(ss, buffer);
+  if (ret != TP_NO_ERROR) return ret;
+
+  // 最初が @list ?
+  if (!TextParserStringCompare(buffer.substr(0, 5), "@list")) return TP_NO_ERROR;  // @depから始まらないので依存関係付き値ではない 
+
+
+  // parse 時に値のチェックを入れるので、bufferには括弧"(",")"までをあらかじめ入れる。
+  //
+
+  while(true){
+    std::string::size_type lp = buffer.find("(");
+    std::string::size_type rp = buffer.find(")");
+    std::string line;
+    if(lp == std::string::npos){
+      ++_current_line;
+      getline(ss,line);
+      line = TextParserRemoveHeadSpaces(line);
+      buffer+=line;
+    } else {
+      if(rp == std::string::npos){
+	++_current_line;
+	getline(ss,line);
+	line = TextParserRemoveHeadSpaces(line);
+	buffer+=line;
+      } else {
+	if(lp >= rp ){
+	  return TextParserErrorHandler(TP_ILLEGAL_LIST_ERROR,
+					" @list expression is wrong.");
+	  break;
+	} else {
+	  // buffer contain a pair of parenthesis with right order.
+	    break;
+	}
+      }
+    }
+
+  } // end of while(true)
+  ret = removeCommentsAndSpaces(ss,buffer);
+
+  if(ret!=TP_NO_ERROR){
+    return TextParserErrorHandler(TP_ILLEGAL_LIST_ERROR," @list expression is wrong.");
+  }
+
+
+  std::string dummy = buffer.substr(5);
+  // @listの後ろはVector様
+  checkListVectorValue(ss,dummy,answer);
+
+  //  parseVectorValue(ss,dummy,answer);o
+  if(answer) {
+    // std::cout << __func__ << " "<<dummy << std::endl;
+  } else {
+      return TextParserErrorHandler(TP_ILLEGAL_LIST_ERROR," @list expression is wrong.");
+  }
+
+
+  answer = true;
+  //  buffer = buffer.substr(4); //@list は切らない。
+ 
+
+#ifdef TP_DEBUG
+  if (_debug_write) {
+    std::cout << "値範囲指定値 @list" << std::endl;
+  }
+#endif //TP_DEBUG
+  return TP_NO_ERROR;
+}
+
+
+/** 値範囲指定値の判定 (@list)
+ *
+ * @param[in,out] buffer 入力文字列
+ * @param[out] answer 値範囲指定値の判定結果
+ * @return リターンコード
+ *
+ */
+TextParserError TextParserTree::parseListValue( std::string& buffer, bool& answer)
+{
+  TextParserError ret;
+  answer = false;
+
+
+  // 最初が @list ?
+  if (!TextParserStringCompare(buffer.substr(0, 5), "@list")) return TP_NO_ERROR;  // @depから始まらないので依存関係付き値ではない 
+
+
+  // parse 時に値のチェックを入れるので、bufferには括弧"(",")"までをあらかじめ入れる。
+  //
+
+    std::string::size_type lp = buffer.find("(");
+    std::string::size_type rp = buffer.find(")");
+    std::string line;
+    if(lp == std::string::npos){
+      return TextParserErrorHandler(TP_ILLEGAL_LIST_ERROR,
+				    " @list expression is wrong.");
+      
+    } else {
+      if(rp == std::string::npos){
+	return TextParserErrorHandler(TP_ILLEGAL_LIST_ERROR,
+				      " @list expression is wrong.");
+      
+      } else {
+	if(lp >= rp ){
+	  return TextParserErrorHandler(TP_ILLEGAL_LIST_ERROR,
+					" @list expression is wrong.");
+
+	} else {
+	  //correct
+
+	}
+      }
+    }
+
+
+
+
+
+  std::string dummy = buffer.substr(5);
+  // @listの後ろはVector様
+  checkListVectorValue(dummy,answer);
+
+
+  if(answer) {
+    // std::cout << __func__ << " "<<dummy << std::endl;
+  } else {
+      return TextParserErrorHandler(TP_ILLEGAL_LIST_ERROR," @list expression is wrong.");
+  }
+
+
+  answer = true;
+  //  buffer = buffer.substr(4); //@list は切らない。
+ 
+
+#ifdef TP_DEBUG
+  if (_debug_write) {
+    std::cout << "値範囲指定値 @list" << std::endl;
+  }
+#endif //TP_DEBUG
+  return TP_NO_ERROR;
+}
+
+
 /** ベクトル値の判定
  *
  * @param[in] ss 入力ファイルポインタ
@@ -2361,11 +2716,24 @@ TextParserError TextParserTree::parseValue(std::string& buffer,
     // 数値の区切りで切り取る
     // 最初は'+' '-' '.' '0'-'9'
 
+    // numeric_limits の表現を追加
+    // 利用可能な表記
+    // CHAR_MIN, CHAR_MAX, SHORT_MIN, SHORT_MAX
+    // INT_MIN, INT_MAX, LONG_MIN, LONG_MAX
+    // LONGLONG_MIN, LONGLONG_MAX
+    // FLOAT_MIN, FLOAT_MAX, DOUBLE_MIN, DOUBLE_MAX
+    // --> checkNumericalLimits
+
     if (buffer[0] != '+' && buffer[0] != '-' && buffer[0] != '.'
-        && (buffer[0] < '0' || buffer[0] > '9')) {
+        && (buffer[0] < '0' || buffer[0] > '9') 
+	&& !checkNumericalLimits(buffer) ){
+      //      std::cout <<" NOT_NUMERIC "<<std::endl;
+      TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR,buffer);
       return TP_NO_ERROR;
     }
 		
+    //      std::cout << " NUMERIC "<<std::endl;
+
     // 値の区切りの検出
     unsigned int end = buffer.size();
 
@@ -2402,13 +2770,18 @@ TextParserError TextParserTree::parseValue(std::string& buffer,
 
     if (end < buffer.size()) {
       value = buffer.substr(0, end);
-      buffer = buffer.substr(end);                        // ベクトルの','や')'、ラベルの'\"'を先頭に残すため検出した文字を削除しない
+      buffer = buffer.substr(end);  // ベクトルの','や')'、ラベルの'\"'を先頭に残すため検出した文字を削除しない
     } else {
       value = buffer;
       buffer = "";
     }
     value = TextParserRemoveTailSpaces(value);                    // 末尾の空白を削除
 		
+    if(checkNumericalLimits(value)){
+
+	value_type = TP_NUMERIC_VALUE;
+    } else {
+
     // 数値のチェック
     // 許される表現 (+/-) 0-9(.(0-9)) (e/d (+/-) 0-9)
     std::string nvalue = value;
@@ -2456,7 +2829,7 @@ TextParserError TextParserTree::parseValue(std::string& buffer,
     } catch (std::exception ex) {
       return TextParserErrorHandler(TP_ILLEGAL_NUMERIC_VALUE_ERROR, value);
     }
-#else
+#else // modified for MacOS X...  ??
     try {
       sscanf(value.c_str(), "lf", &dval);
     } catch (std::exception ex) {
@@ -2465,12 +2838,11 @@ TextParserError TextParserTree::parseValue(std::string& buffer,
   std::cout << "parseValue 1 buffer=|"<<buffer
 	    << "| value=|"<<value<<"|"<<std::endl;
 #endif //MYDEBUG3
-
       return TextParserErrorHandler(TP_ILLEGAL_NUMERIC_VALUE_ERROR, value);
     }
 #endif
-		
     value_type = TP_NUMERIC_VALUE;
+    } // end of checkNumericalLimit
   }
 
 
@@ -2986,19 +3358,24 @@ bool TextParserTree::isCorrectValue(std::string& value, TextParserValueType& val
       return false;
     }
   } else if (value_type == TP_NUMERIC_VALUE) {  // 数値
-    for (unsigned int i = 0; i < value.size(); i++) {
-      if (value[i] >= '0' && value[i] <= '9') continue;
-      if (value[i] == '+') continue;
-      if (value[i] == '-') continue;
-      if (value[i] == '.') continue;
-      if (value[i] == ' ') continue;
-      if (value[i] == 'e') continue;
-      if (value[i] == 'd') continue;
-      if (value[i] == 'E') continue;
-      if (value[i] == 'D') continue;
-      // 使用できない文字
-      return false;
-    }
+    if(!checkNumericalLimits(value)){ // exception for numeric_limits
+      //	std::cout << __func__ << " numeric " << value << std::endl;
+	for (unsigned int i = 0; i < value.size(); i++) {
+	  if (value[i] >= '0' && value[i] <= '9') continue;
+	  if (value[i] == '+') continue;
+	  if (value[i] == '-') continue;
+	  if (value[i] == '.') continue;
+	  if (value[i] == ' ') continue;
+	  if (value[i] == 'e') continue;
+	  if (value[i] == 'd') continue;
+	  if (value[i] == 'E') continue;
+	  if (value[i] == 'D') continue;
+	  // 使用できない文字
+	  return false;
+	}
+      } else {
+      //	std::cout << __func__ << " numeric_limit " << value << std::endl;
+      }
   } else {
     return false;
   }
@@ -3021,6 +3398,7 @@ TextParserError TextParserTree::setValue(std::string& value, TextParserValueType
     if (current_leaf->_value_type == TP_DEPENDENCE_VALUE) {   // 依存関係値
       TextParserValue *value_element = current_leaf->_value;    // 値のエレメントを取得
       if (value_element == 0) {
+	std::cerr << "TextParserTree::setValue" << " Can not create value_element!";
 	return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, current_leaf->_label);
       }
       value_element->_value = value;
@@ -3068,6 +3446,7 @@ TextParserError TextParserTree::setUndefinedValue()
     if (current_leaf->_value_type == TP_DEPENDENCE_VALUE) {   // 依存関係値
       TextParserValue *value_element = current_leaf->_value;    // 値のエレメントを取得
       if (value_element == 0) {
+	std::cerr << "TextParserTree::setUndefinedValue" << " Can not create value_element!";
 	return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, current_leaf->_label);
       }
       value_element->_value = "UNDEF";
@@ -3099,6 +3478,361 @@ TextParserError TextParserTree::setUndefinedValue()
 #endif
   return TP_NO_ERROR;
 }
+
+
+
+/** 値範囲指定値の設定 (@range)
+ *
+ * @param[in] ss 入力ファイルポインタ
+ * @param[in,out] buffer 入力文字列
+ * @return リターンコード
+ *
+ * 値範囲指定値の設定をする。
+ *
+ */
+TextParserError TextParserTree::setRangeValue(std::stringstream& ss, std::string& buffer)
+{
+  //  std::cout << __func__ << " start "<< std::endl;
+  TextParserError ret;
+  bool answer = false;
+  TextParserValue *value_element = 0;
+
+  // 値の追加
+  if (_current_element != 0 && _current_element->_type == TP_LEAF_ELEMENT) {
+    TextParserLeaf *current_leaf = (TextParserLeaf *)_current_element;
+    try {
+
+      int rrp = buffer.find(")"); 
+      std::string string1 = buffer.substr(0,rrp+1);
+      std::string string2 = buffer.substr(rrp+1);
+      //      buffer = buffer.substr(rrp+1);
+      // std::cout << __func__ << " rrp "<< rrp 
+      // 		<< " buffer "<<"|"<< buffer<<"|"
+      // 		<< " string1 "<<"|"<< string1<<"|"
+      // 		<< " string2 "<<"|"<< string2<<"|"
+      // 		<< std::endl;
+      buffer = buffer.substr(rrp+1);
+      //  value_element = new TextParserValue(buffer, TP_RANGE_NUMERIC);  // 値のエレメントを新規に作成
+      value_element = new TextParserValue(string1, TP_RANGE_NUMERIC);  // 値のエレメントを新規に作成
+      if (value_element == 0) {
+	return TextParserErrorHandler(TP_MEMORY_ALLOCATION_ERROR, "value_element");
+      }
+    } catch (std::exception ex) {
+      return TextParserErrorHandler(TP_MEMORY_ALLOCATION_ERROR, "value_element");
+    }
+    ret = current_leaf->setElement(value_element);
+    if (ret != TP_NO_ERROR) return TextParserErrorHandler(ret, "");
+  } else {
+    return TextParserErrorHandler(TP_ILLEGAL_CURRENT_ELEMENT_ERROR, "");
+  }
+
+#ifdef TP_DEBUG
+  if (_debug_write) {
+    std::cout << "<値範囲指定>：" + value_element->_value << std::endl;
+  }
+#endif
+  return TP_NO_ERROR;
+}
+
+/** 値範囲指定値の設定 (@list)
+ *
+ * @param[in] ss 入力ファイルポインタ
+ * @param[in,out] buffer 入力文字列
+ * @return リターンコード
+ *
+ * 値範囲指定値の設定をする。
+ *
+ */
+TextParserError TextParserTree::setListValue(std::stringstream& ss, std::string& buffer)
+{
+  TextParserError ret;
+  bool answer = false;
+  TextParserValue *value_element = 0;
+
+  // 値の追加
+  if (_current_element != 0 && _current_element->_type == TP_LEAF_ELEMENT) {
+    TextParserLeaf *current_leaf = (TextParserLeaf *)_current_element;
+    try {
+
+      int rrp = buffer.find(")"); 
+      std::string string1 = buffer.substr(0,rrp+1);
+      std::string string2 = buffer.substr(rrp+1);
+      //      buffer = buffer.substr(rrp+1);
+      // std::cout << __func__ << " rrp "<< rrp 
+      // 		<< " buffer "<<"|"<< buffer<<"|"
+      // 		<< " string1 "<<"|"<< string1<<"|"
+      // 		<< " string2 "<<"|"<< string2<<"|"
+      // 		<< std::endl;
+      buffer = buffer.substr(rrp+1);
+      //  value_element = new TextParserValue(buffer, TP_RANGE_NUMERIC);  // 値のエレメントを新規に作成
+      value_element = new TextParserValue(string1, TP_LIST_NUMERIC);  // 値のエレメントを新規に作成
+      if (value_element == 0) {
+	return TextParserErrorHandler(TP_MEMORY_ALLOCATION_ERROR, "value_element");
+      }
+    } catch (std::exception ex) {
+      return TextParserErrorHandler(TP_MEMORY_ALLOCATION_ERROR, "value_element");
+    }
+    ret = current_leaf->setElement(value_element);
+    if (ret != TP_NO_ERROR) return TextParserErrorHandler(ret, "");
+  } else {
+    return TextParserErrorHandler(TP_ILLEGAL_CURRENT_ELEMENT_ERROR, "");
+  }
+#ifdef TP_DEBUG
+  if (_debug_write) {
+    std::cout << "<値範囲指定>：" + value_element->_value << std::endl;
+  }
+#endif
+  return TP_NO_ERROR;
+}
+
+/** @range の数値を解析する
+ *
+ * @param[in] ss 入力ストリーム
+ * @param[in] vstring  入力文字列
+ * @param[out] answer 解析結果
+ * @return リターンコード
+ *
+ */
+TextParserError TextParserTree::checkRangeVectorValue(std::stringstream& ss, std::string vstring,bool & answer)
+{
+  
+  answer = false;
+  //  std::cout << __func__ << " start "<<vstring <<std::endl;
+  TextParserError ret=TP_NO_ERROR;
+  std::string::size_type lrp=vstring.find("(");
+  if(lrp == std::string::npos){
+    std::cerr << "TextParserTree::checkRangeVectorValue" <<" cannot find left round parenthesis"<< vstring <<std::endl;
+    ret = TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR," @range expression is wrong.");
+  } 
+
+  vstring = vstring.substr(lrp+1);
+  //  std::cout << __func__ <<" "<< vstring <<std::endl;
+  std::string value;
+  TextParserValueType value_type;
+  std::vector<std::string> velem;
+  bool answer2;
+
+  while(true){
+        ret = parseValue(ss, vstring, answer2, value, value_type);
+    //    std::cout << __func__ <<" "<< vstring <<" "<<value << " "<<value_type<<std::endl;
+    if(answer2){
+      if(value_type == TP_NUMERIC_VALUE){
+          velem.push_back(value);
+      } else {
+	return TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR," @range expression is wrong.");
+      }
+    } else {
+      return TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR," @range expression is wrong.");
+    }
+    ret = parseDelimiter(ss, vstring, answer2);
+    if(!answer2){
+      ret = parseEndOfVector(ss, vstring, answer2);
+      if(answer2)    break;
+    }
+  }
+
+  if( (velem.size()!=2) && (velem.size()!=3)){
+    return TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR," @range expression is wrong.");
+  }
+
+  if(velem.size()==3) {
+    std::vector<double> vvalue;
+    for(int i=0;i<velem.size();++i){
+      std::stringstream tmpss;
+      tmpss <<velem[i];
+      double tmpdouble;
+      tmpss >> tmpdouble;
+      vvalue.push_back(tmpdouble);
+      //      std::cout << i << " " << tmpdouble <<std::endl;
+    }
+    
+    if( ((vvalue[0] < vvalue[1]) && (vvalue[2]<0)) || ((vvalue[0]>vvalue[1]) && vvalue[2]>0) )
+      return TextParserErrorHandler(TP_RANGE_STEP_SIGN_ERROR," @range: sign of step is unmatched.");
+  }
+
+
+  answer = true;
+  //  std::cout << __func__ <<" end "<< answer <<std::endl;
+  return TP_NO_ERROR;
+
+}
+
+/** @range の数値を解析する
+ *
+ * @param[in] vstring  入力文字列
+ * @param[out] answer 解析結果
+ * @return リターンコード
+ *
+ */
+TextParserError TextParserTree::checkRangeVectorValue(std::string vstring,bool & answer)
+{
+  
+  answer = false;
+  //  std::cout << __func__ << " start "<<vstring <<std::endl;
+  TextParserError ret=TP_NO_ERROR;
+  std::string::size_type lrp=vstring.find("(");
+  if(lrp == std::string::npos){
+    std::cerr << "TextParserTree::checkRangeVectorValue" <<" cannot find left round parenthesis"<< vstring <<std::endl;
+    ret = TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR," @range expression is wrong.");
+  } 
+
+  vstring = vstring.substr(lrp+1);
+  //  std::cout << __func__ <<" "<< vstring <<std::endl;
+  std::string value;
+  TextParserValueType value_type;
+  std::vector<std::string> velem;
+  bool answer2;
+
+  while(true){
+    ret = parseValue(vstring, answer2, value, value_type);
+    //    std::cout << __func__ <<" "<< vstring <<" "<<value << " "<<value_type<<std::endl;
+    if(answer2){
+      if(value_type == TP_NUMERIC_VALUE){
+          velem.push_back(value);
+      } else {
+	return TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR," @range expression is wrong.");
+      }
+    } else {
+      return TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR," @range expression is wrong.");
+    }
+    ret = parseDelimiter( vstring, answer2);
+    if(!answer2){
+      ret = parseEndOfVector( vstring, answer2);
+      if(answer2)    break;
+    }
+  }
+
+  if( (velem.size()!=2) && (velem.size()!=3)){
+    return TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR," @range expression is wrong.");
+  }
+
+  if(velem.size()==3) {
+    std::vector<double> vvalue;
+    for(int i=0;i<velem.size();++i){
+      std::stringstream tmpss;
+      tmpss <<velem[i];
+      double tmpdouble;
+      tmpss >> tmpdouble;
+      vvalue.push_back(tmpdouble);
+      //      std::cout << i << " " << tmpdouble <<std::endl;
+    }
+    
+    if( ((vvalue[0] < vvalue[1]) && (vvalue[2]<0)) || ((vvalue[0]>vvalue[1]) && vvalue[2]>0) )
+      return TextParserErrorHandler(TP_RANGE_STEP_SIGN_ERROR," @range: sign of step is unmatched.");
+  }
+
+
+  answer = true;
+  //  std::cout << __func__ <<" end "<< answer <<std::endl;
+  return TP_NO_ERROR;
+
+}
+
+/** @list の数値を解析する
+ *
+ * @param[in] ss 入力ストリーム
+ * @param[in] vstring  入力文字列
+ * @param[out] answer 解析結果
+ * @return リターンコード
+ *
+ */
+TextParserError TextParserTree::checkListVectorValue(std::stringstream& ss, std::string vstring,bool & answer)
+{
+  
+  answer = false;
+  //  std::cout << __func__ << " start "<<vstring <<std::endl;
+  TextParserError ret=TP_NO_ERROR;
+  std::string::size_type lrp=vstring.find("(");
+  if(lrp == std::string::npos){
+    std::cerr << "TextParserTree::checkListVectorValue" <<" cannot find left round parenthesis"<< vstring <<std::endl;
+    ret = TextParserErrorHandler(TP_ILLEGAL_LIST_ERROR," @list expression is wrong.");
+  } 
+
+  vstring = vstring.substr(lrp+1);
+  //  std::cout << __func__ <<" "<< vstring <<std::endl;
+  std::string value;
+  TextParserValueType value_type;
+  std::vector<std::string> velem;
+  bool answer2;
+
+  //check numerical vector
+  while(true){
+    ret = parseValue(ss, vstring, answer2, value, value_type);
+    //    std::cout << __func__ <<" "<< vstring <<" "<<value << " "<<value_type<<std::endl;
+    if(answer2){
+      if(value_type == TP_NUMERIC_VALUE){
+          velem.push_back(value);
+      } else {
+	return TextParserErrorHandler(TP_ILLEGAL_LIST_ERROR," @list expression is wrong.");
+      }
+    } else {
+      return TextParserErrorHandler(TP_ILLEGAL_LIST_ERROR," @list expression is wrong.");
+    }
+    ret = parseDelimiter(ss, vstring, answer2);
+    if(!answer2){
+      ret = parseEndOfVector(ss, vstring, answer2);
+      if(answer2)    break;
+    }
+  }
+
+  answer = true;
+  //  std::cout << __func__ <<" end "<< answer <<std::endl;
+  return TP_NO_ERROR;
+
+}
+
+/** @list の数値を解析する
+ *
+ * @param[in] vstring  入力文字列
+ * @param[out] answer 解析結果
+ * @return リターンコード
+ *
+ */
+TextParserError TextParserTree::checkListVectorValue( std::string vstring,bool & answer)
+{
+  
+  answer = false;
+  //  std::cout << __func__ << " start "<<vstring <<std::endl;
+  TextParserError ret=TP_NO_ERROR;
+  std::string::size_type lrp=vstring.find("(");
+  if(lrp == std::string::npos){
+    std::cerr << "TextParserTree::checkListVectorValue" <<" cannot find left round parenthesis"<< vstring <<std::endl;
+    ret = TextParserErrorHandler(TP_ILLEGAL_LIST_ERROR," @list expression is wrong.");
+  } 
+
+  vstring = vstring.substr(lrp+1);
+  //  std::cout << __func__ <<" "<< vstring <<std::endl;
+  std::string value;
+  TextParserValueType value_type;
+  std::vector<std::string> velem;
+  bool answer2;
+
+  //check numerical vector
+  while(true){
+    ret = parseValue( vstring, answer2, value, value_type);
+    //    std::cout << __func__ <<" "<< vstring <<" "<<value << " "<<value_type<<std::endl;
+    if(answer2){
+      if(value_type == TP_NUMERIC_VALUE){
+          velem.push_back(value);
+      } else {
+	return TextParserErrorHandler(TP_ILLEGAL_LIST_ERROR," @list expression is wrong.");
+      }
+    } else {
+      return TextParserErrorHandler(TP_ILLEGAL_LIST_ERROR," @list expression is wrong.");
+    }
+    ret = parseDelimiter( vstring, answer2);
+    if(!answer2){
+      ret = parseEndOfVector(vstring, answer2);
+      if(answer2)    break;
+    }
+  }
+
+  answer = true;
+  //  std::cout << __func__ <<" end "<< answer <<std::endl;
+  return TP_NO_ERROR;
+
+}
+
 
 /** ベクトル値の設定
  *
@@ -3155,9 +3889,11 @@ TextParserError TextParserTree::setVectorValue(std::stringstream& ss, std::strin
 	  value_element->_value += "\"" + value + "\"";
 	  value_element->_value_type = TP_VECTOR_STRING;
 	} else {
+      std::cerr << "test2 TP_ILLEGAL_TYPE_ERROR" << std::endl;
 	  return TextParserErrorHandler(TP_ILLEGAL_VALUE_TYPE_ERROR, buffer);
 	}
       } else {
+	std::cerr << "TextParserTree::setVectorValue" << " Can not create value_element!";
 	return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, buffer);
       }
     }
@@ -3303,6 +4039,7 @@ TextParserError TextParserTree::setConditionalExpression(std::stringstream& ss, 
     TextParserLeaf *current_leaf = (TextParserLeaf *)_current_element;
     value_element = current_leaf->_value;
     if (value_element == 0) {
+      std::cerr << "TextParserTree::setConditionalExpression" << " Can not create value_element!";
       return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR,
 				    current_leaf->_label);
     }
@@ -3349,6 +4086,7 @@ TextParserError TextParserTree::setConditionalExpression(std::stringstream& ss, 
 	if (ret != TP_NO_ERROR) return ret;
 	if (answer) {
 	  if (!isCorrectValue(value, value_type)) {    // 値のチェック
+	    std::cerr << "TextParserTree::setConditionalExpression" <<  " Can not create value_element!";
 	    return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, value);
 	  }
 	  if (value_type == TP_STRING_VALUE) {
@@ -3389,6 +4127,7 @@ TextParserError TextParserTree::setConditionalExpression(std::stringstream& ss, 
 	  if (ret != TP_NO_ERROR) return ret;
 	  if (answer) { // parseValue answer 
 	    if (!isCorrectValue(value, value_type)) {    // 値のチェック
+	      std::cerr << "TextParserTree::setConditionalExpression" << " Can not create value_element!";
 	      return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, value);
 	    }
 	    if (value_type == TP_STRING_VALUE) { //string
@@ -3396,6 +4135,7 @@ TextParserError TextParserTree::setConditionalExpression(std::stringstream& ss, 
 	    } else if (value_type == TP_NUMERIC_VALUE) { //numerical
 	      value_element->_value += value;
 	    } else {
+	      //std::cout << "test3 TP_ILLEGAL_TYPE_ERROR" << std::endl;
 	      return TextParserErrorHandler(TP_ILLEGAL_VALUE_TYPE_ERROR, 
 					    value);
 	    }
@@ -3554,6 +4294,7 @@ TextParserError TextParserTree::setDependenceValue(std::stringstream& ss, std::s
     TextParserLeaf *current_leaf = (TextParserLeaf *)_current_element;
     value_element = current_leaf->_value;
     if (value_element == 0) {
+      std::cerr << "TextParserTree::setDependenceValue" << " Can not create value_element!";
       return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, current_leaf->_label);
     }
   } else {
@@ -3570,6 +4311,7 @@ TextParserError TextParserTree::setDependenceValue(std::stringstream& ss, std::s
 	if (ret != TP_NO_ERROR) return ret;
 	if (answer) {       // スカラー値?
 	  if (!isCorrectValue(value, value_type)) {   // 値のチェック
+	    std::cerr << "TextParserTree::setDependenceValue" << " Can not create value_element!";
 	    return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, value);
 	  }
 	  if (value_type == TP_STRING_VALUE) {
@@ -3618,6 +4360,7 @@ TextParserError TextParserTree::setDependenceValue(std::stringstream& ss, std::s
     if (ret != TP_NO_ERROR) return ret;
     if (answer) {    // スカラー値?
       if (!isCorrectValue(value, value_type)) {       // 値のチェック
+	std::cerr << "TextParserTree::setDependenceValue" << " Can not create value_element!";
 	return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, value);
       }
       if (value_type == TP_STRING_VALUE) {
@@ -3660,6 +4403,7 @@ TextParserError TextParserTree::parseDependenceExpression(TextParserLeaf *leaf)
     TextParserLeaf *current_leaf = (TextParserLeaf *)_current_element;
     value_element = current_leaf->_value;
     if (value_element == 0) {
+      std::cerr << "TextParserTree::parseDependenceExpression" << " Can not create value_element!";
       return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, current_leaf->_label);
     }
   } else {
@@ -3788,6 +4532,7 @@ TextParserError TextParserTree::parseConditionalExpression(std::string& buffer, 
 	if (ret != TP_NO_ERROR) return ret;
 	if (answer) {
 	  if (!isCorrectValue(value, value_type)) {    // 値のチェック
+	    std::cerr << "TextParserTree::parseConditionalExpression" << " Can not create value_element!";
 	    return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, value);
 	  }
 	  //	  std::cout << __FUNCTION__<<" "<<label <<" "<< value <<" "<<value_type<< std::endl;
@@ -3818,6 +4563,7 @@ TextParserError TextParserTree::parseConditionalExpression(std::string& buffer, 
 	  if (ret != TP_NO_ERROR) return ret;
 	  if (answer) {
 	    if (!isCorrectValue(value, value_type)) {    // 値のチェック
+	      std::cerr << "TextParserTree::parseConditionalExpression" << " Can not create value_element!";
 	      return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, value);
 	    }
 	    ret = resolveConditionalExpression(label, value, value_type, TP_FALSE, result);
@@ -3924,6 +4670,7 @@ TextParserError TextParserTree::parseDependenceValue(std::string& buffer, TextPa
 	if (ret != TP_NO_ERROR) return ret;
 	if (answer) {       // スカラー値?
 	  if (!isCorrectValue(value, value_type)) {   // 値のチェック
+	    std::cerr << "TextParserTree::parseDependenceValue" << " Can not create value_element!";
 	    return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, value);
 	  }
 	  if (set == TP_TRUE) {
@@ -3972,6 +4719,7 @@ TextParserError TextParserTree::parseDependenceValue(std::string& buffer, TextPa
     if (ret != TP_NO_ERROR) return ret;
     if (answer) {    // スカラー値?
       if (!isCorrectValue(value, value_type)) {       // 値のチェック
+	std::cerr << "TextParserTree::parseDependenceValue" << " Can not create value_element!";
 	return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, value);
       }
       if (set == TP_TRUE) {
@@ -4049,7 +4797,7 @@ TextParserError TextParserTree::resolveConditionalExpression(std::string& label,
   //  std::cout << __FUNCTION__ << path<<std::endl;
   if (ret != TP_NO_ERROR) return ret;
   if (leaf_value == 0) {
-    std::cout << "leaf_value is not ready."<<std::endl;
+    std::cerr << "leaf_value is not ready."<<std::endl;
       return TextParserErrorHandler(TP_UNRESOLVED_LABEL_USED_WARNING, label);
       //    return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, label);
   } 
@@ -4105,6 +4853,7 @@ TextParserError TextParserTree::resolveConditionalExpression(std::string& label,
 	  } else if (leaf_value->_value_type == TP_UNDEFFINED_VALUE) {
       result = TP_UNDEFINED_BOOL;
     } else {
+      std::cout << "test1 TP_ILLEGAL_TYPE_ERROR" << std::endl;
       return TextParserErrorHandler(TP_ILLEGAL_VALUE_TYPE_ERROR, value);
     }
     if (result != TP_UNDEFINED_BOOL) {
@@ -4319,12 +5068,12 @@ TextParserError TextParserTree::getElement(const std::string& label, const TextP
     // }
 
     if (element==NULL && *element == 0) {
-          std::cout << "getElement 9" << label <<std::endl;
+          //std::cout << "getElement 9" << label <<std::endl;
       return TP_MISSING_PATH_ELEMENT_ERROR;
     }
 
   } else {
-      std::cout << "getElement 10" << label <<std::endl;
+      //std::cout << "getElement 10" << label <<std::endl;
     return TextParserErrorHandler(TP_ILLEGAL_PATH_ELEMENT_ERROR, "");
   }
   //    std::cout << "getElement 11" << label <<std::endl;
@@ -4365,6 +5114,7 @@ TextParserError TextParserTree::getLeafValue(const  std::string& path, TextParse
       //      std::cout<<__FUNCTION__<<" 5 "<<path<<std::endl;
       if (leaf->_value == 0) {
 	//	std::cout<<__FUNCTION__<<" 6 "<<path<<std::endl;
+	std::cerr << "TextParserTree::getLeafValue" << " Can not create value_element!";
 	return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, "");
       } else {
 	//	std::cout<<__FUNCTION__<<" 7 "<<path<<std::endl;
@@ -4715,6 +5465,7 @@ TextParserError TextParserTree::splitVectorValue(const std::string &vector_value
 	if (answer) {       // スカラー値?
 	  values.push_back(value);
 	} else {
+	  std::cerr << "TextParserTree::splitVectorValue" << " Can not create value_element!";
 	  return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, buffer);
 	}
       }
@@ -4731,6 +5482,7 @@ TextParserError TextParserTree::splitVectorValue(const std::string &vector_value
       }
     }
   } else {
+	std::cerr << "TextParserTree::splitVectorValue" << " Can not create value_element!";
     ret = TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, buffer);
   }
 
@@ -5089,6 +5841,7 @@ TextParserError TextParserTree::updateValue(const std::string& label,
   if (element->_type == TP_LEAF_ELEMENT) {
     TextParserLeaf *leaf = (TextParserLeaf *)element;
     if (leaf->_value == 0) {
+	std::cerr << "TextParserTree::updateValue" << " Can not create value_element!";
       return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, "");
     } else {
       //value = leaf->_value;
@@ -5151,7 +5904,7 @@ TextParserError TextParserTree::createLeaf(const std::string& label,const std::s
 
   error = openLeaf(label);
   std::string leaf_label=_current_element->_label;
-  //  std::cout<<__FUNCTION__ << " ::  "<<leaf_label<<std::endl;
+  // std::cout<<__FUNCTION__ << " ::  "<<leaf_label<<std::endl;
 
 
   if (error != TP_NO_ERROR) return error;
@@ -5160,7 +5913,29 @@ TextParserError TextParserTree::createLeaf(const std::string& label,const std::s
   bool answer, answer2, answer3;
   std::stringstream ssdummy;
   TextParserValueType value_type;                               // 値のタイプ
-  //std::cout << __FUNCTION__ << "ddd" << label << buffer<< std::endl;
+  // std::cout << __FUNCTION__ << " ddd " << label << buffer<< std::endl;
+
+
+      // @range 
+  error = parseRangeValue( buffer, answer);
+  if (error != TP_NO_ERROR) return error;
+  if (answer) {   // 依存関係付き値?
+    error=setRangeValue(ssdummy,buffer);
+    if (error != TP_NO_ERROR) return error;
+    error = closeLeaf();                          // リーフの終了
+    if (error != TP_NO_ERROR) return error;
+  } // parseRangeValue answer end
+
+  // @range 
+  error = parseListValue( buffer, answer);
+  if (error != TP_NO_ERROR) return error;
+  if (answer) {   // 依存関係付き値?
+    error=setListValue(ssdummy,buffer);
+    if (error != TP_NO_ERROR) return error;
+    error = closeLeaf();                          // リーフの終了
+    if (error != TP_NO_ERROR) return error;
+  } // parseListValue answer end
+
   error = parseVectorValue(buffer, answer);
   if (error != TP_NO_ERROR) return error;
   if (answer) {             // ベクトル値?
@@ -5175,7 +5950,7 @@ TextParserError TextParserTree::createLeaf(const std::string& label,const std::s
     
     if (error != TP_NO_ERROR) return error;
     if (answer2) {          // 未定義の値?
-          std::cout << __FUNCTION__ << "UNDEF?" << std::endl;
+          //std::cout << __FUNCTION__ << "UNDEF?" << std::endl;
       error = setUndefinedValue();                  // 未定義値の設定
       if (error != TP_NO_ERROR) return error;
       error = closeLeaf();                          // リーフの終了
@@ -5187,6 +5962,7 @@ TextParserError TextParserTree::createLeaf(const std::string& label,const std::s
       if (answer3) {// スカラー値?
 	//std::cout << __FUNCTION__ << " SCALAR? " << value2 << value_type<< std::endl;
       	if (!isCorrectValue(value2, value_type)) {    // 値のチェック
+	  std::cerr << "TextParserTree::createLeaf" << " Can not create value_element!";
       	  return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, value);
       	}
       	error = setValue(value2, value_type);          // 値の設定
@@ -5259,3 +6035,119 @@ TextParserError TextParserTree::createLeaf(const std::string& label,const std::s
       // return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, buffer);
 //  std::string value;                                      // 値
 //  TextParserValueType value_type;                               // 値のタイプ
+
+
+/** 
+ * 
+ *  numeric_limits の表現をチェックする。
+ *
+ * @param[in] numeric_limitsが表現されているValue の string.
+ * @return チェック結果. 実際には、一文字目だけをチェックしている。
+ * 
+ *
+ * numeric_limits の表現を追加
+ * 利用可能な表記
+ * CHAR_MIN, CHAR_MAX, SHORT_MIN, SHORT_MAX
+ * INT_MIN, INT_MAX, LONG_MIN, LONG_MAX
+ * LONGLONG_MIN, LONGLONG_MAX
+ * FLOAT_MIN, FLOAT_MAX, DOUBLE_MIN, DOUBLE_MAX
+ * --> checkNumericalLimits.
+ */
+bool TextParserTree::checkNumericalLimits(const std::string buffer) {
+  
+
+
+
+  //  std::cout << __func__ << " true." <<std::endl;
+  return (checkNumericalLimitsInt(buffer) || checkNumericalLimitsReal(buffer)) ;
+}
+
+
+bool TextParserTree::checkNumericalLimitsInt(const std::string buffer) {
+  
+  //  std::cout << __func__ << " " << buffer <<std::endl;
+  // if(buffer[0]!='C' && buffer[0]!='S' 
+  //    && buffer[0]!='I' && buffer[0]!='L' 
+  //    && buffer[0]!='F' && buffer[0]!='D') return false;
+  //  std::cout <<__func__<< "|"<<buffer<<"|"<<  std::endl;
+
+  std::string::size_type p = buffer.find("CHAR_MIN");
+  if(p!=std::string::npos) {
+    if(p==0)return true;
+  }
+  p = buffer.find("CHAR_MAX");
+  if(p!=std::string::npos) {
+    if(p==0)return true;
+  }
+
+  p = buffer.find("SHORT_MIN");
+  if(p!=std::string::npos) {
+    if(p==0)return true;
+  }
+  p = buffer.find("SHORT_MAX");
+  if(p!=std::string::npos) {
+    if(p==0)return true;
+  }
+
+  p = buffer.find("INT_MIN");
+  if(p!=std::string::npos) {
+    if(p==0)return true;
+  }
+  p = buffer.find("INT_MAX");
+  if(p!=std::string::npos) {
+    if(p==0)return true;
+  }
+
+
+  p = buffer.find("LONG_MIN");
+  if(p!=std::string::npos) {
+    if(p==0)return true;
+  }
+  p = buffer.find("LONG_MAX");
+  if(p!=std::string::npos) {
+    if(p==0)return true;
+  }
+
+
+  p = buffer.find("LONGLONG_MIN");
+  if(p!=std::string::npos) {
+    if(p==0)return true;
+  }
+  p = buffer.find("LONGLONG_MAX");
+  if(p!=std::string::npos) {
+    if(p==0)return true;
+  }
+  //  std::cout << __func__ << " true." <<std::endl;
+    return false;
+}
+bool TextParserTree::checkNumericalLimitsReal(const std::string buffer) {
+  
+  //  std::cout << __func__ << " " << buffer <<std::endl;
+  // if(buffer[0]!='C' && buffer[0]!='S' 
+  //    && buffer[0]!='I' && buffer[0]!='L' 
+  //    && buffer[0]!='F' && buffer[0]!='D') return false;
+  //  std::cout <<__func__<< "|"<<buffer<<"|"<<  std::endl;
+
+  std::string::size_type p = buffer.find("FLOAT_MIN");
+  if(p!=std::string::npos) {
+    if(p==0)return true;
+  }
+  p = buffer.find("FLOAT_MAX");
+  if(p!=std::string::npos) {
+    if(p==0)return true;
+  }
+
+
+  p = buffer.find("DOUBLE_MIN");
+  if(p!=std::string::npos) {
+    if(p==0)return true;
+  }
+  p = buffer.find("DOUBLE_MAX");
+  if(p!=std::string::npos) {
+    if(p==0)return true;
+  }
+
+
+  //  std::cout << __func__ << " true." <<std::endl;
+    return false;
+}

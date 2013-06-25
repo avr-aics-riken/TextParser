@@ -1,4 +1,9 @@
 dist_noinst_DATA=\
+correct_range_list_1.tpp \
+incorrect_range_1.tpp \
+incorrect_range_2.tpp \
+incorrect_range_3.tpp \
+incorrect_list_1.tpp \
 incorrect_basic_19.txt \
 incorrect_basic_18.txt \
 incorrect_basic_17.txt \

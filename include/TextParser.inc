@@ -46,7 +46,9 @@ integer TP_DELETE_INSTANCE
 integer TP_UPDATE_VALUE
 integer TP_DELETE_LEAF
 integer TP_CREATE_LEAF
-
+integer TP_SPLIT_RANGE
+integer TP_EXPAND_RANGE
+integer TP_SPLIT_LIST
 
 
 external TP_READ
@@ -88,5 +90,8 @@ external TP_DELETE_INSTANCE
 external TP_UPDATE_VALUE
 external TP_DELETE_LEAF
 external TP_CREATE_LEAF
+external TP_SPLIT_RANGE
+external TP_EXPAND_RANGE
+external TP_SPLIT_LIST
 
 

@@ -75,6 +75,7 @@ $(EXAMPLE_TARGET):
 $(MPI_TARGET):
 	touch config.h;\
 	cd $(TARGET_DIR) && $(MAKE) -f Makefile_hand mpi
+	cp $(TARGET_DIR)/*.a $(DEST_DIR)
 
 $(MPI_EXAMPLE):
 	cd $(EXAMPLE_DIR) && $(MAKE) -f Makefile_hand mpi
@@ -82,6 +83,7 @@ $(MPI_EXAMPLE):
 $(F90API_TARGET):
 	touch config.h;\
 	cd $(TARGET_DIR) && $(MAKE) -f Makefile_hand f90api
+	cp $(TARGET_DIR)/*.a $(DEST_DIR)
 
 $(F90API_EXAMPLE):
 	cd $(EXAMPLE_DIR) && $(MAKE) -f Makefile_hand f90api

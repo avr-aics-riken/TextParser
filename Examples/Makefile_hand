@@ -47,21 +47,24 @@ Example2_cpp.o \
 Example3_cpp.o \
 Example4_cpp.o \
 Example5_cpp.o \
-Example6_cpp.o 
+Example6_cpp.o \
+Example7_cpp.o 
 CXXTARGET=$(CXXOBJS:.o=)
 
 COBJS=Example1_c.o \
 Example2_c.o \
 Example3_c.o \
 Example4_c.o \
-Example5_c.o
+Example5_c.o \
+Example7_c.o
 CTARGET=$(COBJS:.o=)
 
 FOBJS=Example1_f90.o \
 Example2_f90.o \
 Example3_f90.o \
 Example4_f90.o \
-Example5_f90.o
+Example5_f90.o \
+Example7_f90.o
 FTARGET=$(FOBJS:.o=)
 
 #all: $(CXXTARGET) $(CTARGET)  $(FTARGET) 
@@ -80,6 +83,8 @@ Example5_cpp:Example5_cpp.o
 	$(CXXLINKER) -o $@ $^ $(CXXLDFLAGS)
 Example6_cpp:Example6_cpp.o
 	$(CXXLINKER) -o $@ $^ $(CXXLDFLAGS)
+Example7_cpp:Example7_cpp.o
+	$(CXXLINKER) -o $@ $^ $(CXXLDFLAGS)
 
 
 Example1_c:Example1_c.o
@@ -92,6 +97,8 @@ Example4_c:Example4_c.o
 	$(CCLINKER) -o $@ $^ $(CCLDFLAGS)
 Example5_c:Example5_c.o
 	$(CCLINKER) -o $@ $^ $(CCLDFLAGS)
+Example7_c:Example7_c.o
+	$(CCLINKER) -o $@ $^ $(CCLDFLAGS)
 
 Example1_f90:Example1_f90.o
 	$(FCLINKER) -o $@ $^ $(FCLDFLAGS)
@@ -103,6 +110,8 @@ Example4_f90:Example4_f90.o
 	$(FCLINKER) -o $@ $^ $(FCLDFLAGS)
 Example5_f90:Example5_f90.o
 	$(FCLINKER) -o $@ $^ $(FCLDFLAGS)
+Example7_f90:Example7_f90.o
+	$(FCLINKER) -o $@ $^ $(FCLDFLAGS)
 
 
 mpi:Example3_cpp_mpi
@@ -110,7 +119,7 @@ mpi:Example3_cpp_mpi
 f90api: $(FTARGET) 
 
 Example3_cpp_mpi:Example3_cpp_mpi.cpp
-	$(MPICXX) -DENABLE_MPI -o $@ $^  -I ../include -L../src -lTextParser_mpi
+	$(MPICXX) -DENABLE_MPI -o $@ $^  -I ../include -L../src -lstdc++ -lTextParser_mpi
 
 clean:
 	-rm $(CXXOBJS) $(COBJS) $(FOBJS) $(CXXTARGET) $(CTARGET) $(FTARGET) Example3_cpp_mpi

@@ -35,6 +35,8 @@ typedef enum {
     TP_VECTOR_UNDEFFINED = 4, //!< ベクトル型不定
     TP_VECTOR_NUMERIC = 5,    //!< ベクトル型数値
     TP_VECTOR_STRING = 6,     //!< ベクトル型文字列
+    TP_RANGE_NUMERIC = 7,     //!< 値領域指定型 @range
+    TP_LIST_NUMERIC = 8,      //!< 値領域指定型 @list
 } TextParserValueType;
 
 /** 論理値
@@ -100,10 +102,24 @@ typedef enum {
     TP_MISSING_COMMENT_END_ERROR = 137,       //!< コメントの終わりが見つからない
     TP_ID_OVER_ELEMENT_NUMBER_ERROR = 138,    //!< IDが要素数を超えている
     TP_GET_PARAMETER_ERROR = 139,             //!< パラメータ取得
+    TP_ILLEGAL_RANGE_ERROR=140,             //!< @range で、値の指定が異常
+    TP_RANGE_STEP_SIGN_ERROR=141,             //!< @range で、from,to の増減とstepの符号があわない。
+    TP_ILLEGAL_LIST_ERROR=150,             //!< @list で、値の指定が異常
     TP_UNSUPPORTED_ERROR = 199,               //!< サポートされていない
     TP_WARNING = 200,                         //!< エラー
     TP_UNDEFINED_VALUE_USED_WARNING = 201,    //!< 未定義のデータが使われている
     TP_UNRESOLVED_LABEL_USED_WARNING = 202,   //!< 未解決のラベルが使われている
 } TextParserError;
+
+
+/**　TP_LIST_NUMERIC の出力順
+ *
+ */
+typedef enum {
+  TP_SORT_NONE = 0,       //!<指定無し、記述順
+  TP_SORT_ASCENDING = 1,  //!<　昇順
+  TP_SORT_DESCENDING = 2, //!<　降順
+} TextParserSortOrder;
+
 
 #endif // __TEXTPARSER_COMMON_H__

@@ -20,9 +20,15 @@
 #include <map>
 #include <algorithm>
 #include <vector>
-
 #include "TextParserCommon.h"
-#include "TextParserElement.h"
+#include "TextParser.h"
+
+//#include "TextParserElement."h
+
+class TextParserLeaf;
+class TextParserNode;
+class TextParserElement;
+class TextParserValue;
 
 /** パラメータファイルのデータ構造を保持するクラス
  *
@@ -30,15 +36,12 @@
  *
  */
 
+
 class TextParserTree{
 
- // private:
- //  // constructors. not for using.
- //  TextParserTree(){} //!< デフォルトコンストラクタ 利用禁止
- //  TextParserTree(const TextParserTree& rhs){} //!< コピーコンストラクタ 利用禁止
- //  TextParserTree& operator=(const TextParserTree& rhs); //!< 代入演算子 利用禁止
-
-
+private:
+  // 
+  TextParser* _owner; //!< 自分自身を持っているTextParserオブジェクトへのポインタ.
 
 public:
   // constructors. not for using.
@@ -49,6 +52,8 @@ public:
   TextParserTree(); //!< デフォルトコンストラクタ 
   ~TextParserTree(); //!< デストラクタ
   void status();
+
+  void set_owner(TextParser *owner){_owner=owner;}//!< 自分自身を持っているTextParserオブジェクトへのポインタの設定.
 
   // private valiables
 
@@ -155,7 +160,12 @@ private:
   TextParserError openLeaf(const std::string& label);
   TextParserError closeLeaf();
   TextParserError parseDependValue(std::stringstream& ss, std::string& buffer, bool& answer);
+  TextParserError parseRangeValue(std::stringstream& ss, std::string& buffer, bool& answer);
+  TextParserError parseRangeValue(std::string& buffer, bool& answer);
+  TextParserError parseListValue(std::stringstream& ss, std::string& buffer, bool& answer);
+  TextParserError parseListValue(std::string& buffer, bool& answer);
   TextParserError parseVectorValue(std::stringstream& ss, std::string& buffer, bool& answer);
+
   TextParserError parseVectorValue(std::string& buffer, bool& answer);
   TextParserError parseUndefinedValue(std::stringstream& ss, std::string& buffer, bool& answer);
   TextParserError parseUndefinedValue(std::string& buffer, bool& answer);
@@ -184,6 +194,8 @@ private:
   bool isCorrectValue(std::string& value, TextParserValueType& value_type);
   TextParserError setValue(std::string& value, TextParserValueType& value_type);
   TextParserError setUndefinedValue();
+  TextParserError setRangeValue(std::stringstream& ss, std::string& buffer);
+  TextParserError setListValue(std::stringstream& ss, std::string& buffer);
   TextParserError setVectorValue(std::stringstream& ss, std::string& buffer);
   TextParserError setDependenceExpression(std::stringstream& ss, std::string& buffer);
   TextParserError setConditionalExpression(std::stringstream& ss, std::string& buffer);
@@ -191,15 +203,28 @@ private:
   TextParserError parseDependenceExpression(TextParserLeaf *leaf);
   TextParserError parseConditionalExpression(std::string& buffer, TextParserBool& result);
   TextParserError parseDependenceValue(std::string& buffer, TextParserBool set);
-  TextParserError resolveConditionalExpression(std::string& label, std::string& value, TextParserValueType& value_type, const TextParserBool is_equal, TextParserBool& result);
+  TextParserError resolveConditionalExpression(std::string& label, 
+					       std::string& value,
+					       TextParserValueType& value_type,
+					       const TextParserBool is_equal,
+					       TextParserBool& result);
   TextParserBool resolveAnd(TextParserBool& left, TextParserBool& right);
   TextParserBool resolveOr(TextParserBool& left, TextParserBool& right);
   
   int array_label_test(const std::string &label,std::string &key);
 
+  //helper for @range
+  TextParserError checkRangeVectorValue(std::stringstream& ss,std::string vstring,bool& answer);
+  TextParserError checkRangeVectorValue(std::string vstring,bool& answer);
+  //helper for @list
+  TextParserError checkListVectorValue(std::stringstream& ss,std::string vstring,bool& answer);
+  TextParserError checkListVectorValue(std::string vstring,bool& answer);
+
 
 public:
+
   TextParserError getElementRelativePath (std::string& path, bool add, TextParserElement **parent_element);
+
   TextParserError getElement(const std::string& path_label, const TextParserElementType type, TextParserElement** element);
   
   // original...
@@ -245,6 +270,9 @@ public:
 // エラー処理 //moved into TextParserTree
   TextParserError TextParserErrorHandler(const TextParserError error_code, const std::string& sub_message);
 
+  bool checkNumericalLimits(const std::string buffer);
+  bool checkNumericalLimitsInt(const std::string buffer);
+  bool checkNumericalLimitsReal(const std::string buffer);
 
 };
 

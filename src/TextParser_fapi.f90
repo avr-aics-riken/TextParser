@@ -445,3 +445,44 @@
 
       return
       end
+
+      integer function TP_SPLIT_RANGE(tp_ptr,label,from,to,step)
+      integer TP_SPLIT_RANGE_FORT
+      external TP_SPLIT_RANGE_FORT
+      integer*8 tp_ptr
+      character(len=*),intent(in)::label
+      CHARACTER(LEN=1), PARAMETER :: NULL = CHAR(0)
+      real*8 from,to,step
+
+      TP_SPLIT_RANGE=TP_SPLIT_RANGE_FORT(tp_ptr,trim(label)//NULL,from,to,step)
+
+      return
+      end
+
+      integer function TP_EXPAND_RANGE(tp_ptr,label,expanded)
+      integer TP_EXPAND_RANGE_FORT
+      external TP_EXPAND_RANGE_FORT
+      integer*8 tp_ptr
+      character(len=*),intent(in)::label
+      CHARACTER(LEN=1), PARAMETER :: NULL = CHAR(0)
+      real*8 expanded(128)
+
+      TP_EXPAND_RANGE=TP_EXPAND_RANGE_FORT(tp_ptr,trim(label)//NULL,expanded)
+
+      return
+      end
+
+      integer function TP_SPLIT_LIST(tp_ptr,label,list,order)
+      integer TP_SPLIT_LIST_FORT
+      external TP_SPLIT_LIST_FORT
+      integer*8 tp_ptr
+      character(len=*),intent(in)::label
+      CHARACTER(LEN=1), PARAMETER :: NULL = CHAR(0)
+      real*8 list(128)
+
+      TP_SPLIT_LIST=TP_SPLIT_LIST_FORT(tp_ptr,trim(label)//NULL,list,order)
+
+      return
+      end
+
+

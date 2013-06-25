@@ -18,15 +18,14 @@
 #include <map>
 #include <vector>
 #include "TextParserCommon.h"
-
+#include "TextParserTree.h"
 
 class TextParserNode;
 class TextParserLeaf;
 class TextParserValue;
 
-
-class TextParser;
-class TextParserTree;
+//class TextParser;
+//class TextParserTree;
 
 /** TextParserElementクラスはパラメータデータの要素を保持します
  *

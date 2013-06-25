@@ -37,9 +37,10 @@ host_triplet = @host@
 noinst_PROGRAMS = Example1_cpp$(EXEEXT) Example2_cpp$(EXEEXT) \
 	Example3_cpp$(EXEEXT) Example4_cpp$(EXEEXT) \
 	Example5_cpp$(EXEEXT) Example6_cpp$(EXEEXT) \
+	Example7_cpp$(EXEEXT) Example8_cpp$(EXEEXT) \
 	Example1_c$(EXEEXT) Example2_c$(EXEEXT) Example3_c$(EXEEXT) \
-	Example4_c$(EXEEXT) Example5_c$(EXEEXT) $(am__EXEEXT_1) \
-	$(am__EXEEXT_2)
+	Example4_c$(EXEEXT) Example5_c$(EXEEXT) Example7_c$(EXEEXT) \
+	$(am__EXEEXT_1) $(am__EXEEXT_2)
 subdir = Examples
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -55,7 +56,8 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 @FORTRAN_TRUE@am__EXEEXT_1 = Example1_f90$(EXEEXT) \
 @FORTRAN_TRUE@	Example2_f90$(EXEEXT) Example3_f90$(EXEEXT) \
-@FORTRAN_TRUE@	Example4_f90$(EXEEXT) Example5_f90$(EXEEXT)
+@FORTRAN_TRUE@	Example4_f90$(EXEEXT) Example5_f90$(EXEEXT) \
+@FORTRAN_TRUE@	Example7_f90$(EXEEXT)
 @MPI_TRUE@am__EXEEXT_2 = Example3_cpp_mpi$(EXEEXT) \
 @MPI_TRUE@	Example3-1_cpp_mpi$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
@@ -132,6 +134,22 @@ am_Example6_cpp_OBJECTS = Example6_cpp.$(OBJEXT)
 Example6_cpp_OBJECTS = $(am_Example6_cpp_OBJECTS)
 Example6_cpp_LDADD = $(LDADD)
 Example6_cpp_DEPENDENCIES =
+am_Example7_c_OBJECTS = Example7_c.$(OBJEXT)
+Example7_c_OBJECTS = $(am_Example7_c_OBJECTS)
+Example7_c_LDADD = $(LDADD)
+Example7_c_DEPENDENCIES =
+am_Example7_cpp_OBJECTS = Example7_cpp.$(OBJEXT)
+Example7_cpp_OBJECTS = $(am_Example7_cpp_OBJECTS)
+Example7_cpp_LDADD = $(LDADD)
+Example7_cpp_DEPENDENCIES =
+am__Example7_f90_SOURCES_DIST = Example7_f90.f90
+@FORTRAN_TRUE@am_Example7_f90_OBJECTS = Example7_f90.$(OBJEXT)
+Example7_f90_OBJECTS = $(am_Example7_f90_OBJECTS)
+Example7_f90_DEPENDENCIES =
+am_Example8_cpp_OBJECTS = Example8_cpp.$(OBJEXT)
+Example8_cpp_OBJECTS = $(am_Example8_cpp_OBJECTS)
+Example8_cpp_LDADD = $(LDADD)
+Example8_cpp_DEPENDENCIES =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -169,7 +187,9 @@ SOURCES = $(Example1_c_SOURCES) $(Example1_cpp_SOURCES) \
 	$(Example3_f90_SOURCES) $(Example4_c_SOURCES) \
 	$(Example4_cpp_SOURCES) $(Example4_f90_SOURCES) \
 	$(Example5_c_SOURCES) $(Example5_cpp_SOURCES) \
-	$(Example5_f90_SOURCES) $(Example6_cpp_SOURCES)
+	$(Example5_f90_SOURCES) $(Example6_cpp_SOURCES) \
+	$(Example7_c_SOURCES) $(Example7_cpp_SOURCES) \
+	$(Example7_f90_SOURCES) $(Example8_cpp_SOURCES)
 DIST_SOURCES = $(Example1_c_SOURCES) $(Example1_cpp_SOURCES) \
 	$(am__Example1_f90_SOURCES_DIST) $(Example2_c_SOURCES) \
 	$(Example2_cpp_SOURCES) $(am__Example2_f90_SOURCES_DIST) \
@@ -178,7 +198,9 @@ DIST_SOURCES = $(Example1_c_SOURCES) $(Example1_cpp_SOURCES) \
 	$(am__Example3_f90_SOURCES_DIST) $(Example4_c_SOURCES) \
 	$(Example4_cpp_SOURCES) $(am__Example4_f90_SOURCES_DIST) \
 	$(Example5_c_SOURCES) $(Example5_cpp_SOURCES) \
-	$(am__Example5_f90_SOURCES_DIST) $(Example6_cpp_SOURCES)
+	$(am__Example5_f90_SOURCES_DIST) $(Example6_cpp_SOURCES) \
+	$(Example7_c_SOURCES) $(Example7_cpp_SOURCES) \
+	$(am__Example7_f90_SOURCES_DIST) $(Example8_cpp_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-dvi-recursive install-exec-recursive \
@@ -352,17 +374,19 @@ EXTRA_DIST = Makefile_hand
 @MPI_TRUE@Example3_cpp_mpi_LDADD = -lstdc++ -L../lib -lTextParser_mpi
 @MPI_TRUE@Example3_1_cpp_mpi_LDADD = -lstdc++ -L../lib -lTextParser_mpi
 @FORTRAN_FALSE@FORTRANPROGRAMS = 
-@FORTRAN_TRUE@FORTRANPROGRAMS = Example1_f90 Example2_f90 Example3_f90 Example4_f90 Example5_f90
+@FORTRAN_TRUE@FORTRANPROGRAMS = Example1_f90 Example2_f90 Example3_f90 Example4_f90 Example5_f90 Example7_f90
 @FORTRAN_TRUE@Example1_f90_SOURCES = Example1_f90.f90
 @FORTRAN_TRUE@Example2_f90_SOURCES = Example2_f90.f90
 @FORTRAN_TRUE@Example3_f90_SOURCES = Example3_f90.f90
 @FORTRAN_TRUE@Example4_f90_SOURCES = Example4_f90.f90
 @FORTRAN_TRUE@Example5_f90_SOURCES = Example5_f90.f90
+@FORTRAN_TRUE@Example7_f90_SOURCES = Example7_f90.f90
 @FORTRAN_TRUE@Example1_f90_LDADD = -lstdc++ -L../lib -lTextParser -lTextParser_f90api
 @FORTRAN_TRUE@Example2_f90_LDADD = -lstdc++ -L../lib -lTextParser -lTextParser_f90api
 @FORTRAN_TRUE@Example3_f90_LDADD = -lstdc++ -L../lib -lTextParser -lTextParser_f90api
 @FORTRAN_TRUE@Example4_f90_LDADD = -lstdc++ -L../lib -lTextParser -lTextParser_f90api
 @FORTRAN_TRUE@Example5_f90_LDADD = -lstdc++ -L../lib -lTextParser -lTextParser_f90api
+@FORTRAN_TRUE@Example7_f90_LDADD = -lstdc++ -L../lib -lTextParser -lTextParser_f90api
 
 # Example3_cpp_mpi_newAPI
 
@@ -382,6 +406,9 @@ Example4_c_SOURCES = Example4_c.c
 Example5_cpp_SOURCES = Example5_cpp.cpp
 Example5_c_SOURCES = Example5_c.c
 Example6_cpp_SOURCES = Example6_cpp.cpp
+Example7_cpp_SOURCES = Example7_cpp.cpp
+Example8_cpp_SOURCES = Example8_cpp.cpp
+Example7_c_SOURCES = Example7_c.c
 all: all-recursive
 
 .SUFFIXES:
@@ -479,6 +506,18 @@ Example5_f90$(EXEEXT): $(Example5_f90_OBJECTS) $(Example5_f90_DEPENDENCIES)
 Example6_cpp$(EXEEXT): $(Example6_cpp_OBJECTS) $(Example6_cpp_DEPENDENCIES) 
 	@rm -f Example6_cpp$(EXEEXT)
 	$(CXXLINK) $(Example6_cpp_OBJECTS) $(Example6_cpp_LDADD) $(LIBS)
+Example7_c$(EXEEXT): $(Example7_c_OBJECTS) $(Example7_c_DEPENDENCIES) 
+	@rm -f Example7_c$(EXEEXT)
+	$(LINK) $(Example7_c_OBJECTS) $(Example7_c_LDADD) $(LIBS)
+Example7_cpp$(EXEEXT): $(Example7_cpp_OBJECTS) $(Example7_cpp_DEPENDENCIES) 
+	@rm -f Example7_cpp$(EXEEXT)
+	$(CXXLINK) $(Example7_cpp_OBJECTS) $(Example7_cpp_LDADD) $(LIBS)
+Example7_f90$(EXEEXT): $(Example7_f90_OBJECTS) $(Example7_f90_DEPENDENCIES) 
+	@rm -f Example7_f90$(EXEEXT)
+	$(FCLINK) $(Example7_f90_OBJECTS) $(Example7_f90_LDADD) $(LIBS)
+Example8_cpp$(EXEEXT): $(Example8_cpp_OBJECTS) $(Example8_cpp_DEPENDENCIES) 
+	@rm -f Example8_cpp$(EXEEXT)
+	$(CXXLINK) $(Example8_cpp_OBJECTS) $(Example8_cpp_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -499,6 +538,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Example5_c.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Example5_cpp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Example6_cpp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Example7_c.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Example7_cpp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Example8_cpp.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -875,13 +917,11 @@ uninstall-am:
 @FORTRAN_TRUE@Example3_f90.o:../include/TextParser.inc ../lib/libTextParser.la ../lib/libTextParser_f90api.la
 @FORTRAN_TRUE@Example4_f90.o:../include/TextParser.inc ../lib/libTextParser.la ../lib/libTextParser_f90api.la
 @FORTRAN_TRUE@Example5_f90.o:../include/TextParser.inc ../lib/libTextParser.la ../lib/libTextParser_f90api.la
+@FORTRAN_TRUE@Example7_f90.o:../include/TextParser.inc ../lib/libTextParser.la ../lib/libTextParser_f90api.la
 
 #Example3_cpp_mpi_newAPI_SOURCES=Example3_cpp_mpi_newAPI.cpp
-
 #Example_f90_tmp_SOURCES=Example_f90_tmp.f90
-
 #Example_f90_tmp_LDADD=-L../lib -lstdc++ -lTextParser -lTextParser_f90api
-
 #Example3_cpp_mpi_newAPI_LDADD= -lstdc++ -L../lib -lTextParser -lTextParser_mpi
 
 Example1_cpp.o:../include/TextParser.h ../lib/libTextParser.la
@@ -890,11 +930,16 @@ Example3_cpp.o:../include/TextParser.h ../lib/libTextParser.la
 Example4_cpp.o:../include/TextParser.h ../lib/libTextParser.la
 Example5_cpp.o:../include/TextParser.h ../lib/libTextParser.la
 
+Example7_cpp.o:../include/TextParser.h ../lib/libTextParser.la
+Example8_cpp.o:../include/TextParser.h ../lib/libTextParser.la
+
 Example1_c.o:../include/TextParser.h ../lib/libTextParser.la
 Example2_c.o:../include/TextParser.h ../lib/libTextParser.la
 Example3_c.o:../include/TextParser.h ../lib/libTextParser.la
 Example4_c.o:../include/TextParser.h ../lib/libTextParser.la
 Example5_c.o:../include/TextParser.h ../lib/libTextParser.la
+
+Example7_c.o:../include/TextParser.h ../lib/libTextParser.la
 
 .PHONY:
 

@@ -9,6 +9,7 @@
 
 Release News
 
+  2012-11-27  1.2  値記述方式、@range, @listを追加
   2012-10-09  1.1  Makefile_handでの手動ビルド時にlib/ディレクトリを自動作成
                    configure時のパッケージ名、バージョン番号不整合の修正
   2012-10-08  1.0e AUTHORS, COPYING, NEWSファイルを追加

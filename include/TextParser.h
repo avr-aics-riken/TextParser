@@ -24,12 +24,18 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-#include "TextParserElement.h"
-#include "TextParserTree.h"
+#include <algorithm>
+#include <functional>
+#include <math.h>
+#include <limits>
+#include <vector>
+//#include "TextParserElement.h"
+//#include "TextParserTree.h"
 #endif // __cplusplus
 
 #ifdef __cplusplus
 
+class TextParserTree;
 
 /** 
  * @class TextParser TextParser.h
@@ -45,73 +51,107 @@
 
 class TextParser{
 
+  // basic functions for object manipulation.
 public:
-  void status(){dataTree()->status();}
-
-  //  static TextParser* get_instance(); //!< TextParser のインスタンスを取得します。
+  void status();
+public:
   static TextParser* get_instance_singleton(); //!< TextParser のインスタンスを取得します。
-
+public:
   TextParserError read(const std::string& file); //!< file からパラメータを読み込みます。MPI利用時は、rank数=0 のプロセスでのみファイル内容を読み込み、各ノードに分配後、各ノードでパラメータの解析を行います。
+public:
   TextParserError read_local(const std::string& file); //!< MPI利用時に各ノードがそれぞれのファイルからパラメータを読み込みます。 MPIを利用しない場合は、エラーを返します。  
-
+public:
   TextParserError write(const std::string& file,int order=0); //!< file にパラメータのデータ構造全体を書き込みます。
+public:
   TextParserError remove();//!< 格納しているパラメータのデータを破棄します。
 
+  // functions for operation of information in tree.
+
+public:
   TextParserError getAllLabels(std::vector<std::string>& labels);//!< 格納されているパラメータへの(リーフへの)全てのラベルを取得します。
+public:
   TextParserValueType getType(const std::string& label, int *error);//!<ラベルで示されるパラメータの値のタイプを返します。（TextParserError参照） 
+public:
   TextParserError getValue(const std::string& label,std::string& value);//!< ラベルで示されるパラメータの値を取得します。
+public:
   void getValue(const std::string& label,std::string& value, int*ierror);//!< ラベルで示されるパラメータの値を取得します。
+public:
   TextParserError currentNode(std::string& returner); //!<現在のカレントノードを取得します。
-  //  std::string CurrentNode(int *error);
+public:
   TextParserError getNodes(std::vector<std::string>& node_list,int oswitch=0);//!<カレントノード内の子ノードのラベル（相対パス）のリストを取得します。
+public:
   TextParserError getLabels(std::vector<std::string>& labels,int oswitch=0);//!<カレントノード内のリーフのラベル（相対パス）のリストを取得します。
   // 名前はこちらの方がよい？
+public:
   TextParserError getLeaves(std::vector<std::string>& labels,int oswitch=0){
     return getLabels(labels,oswitch);
   }//!<カレントノード内のリーフのラベル（相対パス）のリストを取得します。
-
+public:
   TextParserError changeNode(const std::string& label);//!< ラベルで指定したノードをカレントノードにします。
 
-  char convertChar(const std::string& value, int *error); //!< パラメータの値を文字列から char 型へ変換します。 
-  short convertShort(const std::string& value, int *error);//!< パラメータの値を文字列から short 型へ変換します。 
-  int convertInt(const std::string& value, int *error); //!< パラメータの値を文字列から int 型へ変換します。 
-  long convertLong(const std::string& value, int *error); //!< パラメータの値を文字列から long 型へ変換します。 
-  long long convertLongLong(const std::string& value, int *error);//!< パラメータの値を文字列から long long 型へ変換します。 
-  float convertFloat(const std::string& value, int *error);//!< パラメータの値を文字列から float 型へ変換します。 
-  double convertDouble(const std::string& value, int *error);//!< パラメータの値を文字列から double 型へ変換します。 
-  bool convertBool(const std::string& value, int *error);//!< パラメータの値を文字列から bool 型へ変換します。 
 
+  //convertion funcitons for value string you obtained.
+public:
+  char convertChar(const std::string& value, int *error); //!< パラメータの値を文字列から char 型へ変換します。 
+public:
+  short convertShort(const std::string& value, int *error);//!< パラメータの値を文字列から short 型へ変換します。 
+public:
+  int convertInt(const std::string& value, int *error); //!< パラメータの値を文字列から int 型へ変換します。 
+public:
+  long convertLong(const std::string& value, int *error); //!< パラメータの値を文字列から long 型へ変換します。 
+public:
+  long long convertLongLong(const std::string& value, int *error);//!< パラメータの値を文字列から long long 型へ変換します。 
+public:
+  float convertFloat(const std::string& value, int *error);//!< パラメータの値を文字列から float 型へ変換します。 
+public:
+  double convertDouble(const std::string& value, int *error);//!< パラメータの値を文字列から double 型へ変換します。 
+public:
+  bool convertBool(const std::string& value, int *error);//!< パラメータの値を文字列から bool 型へ変換します。 
+public:
   TextParserError splitVector(const std::string& vector_value,
 			      std::vector<std::string>& velem );//!<ベクトル値を分割する。
+private:
+  long long convertLimitsIntx(const std::string& value, int *error);//!< 整数のlimit値の変換
+private:
+  double convertLimitsRealx(const std::string& value, int *error);//!< 実数のlimit値の変換
 
+public:
  TextParserTree* dataTree() const {return _data_tree;} //!< パラメータデータ構造へのポインタ。
 
-
   // TextParserTree データ書き換え用API
-
+public:
   TextParserError updateValue(const std::string& label,const std::string& value); //!< パラメータリーフ　のvalue変更
+public:
   TextParserError deleteLeaf(const std::string& label); //!< パラメータリーフの削除
+public:
   TextParserError createLeaf(const std::string& label,const std::string& value); //!< パラメータリーフ追加
+
+  // @range 
+public:
+  TextParserError splitRange(const std::string & value,
+			     double *from,double *to,double *step);
+
+public:
+  TextParserError expandRange(const std::string & value,
+			      std::vector<double>& expanded);
+  
+  // @list
+public:
+  TextParserError splitList(const std::string & value,std::vector<double>& list,
+			    TextParserSortOrder order=TP_SORT_NONE);
+
+
 protected:
 
 
 private:
-  //  TextParser(); //!< デフォルトコンストラクタ 利用禁止
-  //  TextParser(const TextParser& rhs){} //!< コピーコンストラクタ 利用禁止
-  //  TextParser& operator=(const TextParser& rhs){} //!< 代入演算子 利用禁止
-  //  TextParser(); //!< デフォルトコンストラクタ 利用禁止
-  //   ~TextParser(){  remove();  } //!< デストラクタ。パラメータデータ構造を消去します。
-
   TextParserTree* _data_tree; //!< パラメータデータ構造へのポインタ。
 
  public:
-//   TextParser(const TextParser& rhs){} //!< コピーコンストラクタ 利用禁止
-///   TextParser& operator=(const TextParser& rhs){} //!< 代入演算子 利用禁止
    TextParser(); //!< デフォルトコンストラクタ 
+ public:
   ~TextParser();//!< デストラクタ。パラメータデータ構造を消去します。
-  //{  remove(); 
-  //  delete _data_tree} 
-
+ public:
   //ERRORHANDLER
   TextParserError TextParserErrorHandler(const TextParserError error_code, const std::string& sub_message);
 
@@ -184,6 +224,14 @@ extern "C" {
   int tp_createLeaf(TP_HANDLE tp_hand,char* label,char*value); //!< リーフを作成する.
 
 
+  //
+  // @range @list 用API
+  //@range 
+  int tp_splitRange(TP_HANDLE tp_hand,char* value,double *from,double *to,double *step);
+  int tp_expandRange(TP_HANDLE tp_hand,char* value,double* expanded);
+    // @list
+  int tp_splitList(TP_HANDLE tp_hand,char* value, double *list,int order);
+
 
   //fortran 用 API
 
@@ -240,6 +288,14 @@ extern "C" {
 			   int* n_label); //!< リーフを削除する.
   int tp_create_leaf_fort_(long* ptr,char* label,char* value,
 			    int* n_label,int* n_value); //!< リーフを作成する.
+
+ // @range @list 用API
+  //@range 
+  int tp_split_range_fort_(long* ptr,char* value,double *from,double *to,double *step,
+			   int* nvalue);
+  int tp_expand_range_fort_(long* ptr,char* value,double* expanded,int* nvalue);
+    // @list
+  int tp_split_list_fort_(long* ptr,char* value, double *list,int* order,int* nvalue);
 
 
 #ifdef __cplusplus

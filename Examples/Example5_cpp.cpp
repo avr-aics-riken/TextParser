@@ -172,7 +172,7 @@ int main(int argc, char* argv[])
     tp->write("tmp.tpp");
     tp->remove();
 
-    delete tp;
+    //    delete tp;
 
     // filename = "./tpp_examples/correct_string_1.txt";
     // move_and_get_parameters(filename);

@@ -26,7 +26,18 @@
 
 #include <string.h>
 #include "TextParser.h"
+#include "TextParserTree.h"
+#include "TextParserElement.h"
 
+
+/** 
+ * tree の status をよびだします。
+ *
+ * 
+ * 
+ */
+
+void TextParser::status(){dataTree()->status();}
 /** 
  * プロセス内唯一の TextParser インスタンスを返します。
  *
@@ -51,6 +62,7 @@ TextParser* TextParser::get_instance_singleton(){
  */
 TextParser::TextParser(){
    _data_tree=new TextParserTree;
+   _data_tree->set_owner(this);
   //  std::cout << __FUNCTION__ << " dataTree()=" <<dataTree() << std::endl;
 }
 
@@ -74,8 +86,9 @@ TextParser::~TextParser(){
  */
 
 TextParserError TextParser::read(const std::string& file){
-  //std::cout << file << std::endl;
-  
+#ifdef MYDEBUG  
+    std::cout << "TextParser reading file " << file << std::endl;
+#endif // MYDEBUG    
   TextParserError ret = TP_NO_ERROR;
 
   try {
@@ -83,6 +96,9 @@ TextParserError TextParser::read(const std::string& file){
   } catch (std::exception ex) {
     ret = TextParserErrorHandler(TP_FILEINPUT_ERROR, file);
   }
+#ifdef MYDEBUG  
+  std::cout << "TextParser end reading file "<<file << std::endl;
+#endif // MYDEBUG    
    return ret;
 }
 
@@ -91,8 +107,7 @@ TextParserError TextParser::read_local(const std::string& file){
   TextParserError ret = TP_NO_ERROR;
 #ifndef BUILD_MPI
   std::cout << "ERROR - TextParser::read_local(const std::string file) is designed to be use d with MPI library. "<<std::endl;
-  std::cout << " Please USE　TextParser::read(const std::stringfile)."<<std::endl;
-
+  std::cout << " Please USE TextParser::read(const std::stringfile)."<<std::endl;
   ret = TextParserErrorHandler(TP_FILEINPUT_ERROR, file);
   return ret;
 #else
@@ -199,6 +214,10 @@ TextParserValueType TextParser::getType(const std::string& label, int *error)
                         //*type = 5;
                 } else if (value->_value_type == TP_VECTOR_STRING) {
                         //*type = 6;
+                } else if (value->_value_type == TP_RANGE_NUMERIC) {
+                        //*type = 7;
+                } else if (value->_value_type == TP_LIST_NUMERIC) {
+                        //*type = 8;
                 } else {
                     ret = TextParserErrorHandler(TP_ILLEGAL_VALUE_TYPE_ERROR, "");
                 }
@@ -370,12 +389,20 @@ char TextParser::convertChar(const std::string& value, int *error)
     char returner;
     int int_recieve;
     try {
-      std::string val = CorrectValueString(value);
-        std::stringstream ss;
-        ss << val;
-	//        ss >> (int_recieve);
-	//	returner=int_recieve;
+      if(dataTree()->checkNumericalLimitsInt(value)){
+	long long llreturner =convertLimitsIntx(value,error);
+	returner= llreturner;
+      }	else if(dataTree()->checkNumericalLimitsReal(value)){
+	double dd =convertLimitsRealx(value,error);
+	returner= dd;
+      } else {
+	std::string val = CorrectValueString(value);
+	std::stringstream ss;
+	ss << val;
+	// ss >> (int_recieve);
+	// returner=int_recieve;
 	ss >> (returner);
+      }
     } catch (std::exception ex) {
         *error = TextParserErrorHandler(TP_MEMORY_ALLOCATION_ERROR, value);
     }
@@ -392,13 +419,22 @@ char TextParser::convertChar(const std::string& value, int *error)
 short TextParser::convertShort(const std::string& value, int *error)
 {
     *error = 0;
+    
 
     short returner;
     try {
+      if(dataTree()->checkNumericalLimitsInt(value)){
+	long long llreturner= convertLimitsIntx(value,error);
+	returner=llreturner;
+      } else if(dataTree()->checkNumericalLimitsReal(value)){
+	double dd= convertLimitsRealx(value,error);
+	returner=dd;
+      } else {
         std::string val = CorrectValueString(value);
         std::stringstream ss;
         ss << val;
         ss >> (returner);
+      }
     } catch (std::exception ex) {
         *error = TextParserErrorHandler(TP_MEMORY_ALLOCATION_ERROR, value);
     }
@@ -419,10 +455,19 @@ int TextParser::convertInt(const std::string& value, int *error)
 
     int returner;
     try {
+
+      if(dataTree()->checkNumericalLimitsInt(value)){
+	long long llreturner= convertLimitsIntx(value,error);
+	returner= llreturner;
+      }	else if(dataTree()->checkNumericalLimitsReal(value)){
+	double dd = convertLimitsRealx(value,error);
+	returner=dd;
+      } else {
         std::string val = CorrectValueString(value);
         std::stringstream ss;
         ss << val;
         ss >> (returner);
+      }
     } catch (std::exception ex) {
         *error = TextParserErrorHandler(TP_MEMORY_ALLOCATION_ERROR, value);
     }
@@ -441,10 +486,18 @@ long TextParser::convertLong(const std::string& value, int *error)
 
     long returner;
     try {
+      if(dataTree()->checkNumericalLimitsInt(value)){
+	long long llreturner= convertLimitsIntx(value,error);
+	returner= llreturner;
+      }else if(dataTree()->checkNumericalLimitsReal(value)){
+	double dd = convertLimitsRealx(value,error);
+	returner=dd;
+      } else {
         std::string val = CorrectValueString(value);
         std::stringstream ss;
         ss << val;
         ss >> (returner);
+      }
     } catch (std::exception ex) {
         *error = TextParserErrorHandler(TP_MEMORY_ALLOCATION_ERROR, value);
     }
@@ -465,10 +518,20 @@ long long TextParser::convertLongLong(const std::string& value, int *error)
 
     long long returner;
     try {
+
+      if(dataTree()->checkNumericalLimitsInt(value)){
+	long long llreturner= convertLimitsIntx(value,error);
+	returner= llreturner;
+      }else if(dataTree()->checkNumericalLimitsReal(value)){
+	double dd = convertLimitsRealx(value,error);
+	returner= dd;
+      } else {
+
         std::string val = CorrectValueString(value);
         std::stringstream ss;
         ss << val;
         ss >> (returner);
+      }
     } catch (std::exception ex) {
         *error = TextParserErrorHandler(TP_MEMORY_ALLOCATION_ERROR, value);
     }
@@ -490,10 +553,19 @@ float TextParser::convertFloat(const std::string& value, int *error)
 
     float returner;
     try {
+
+      if(dataTree()->checkNumericalLimitsReal(value)){
+	double dreturn = convertLimitsRealx(value,error);
+	returner = dreturn;
+      }else if(dataTree()->checkNumericalLimitsInt(value)){
+	long long lreturn = convertLimitsIntx(value,error);
+	returner = lreturn;
+      }else {
         std::string val = CorrectValueString(value);
         std::stringstream ss;
         ss << val;
         ss >> (returner);
+	}
     } catch (std::exception ex) {
         *error = TextParserErrorHandler(TP_MEMORY_ALLOCATION_ERROR, value);
     }
@@ -510,13 +582,19 @@ float TextParser::convertFloat(const std::string& value, int *error)
 double TextParser::convertDouble(const std::string& value, int *error)
 {
     *error=0;
-
     double returner;
     try {
+      if(dataTree()->checkNumericalLimitsReal(value)){
+	returner = convertLimitsRealx(value,error);
+      } else if(dataTree()->checkNumericalLimitsInt(value)){
+	long long lret=convertLimitsIntx(value,error);
+	returner = lret;
+      }else {
         std::string val = CorrectValueString(value);
         std::stringstream ss;
         ss << val;
         ss >> (returner);
+      }
     } catch (std::exception ex) {
         *error = TextParserErrorHandler(TP_MEMORY_ALLOCATION_ERROR, value);
     }
@@ -573,11 +651,12 @@ TextParserError TextParser::splitVector(const std::string& vector_value,
     TextParserError ret = TP_NO_ERROR;
 
     try {
-        if (!dataTree()->isReady()) {
-                ret = TextParserErrorHandler(TP_DATABASE_NOT_READY_ERROR, "");
-        } else {
-            ret = dataTree()->splitVectorValue(vector_value, velem);
-        }
+      if (!dataTree()->isReady()) {
+       	  ret = TextParserErrorHandler(TP_DATABASE_NOT_READY_ERROR, "");
+       } else {
+	 ret = dataTree()->splitVectorValue(vector_value, velem);
+       }
+      //      ret = dataTree()->splitVectorValue(vector_value, velem);
     } catch (std::exception ex) {
         ret = TextParserErrorHandler(TP_GET_PARAMETER_ERROR, "");
     }
@@ -936,7 +1015,7 @@ char tp_convertChar(TP_HANDLE tp_hand,char* value,int *error){
 
   int int_recieve=tp_ptr->convertInt(svalue,error);
   char returner = int_recieve;
-  std::cout << __FUNCTION__ << svalue  << " int "<< int_recieve<< " char "<< (int)returner <<std::endl; 
+  //  std::cout << __FUNCTION__ << svalue  << " int "<< int_recieve<< " char "<< (int)returner <<std::endl; 
   return returner;
 
 }
@@ -1110,11 +1189,22 @@ int tp_currentNode(TP_HANDLE tp_hand,char* label){
   * @return エラーコード、TextParserErrorによる。intで取得。
   */
 int tp_changeNode(TP_HANDLE tp_hand,char* label){
-  //  TextParser* tp_ptr=TextParser::get_instance();
+#ifdef MYDEBUG
+  std::cout <<__func__ <<" "<<label<<std::endl;
+#endif // MYDEBUG
   TextParser* tp_ptr= static_cast<TextParser*>(tp_hand);
   int error = 0;
   std::string slabel(label);
+
+#ifdef MYDEBUG
+  std::cout <<__func__<<" "<<slabel<<std::endl;
+#endif // MYDEBUG
+
   error=tp_ptr->changeNode(slabel);
+
+#ifdef MYDEBUG
+  std::cout <<slabel<<" "<<__func__<<std::endl;
+#endif // MYDEBUG
   return error;
 }
 
@@ -1273,6 +1363,57 @@ int tp_createLeaf(TP_HANDLE tp_hand,char* label,char*value){
   return error;
 }
 
+
+/** @range を展開する
+ *
+ * @param[in] tp_hand TextParser オブジェクトハンドル
+ * @param[in] value 文字列.
+ * @param[out] from 開始値
+ * @param[out] to 終了値
+ * @param[out] step ステップ
+ * @return エラーコード
+ */
+int tp_splitRange(TP_HANDLE tp_hand,char* value,
+		  double *from,double *to,double *step){
+  int error = 0;
+  std::string svalue(value);
+  error=static_cast<TextParser*>(tp_hand)->splitRange(svalue,from,to,step);
+  return error;
+}
+
+
+int tp_expandRange(TP_HANDLE tp_hand,char* value,
+		   double* expanded){
+  int error = 0;
+  std::string svalue(value);
+  std::vector<double> vexpanded;
+  error=static_cast<TextParser*>(tp_hand)->expandRange(svalue,vexpanded);
+  for(int i=0;i<vexpanded.size();++i){
+    *(expanded+i) = vexpanded[i];
+  }
+
+
+
+    return error;
+}
+  // @list
+int tp_splitList(TP_HANDLE tp_hand,char* value,
+		 double* list,
+		 int order){
+
+
+    int error = 0;
+    std::string svalue(value);
+    std::vector<double> vexpanded;
+    error=static_cast<TextParser*>(tp_hand)->splitList(svalue,vexpanded,(TextParserSortOrder)order);
+  for(int i=0;i<vexpanded.size();++i){
+    *(list+i) = vexpanded[i];
+  }
+    return error;
+}
+
+
+
 // Fortran 用API
 
 /**
@@ -1416,7 +1557,10 @@ int tp_get_value_fort_(long* ptr,char* label,char* value,int* label_length,int* 
   for (j=0;j<vlen;j++){
     value[j]=tmp_value[j];
   }
-
+  //  for (j=vlen;j<*value_length;j++){
+    //    value[j]=' ';
+    //    std::cout<<j<<std::endl;
+  //  }
   return error;
 }
 /** 値のタイプを取得する.　Fortran用API
@@ -1815,6 +1959,15 @@ TextParserError TextParser::TextParserErrorHandler(const TextParserError error_c
     case TP_GET_PARAMETER_ERROR:
       std::cerr << "Get parameter failed";
       break;
+    case TP_RANGE_STEP_SIGN_ERROR:
+      std::cerr << "Wrong sign of step at @range";
+      break;
+    case  TP_ILLEGAL_RANGE_ERROR:
+      std::cerr << "Illegal expression of @range";
+      break;
+    case  TP_ILLEGAL_LIST_ERROR:
+      std::cerr << "Illegal expression of @list";
+      break;
     case TP_UNSUPPORTED_ERROR:
       std::cerr << "Unsupported function";
       break;
@@ -1843,3 +1996,271 @@ TextParserError TextParser::TextParserErrorHandler(const TextParserError error_c
 
   return error_code;
 }
+
+// @range 
+/** 範囲指定 @range で指定された値を取得します。
+ *  
+ *　@param[in] value 値の文字列(@range 型)
+ *　@param[out] from 範囲の始点
+ *　@param[out] to 　範囲の終点
+  *　@param[out] step　範囲内でのステップ
+ *  @return エラーコード
+ *
+ * "@range" に続く数値が２つのとき、ステップは
+ * from < to で step=1
+ * from > to で step=-1
+*/
+
+
+TextParserError TextParser::splitRange(const std::string & value,
+				       double *from,double *to,double *step){
+
+    TextParserError ret = TP_NO_ERROR;
+    std::string vcopy = value;
+ 
+    int pos = vcopy.find("@range");
+    if(pos==std::string::npos) {
+      ret = TextParserErrorHandler(TP_ILLEGAL_VALUE_TYPE_ERROR, vcopy);      
+      return ret;
+    } 
+
+    pos = vcopy.find("(");
+    if(pos==std::string::npos) {
+      ret = TextParserErrorHandler(TP_ILLEGAL_VALUE_TYPE_ERROR, vcopy);      
+      return ret;
+    } 
+
+    vcopy=vcopy.substr(pos);
+    //    std::cout << __func__ << " pos " << pos << " vcopy " <<vcopy << std::endl;
+    std::vector<std::string> string_content;
+    ret = splitVector(vcopy,string_content);
+    int ierror;
+   
+    if(string_content.size()==2||string_content.size()==3){
+      *from=convertDouble(string_content[0],&ierror);
+      if(ierror != 0) ret = (TextParserError) ierror;
+      *to=convertDouble(string_content[1],&ierror);
+      if(ierror != 0) ret = (TextParserError) ierror;
+      if(string_content.size()==2){
+	*step=1.;
+	if(*from>*to) *step=-1.;
+      }else if(string_content.size()==3){
+	*step=convertDouble(string_content[2],&ierror);
+	if(ierror != 0) ret = (TextParserError) ierror;
+      } else { //something wrong
+      }
+    }
+
+
+
+    return ret;
+}
+
+/** 範囲指定 @range で指定された値を展開します。
+ *  戻り値expanded は、展開値を入力する直前に clear() されます。
+ *　@param[in] value 値の文字列(@range 型)
+ *　@param[out] 展開した値　
+ *  @return エラーコード
+ */
+
+
+TextParserError TextParser::expandRange(const std::string & value,
+					std::vector<double>& expanded){
+
+  TextParserError ret = TP_NO_ERROR;
+  double from,to,step;
+
+  ret = splitRange(value,&from,&to,&step);
+
+
+  double element=from;
+  double sign = 1.0;
+  if(from > to) { 
+    if(step<0){
+      sign = -1;
+    } else {
+      return TextParserErrorHandler(TP_RANGE_STEP_SIGN_ERROR," @range step sign is wrong.");
+    }
+  }
+  else if(from < to) {
+    if(step>0){
+      // do nothing
+    } else {
+      return TextParserErrorHandler(TP_RANGE_STEP_SIGN_ERROR," @range step sign is wrong.");
+    }
+  } else {
+      return TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR," @range expression is wrong.");
+  }
+
+  expanded.clear();
+
+  while(element*sign<=to*sign){
+    // std::cout << element <<std::endl;
+    expanded.push_back(element);
+    element += step;
+  }
+
+  //    TP_RANGE_STEP_SIGN_ERROR
+  //    TP_ILLEGAL_RANGE_ERROR
+
+  return TP_NO_ERROR;
+}
+  
+/** 範囲指定 @list で指定された値を展開します。
+ *
+ *　@param[in] value 値の文字列(@list 型)
+ *　@param[out] list 展開する値
+ *　@param[out] order リスト内の順序
+ *  @return エラーコード
+ */
+
+  // @list
+TextParserError TextParser::splitList(const std::string & value,std::vector<double>& list,
+				      TextParserSortOrder order){
+    TextParserError ret = TP_NO_ERROR;
+    std::string vcopy = value;
+ 
+    int pos = vcopy.find("@list");
+    if(pos==std::string::npos) {
+      ret = TextParserErrorHandler(TP_ILLEGAL_VALUE_TYPE_ERROR, vcopy);      
+      return ret;
+    } 
+
+    pos = vcopy.find("(");
+    if(pos==std::string::npos) {
+      ret = TextParserErrorHandler(TP_ILLEGAL_VALUE_TYPE_ERROR, vcopy);      
+      return ret;
+    } 
+
+    vcopy=vcopy.substr(pos);
+    //    std::cout << __func__ << " pos " << pos << " vcopy " <<vcopy << std::endl;
+    std::vector<std::string> string_content;
+    ret = splitVector(vcopy,string_content);
+    int ierror;
+
+    list.clear();
+
+
+    for(std::vector<std::string>::iterator it=string_content.begin();
+	it!=string_content.end(); ++it){
+      list.push_back(convertDouble((*it),&ierror));
+      if(ierror != 0) ret = (TextParserError) ierror;
+    }
+
+    switch(order){
+
+    case TP_SORT_ASCENDING:
+      std::sort(list.begin(),list.end()); 
+      break;
+    case TP_SORT_DESCENDING:
+      std::sort(list.begin(),list.end(),std::greater<double>()); 
+      break;
+    case TP_SORT_NONE:
+      break;
+    default:
+      break;
+    }
+
+     return ret;
+  }
+
+/** 整数のlimit 指定の変換.
+ *　
+ * @param[in] value 値の文字列.
+ * @param[out] ierror エラーステータス.
+ * @return 変換後のlimit値 long long.
+ *
+ */
+
+ 
+long long TextParser::convertLimitsIntx(const std::string& value,int* ierror){
+
+  long long returner;
+
+      if(dataTree()->checkNumericalLimits(value)){
+
+	if ( value== "CHAR_MIN"){
+	  returner = std::numeric_limits<char>::min();
+	}else if ( value== "CHAR_MAX"){
+	  returner = std::numeric_limits<char>::max();
+	}else if ( value== "SHORT_MIN"){
+	  returner = std::numeric_limits<short>::min();
+	}else if ( value== "SHORT_MAX"){
+	  returner = std::numeric_limits<short>::max();
+	}else if ( value== "INT_MIN"){
+	  returner = std::numeric_limits<int>::min();
+	}else if ( value== "INT_MAX"){
+	  returner = std::numeric_limits<int>::max();
+	}else if ( value== "LONG_MIN"){
+	  returner = std::numeric_limits<long>::min();
+	}else if ( value== "LONG_MAX"){
+	  returner = std::numeric_limits<long>::max();
+	}else if ( value== "LONGLONG_MIN"){
+	  returner = std::numeric_limits<long long>::min();
+	}else if ( value== "LONGLONG_MAX"){
+	  returner = std::numeric_limits<long long>::max();
+	} else {
+	  *ierror = 130;
+	  returner = 0;
+	}
+      } else {
+	  *ierror = 130;
+	  returner = 0;
+      }
+
+      //      std::cout << __func__ << returner <<std::endl;
+      return returner;
+}
+
+/** 実数のlimit 指定の変換.
+ *　
+ * @param[in] value 値の文字列.
+ * @param[out] ierror エラーステータス.
+ * @return 変換後のlimit値 double.
+ *
+ */
+
+ 
+double TextParser::convertLimitsRealx(const std::string& value,int* ierror){
+
+  double returner;
+
+      if(dataTree()->checkNumericalLimits(value)){
+
+	if ( value== "FLOAT_MIN"){
+	  returner = std::numeric_limits<float>::min();
+	}else if ( value== "FLOAT_MAX"){
+	  returner = std::numeric_limits<float>::max();
+	}else if ( value== "DOUBLE_MIN"){
+	  returner = std::numeric_limits<double>::min();
+	}else if ( value== "DOUBLE_MAX"){
+	  returner = std::numeric_limits<double>::max();
+	} else {
+	  *ierror = 130;
+	  returner = 0;
+	}
+      } else {
+	  *ierror = 130;
+	  returner = 0;
+      }
+
+      //      std::cout << __func__ << returner <<std::endl;
+      return returner;
+}
+
+
+
+ // @range @list 用API
+  //@range 
+  int tp_split_range_fort_(long* ptr,char* value,double *from,double *to,double *step,
+			   int* nvalue){
+    return tp_splitRange(reinterpret_cast<void*>(*ptr),value,from,to,step);
+  }
+int tp_expand_range_fort_(long* ptr,char* value,double* expanded,int* nvalue){
+  return tp_expandRange(reinterpret_cast<void*>(*ptr),value,expanded);
+}
+    // @list
+int tp_split_list_fort_(long* ptr,char* value, double *list,int* order,int* nvalue){
+  return tp_splitList(reinterpret_cast<void*>(*ptr),value,list,(*order));
+}
+
