@@ -60,7 +60,7 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 subdir = src
-DIST_COMMON = $(libTP_a_include_HEADERS) $(srcdir)/Makefile.am \
+DIST_COMMON = $(nobase_include_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(top_srcdir)/depcomp
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -97,22 +97,26 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-am__installdirs = "$(DESTDIR)$(libdir)" \
-	"$(DESTDIR)$(libTP_a_includedir)"
+am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"
 LIBRARIES = $(lib_LIBRARIES)
 AR = ar
 ARFLAGS = cru
 libMPITP_a_AR = $(AR) $(ARFLAGS)
 libMPITP_a_LIBADD =
-am_libMPITP_a_OBJECTS = libMPITP_a-TextParser.$(OBJEXT) \
-	libMPITP_a-TextParserElement.$(OBJEXT) \
-	libMPITP_a-TextParserTree.$(OBJEXT)
+am__libMPITP_a_SOURCES_DIST = TextParser.cpp TextParserElement.cpp \
+	TextParserTree.cpp
+@SERIALTARGET_FALSE@am_libMPITP_a_OBJECTS =  \
+@SERIALTARGET_FALSE@	libMPITP_a-TextParser.$(OBJEXT) \
+@SERIALTARGET_FALSE@	libMPITP_a-TextParserElement.$(OBJEXT) \
+@SERIALTARGET_FALSE@	libMPITP_a-TextParserTree.$(OBJEXT)
 libMPITP_a_OBJECTS = $(am_libMPITP_a_OBJECTS)
 libTP_a_AR = $(AR) $(ARFLAGS)
 libTP_a_LIBADD =
-am_libTP_a_OBJECTS = libTP_a-TextParser.$(OBJEXT) \
-	libTP_a-TextParserElement.$(OBJEXT) \
-	libTP_a-TextParserTree.$(OBJEXT)
+am__libTP_a_SOURCES_DIST = TextParser.cpp TextParserElement.cpp \
+	TextParserTree.cpp
+@SERIALTARGET_TRUE@am_libTP_a_OBJECTS = libTP_a-TextParser.$(OBJEXT) \
+@SERIALTARGET_TRUE@	libTP_a-TextParserElement.$(OBJEXT) \
+@SERIALTARGET_TRUE@	libTP_a-TextParserTree.$(OBJEXT)
 libTP_a_OBJECTS = $(am_libTP_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -124,13 +128,14 @@ CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 SOURCES = $(libMPITP_a_SOURCES) $(libTP_a_SOURCES)
-DIST_SOURCES = $(libMPITP_a_SOURCES) $(libTP_a_SOURCES)
+DIST_SOURCES = $(am__libMPITP_a_SOURCES_DIST) \
+	$(am__libTP_a_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
-HEADERS = $(libTP_a_include_HEADERS)
+HEADERS = $(nobase_include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -247,18 +252,16 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 EXTRA_DIST = TextParser_fapi.f90
-lib_LIBRARIES = libMPITP.a libTP.a
-
-#libTP_fapi.a
-libTP_a_SOURCES = TextParser.cpp TextParserElement.cpp TextParserTree.cpp
-libTP_a_CXXFLAGS = -I$(top_builddir)/include
-libMPITP_a_SOURCES = TextParser.cpp TextParserElement.cpp TextParserTree.cpp
-libMPITP_a_CXXFLAGS = @MPICH_CFLAGS@ -I$(top_builddir)/include
+@SERIALTARGET_FALSE@lib_LIBRARIES = libMPITP.a
+@SERIALTARGET_TRUE@lib_LIBRARIES = libTP.a
+@SERIALTARGET_TRUE@libTP_a_SOURCES = TextParser.cpp TextParserElement.cpp TextParserTree.cpp
+@SERIALTARGET_TRUE@libTP_a_CXXFLAGS = -I$(top_builddir)/include
+@SERIALTARGET_FALSE@libMPITP_a_SOURCES = TextParser.cpp TextParserElement.cpp TextParserTree.cpp
+@SERIALTARGET_FALSE@libMPITP_a_CXXFLAGS = @MPICH_CFLAGS@ -I$(top_builddir)/include
 
 #libTP_fapi_a_SOURCES  = TextParser_fapi.f90
 #libTP_fapi_a_CXXFLAGS = @MPICH_CFLAGS@ -I$(top_builddir)/include
-libTP_a_includedir = $(includedir)
-libTP_a_include_HEADERS = \
+nobase_include_HEADERS = \
   $(top_builddir)/include/TextParser.h \
   $(top_builddir)/include/TextParserCommon.h \
   $(top_builddir)/include/TextParserElement.h \
@@ -449,27 +452,30 @@ libTP_a-TextParserTree.obj: TextParserTree.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TextParserTree.cpp' object='libTP_a-TextParserTree.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libTP_a_CXXFLAGS) $(CXXFLAGS) -c -o libTP_a-TextParserTree.obj `if test -f 'TextParserTree.cpp'; then $(CYGPATH_W) 'TextParserTree.cpp'; else $(CYGPATH_W) '$(srcdir)/TextParserTree.cpp'; fi`
-install-libTP_a_includeHEADERS: $(libTP_a_include_HEADERS)
+install-nobase_includeHEADERS: $(nobase_include_HEADERS)
 	@$(NORMAL_INSTALL)
-	@list='$(libTP_a_include_HEADERS)'; test -n "$(libTP_a_includedir)" || list=; \
+	@list='$(nobase_include_HEADERS)'; test -n "$(includedir)" || list=; \
 	if test -n "$$list"; then \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(libTP_a_includedir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(libTP_a_includedir)" || exit 1; \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(includedir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(includedir)" || exit 1; \
 	fi; \
-	for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  echo "$$d$$p"; \
-	done | $(am__base_list) | \
-	while read files; do \
-	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(libTP_a_includedir)'"; \
-	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(libTP_a_includedir)" || exit $$?; \
+	$(am__nobase_list) | while read dir files; do \
+	  xfiles=; for file in $$files; do \
+	    if test -f "$$file"; then xfiles="$$xfiles $$file"; \
+	    else xfiles="$$xfiles $(srcdir)/$$file"; fi; done; \
+	  test -z "$$xfiles" || { \
+	    test "x$$dir" = x. || { \
+	      echo " $(MKDIR_P) '$(DESTDIR)$(includedir)/$$dir'"; \
+	      $(MKDIR_P) "$(DESTDIR)$(includedir)/$$dir"; }; \
+	    echo " $(INSTALL_HEADER) $$xfiles '$(DESTDIR)$(includedir)/$$dir'"; \
+	    $(INSTALL_HEADER) $$xfiles "$(DESTDIR)$(includedir)/$$dir" || exit $$?; }; \
 	done
 
-uninstall-libTP_a_includeHEADERS:
+uninstall-nobase_includeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(libTP_a_include_HEADERS)'; test -n "$(libTP_a_includedir)" || list=; \
-	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	dir='$(DESTDIR)$(libTP_a_includedir)'; $(am__uninstall_files_from_dir)
+	@list='$(nobase_include_HEADERS)'; test -n "$(includedir)" || list=; \
+	$(am__nobase_strip_setup); files=`$(am__nobase_strip)`; \
+	dir='$(DESTDIR)$(includedir)'; $(am__uninstall_files_from_dir)
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -571,7 +577,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(LIBRARIES) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(libTP_a_includedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -626,7 +632,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-libTP_a_includeHEADERS
+install-data-am: install-nobase_includeHEADERS
 
 install-dvi: install-dvi-am
 
@@ -671,7 +677,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-libLIBRARIES uninstall-libTP_a_includeHEADERS
+uninstall-am: uninstall-libLIBRARIES uninstall-nobase_includeHEADERS
 
 .MAKE: install-am install-strip
 
@@ -681,14 +687,14 @@ uninstall-am: uninstall-libLIBRARIES uninstall-libTP_a_includeHEADERS
 	dvi-am html html-am info info-am install install-am \
 	install-data install-data-am install-dvi install-dvi-am \
 	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am install-libLIBRARIES \
-	install-libTP_a_includeHEADERS install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
+	install-info install-info-am install-libLIBRARIES install-man \
+	install-nobase_includeHEADERS install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-libLIBRARIES \
-	uninstall-libTP_a_includeHEADERS
+	uninstall-nobase_includeHEADERS
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

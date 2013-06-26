@@ -11,7 +11,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([TextParser], [1.3.1], [keno@iis.u-tokyo.ac.jp], [TextParser])
+AC_INIT([TextParser], [1.3.2], [keno@iis.u-tokyo.ac.jp], [TextParser])
 AM_INIT_AUTOMAKE()
 AC_CONFIG_SRCDIR([src/TextParser.cpp])
 AC_CONFIG_HEADERS([config.h])
@@ -20,7 +20,7 @@ AC_CONFIG_HEADERS([config.h])
 #
 # revision No.
 #
-TP_REVISION="20130625_1600"
+TP_REVISION="20130626_2300"
 AC_SUBST(TP_REVISION)
 
 
@@ -120,6 +120,11 @@ elif test "$enable_mpi" = "ompi" ; then
   esac
 fi
 
+if test "$enable_mpi" = "none" ; then
+  echo "  Warning: Neither MPICH nor OpenMPI library is not specified."
+  echo "           If compilation error occurs about MPI, specify --with-mpich or --with-ompi option."
+fi
+
 
 
 #
@@ -150,8 +155,17 @@ AC_SUBST(TP_CFLAGS)
 TP_LDFLAGS="-L$TP_INST_DIR/lib"
 AC_SUBST(TP_LDFLAGS)
 
-TP_LIBS="libMPITP.a libTP.a"
+
+if test "$enable_mpi" = "none" ; then
+  TP_LIBS="-lTP"
+else
+  TP_LIBS="-lMPITP"
+fi
 AC_SUBST(TP_LIBS)
+
+# SERIALTARGET = true, if serial
+AM_CONDITIONAL([SERIALTARGET], [test "$enable_mpi" = "none"])
+
 
 TP_CXX="$CXX"
 AC_SUBST(TP_CXX)
@@ -193,7 +207,6 @@ AC_PROG_RANLIB
 #
 # Checks for libraries.
 #
-AC_CHECK_LIB([TextParser], [TextParser::get_instance()])
 
 
 

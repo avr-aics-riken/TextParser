@@ -7,7 +7,7 @@
  */
 
 
-How to build
+HOW TO BUILD
 ============
 
 
@@ -21,13 +21,13 @@ $ sudo make install or # make install
 configure options
 
  --prefix=PREFIX
-    Specify the directory that this library will be installed. Default is /usr/local.
-    Built library will be installed at $(PREFIX)/lib and header files are placed at 
-    $(PREFIX)/include.
+    Specify the directory that this library will be installed. Default directory is 
+    /usr/local/TextParser. Built library will be installed at $(PREFIX)/lib and header files 
+    are placed at $(PREFIX)/include.
 
  --with-comp=(INTEL|FJ)
     If Intel compiler is used, choose INTEL, and if Fujitsu compiler, specify FJ. This option 
-    is mandatory when using both compilers.
+    is mandatory when using both compilers to build Fortran API.
 
  --with-mpich=MPICH_DIR
     If you will use a MPICH library, specify the directory that MPICH library is installed.
@@ -38,17 +38,18 @@ configure options
     If you will use an OpenMPI library, specify the directory path of OpenMPI.
 
  CXX 
-   Specify C++ wrapper compiler for MPI
+   Specify C++ compiler or a wrapper compiler for MPI
 
  CXXFLAGS
    Specify C++ compiler option.
 
 
-#Both of shared(*.so) and static(*.a) libraries are build and installed.
-#At linking, adding -LPREFIX/lib -lTextParser (-lTextParser_f90api -lTextParser_mpi),
-#shared or static library will be liked by choosing link option -shared or -static.
-#If a shared library is used, LD_LIBRARY_PATH or setting of ldconfig must be required.
-
+/*
+Both of shared(*.so) and static(*.a) libraries are build and installed.
+At linking, adding -LPREFIX/lib -lTextParser (-lTextParser_f90api -lTextParser_mpi),
+shared or static library will be liked by choosing link option -shared or -static.
+If a shared library is used, LD_LIBRARY_PATH or setting of ldconfig must be required.
+*/
 
 
 
