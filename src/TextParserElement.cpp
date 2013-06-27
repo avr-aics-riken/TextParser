@@ -133,7 +133,7 @@ TextParserError TextParserNode::removeElement()
         std::map<std::string, TextParserNode *>::iterator ni = _nodes.begin();
         while (ni != _nodes.end()) {
             TextParserNode *node = (ni)->second;
-	    //	    std::cout<< __FUNCTION__ <<node->_label <<std::endl;
+	    //	    TP_DBGOSH<< __FUNCTION__ <<node->_label <<std::endl;
             ret = node->removeElement();
             if (ret != TP_NO_ERROR) return ret;
             delete node;
@@ -144,7 +144,7 @@ TextParserError TextParserNode::removeElement()
         std::map<std::string, TextParserLeaf *>::iterator li = _leaves.begin();
         while (li != _leaves.end()) {
             TextParserLeaf *leaf = (li)->second;
-	    //	    std::cout<< __FUNCTION__ <<leaf->_label <<std::endl;
+	    //	    TP_DBGOSH<< __FUNCTION__ <<leaf->_label <<std::endl;
             ret = leaf->removeElement();
 
             if (ret != TP_NO_ERROR) return ret;
@@ -230,7 +230,7 @@ TextParserNode *TextParserNode::getNode(const std::string& label)
 TextParserLeaf *TextParserNode::getLeaf(const std::string& label)
 {
     std::string label_cpy = TextParserStringToLower(label);
-    //    std::cout << "getLeaf " << label << " "<< label_cpy << std::endl; 
+    //    TP_DBGOSH << "getLeaf " << label << " "<< label_cpy << std::endl; 
 
     std::map<std::string, TextParserLeaf *>::iterator li = _leaves.find(label_cpy);
     if (li != _leaves.end()) {
@@ -285,8 +285,8 @@ TextParserError TextParserNode::writeNode(std::ostream& ofs, unsigned int level,
 	  std::vector<std::string>::iterator tmp_iter=tmplabel2.begin();
 	  while(tmp_iter !=tmplabel2.end()){
 	    TextParserNode *dir = _nodes[TextParserStringToLower(*tmp_iter)];
-	    //std::cout << __FUNCTION__ << " 1 "<<*tmp_iter << std::endl;
-	    //std::cout << __FUNCTION__ << " 2 "<<dir->_label << std::endl;
+	    //TP_DBGOSH << __FUNCTION__ << " 1 "<<*tmp_iter << std::endl;
+	    //TP_DBGOSH << __FUNCTION__ << " 2 "<<dir->_label << std::endl;
 	    dir->writeNode(ofs, level + 1,order);
 	    tmp_iter++;
 	  }
@@ -300,7 +300,7 @@ TextParserError TextParserNode::writeNode(std::ostream& ofs, unsigned int level,
 	    li = _leaves.begin();
 	  while (li != _leaves.end()) {
 	    TextParserLeaf *leaf = li->second;
-	    // std::cout << __FUNCTION__<< __LINE__
+	    // TP_DBGOSH << __FUNCTION__<< __LINE__
 	    // 	      <<" "<<leaf 
 	    // 	      << " label " << leaf->_label <<std::endl;
 	    tmplabel1.push_back(leaf->_label);
@@ -338,7 +338,7 @@ TextParserError TextParserNode::writeNode(std::ostream& ofs, unsigned int level,
 	  std::map<std::string, TextParserLeaf *>::iterator li = _leaves.begin();
 	  while (li != _leaves.end()) {
 	    TextParserLeaf *leaf = li->second;
-	    //	    std::cout << __FUNCTION__ << " 5 leaf "<<leaf->_label << std::endl;
+	    //	    TP_DBGOSH << __FUNCTION__ << " 5 leaf "<<leaf->_label << std::endl;
 	    leaf->writeLeaf(ofs, level + 1);
 	    li++;
 	  }
@@ -421,7 +421,7 @@ TextParserError TextParserLeaf::removeElement()
 {
     try {
         if (_value != 0) {
-	  //	  std::cout<< __FUNCTION__ <<_value->_value <<std::endl;
+	  //	  TP_DBGOSH<< __FUNCTION__ <<_value->_value <<std::endl;
             delete _value;
         }
     } catch (std::exception ex) {
@@ -511,7 +511,7 @@ TextParserError TextParserElement::element_label_sort(const std::vector<std::str
 TextParserError TextParserElement::element_labelSort_1(const std::vector<std::string>& input,
 				    std::vector<std::string>& output){
 
-  //  std::cout << "element_labelSort_1" <<std::endl;
+  //  TP_DBGOSH << "element_labelSort_1" <<std::endl;
   TextParserError ret=TP_NO_ERROR;
   
   std::vector<TextParserElement*> velement; 
@@ -525,7 +525,7 @@ TextParserError TextParserElement::element_labelSort_1(const std::vector<std::st
   std::vector< std::string >::const_iterator iter=input.begin();
   while ( iter !=input.end() ){
     std::string label=(*iter);
-    // std::cout <<label <<std::endl;
+    // TP_DBGOSH <<label <<std::endl;
     int number=element_array_label_test(label,key);
     
     if( number==-10000 || number == -1000){
@@ -547,7 +547,7 @@ TextParserError TextParserElement::element_labelSort_1(const std::vector<std::st
 	key_list.push_back(key);
 	key_number.push_back(key_list.size());
 	order_switch.push_back(key_list.size());
-	//std::cout << "new key "<< key <<" "<<key_list.size()<<std::endl;
+	//TP_DBGOSH << "new key "<< key <<" "<<key_list.size()<<std::endl;
 	
 	std::map<int,std::string> dummy;
 	dummy.insert(std::map<int,std::string>::value_type(number,label) );
@@ -576,12 +576,12 @@ TextParserError TextParserElement::element_labelSort_1(const std::vector<std::st
      if(order_switch[i]==0) {
        output.push_back(label);
      } else {
-       //std::cout<<"order_switch " << order_switch[i] << std::endl;
+       //TP_DBGOSH<<"order_switch " << order_switch[i] << std::endl;
        if(map_buffer_iter[order_switch[i]-1]
 	  !=map_buffer_iter_end[order_switch[i]-1]){
-	 //	 std::cout << "aaa " <<  std::endl; 
+	 //	 TP_DBGOSH << "aaa " <<  std::endl; 
 	 output.push_back(map_buffer_iter[order_switch[i]-1]->second);
-	 //	 std::cout << "bbb " <<  std::endl; 
+	 //	 TP_DBGOSH << "bbb " <<  std::endl; 
 	 map_buffer_iter[order_switch[i]-1]++;
        } else {
 	 return owner_tree()->TextParserErrorHandler(TP_ERROR,label);
@@ -591,8 +591,8 @@ TextParserError TextParserElement::element_labelSort_1(const std::vector<std::st
      ++i;
    }
 
-   //std::cout << "labelSort_1 end" <<std::endl;
-   //   std::cout << "element_labelSort_1 end" <<std::endl;
+   //TP_DBGOSH << "labelSort_1 end" <<std::endl;
+   //   TP_DBGOSH << "element_labelSort_1 end" <<std::endl;
  return ret;
 
 }
@@ -628,7 +628,7 @@ int TextParserElement::element_array_label_test(const std::string& label,std::st
       ts << num_string;
       
       ts >>number;
-       // std::cout << "array_label_test lsb rsb "<< lsb << " "<< rsb 
+       // TP_DBGOSH << "array_label_test lsb rsb "<< lsb << " "<< rsb 
        // 		 << " key " <<key 
        // 		<< " num_string "<< num_string 
        // 		<<" number "<< number<<std::endl;

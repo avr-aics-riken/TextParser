@@ -21,6 +21,12 @@
 //#include <varargs.h>
 //#include <stdarg.h>
 
+// for Debug or On-Error output
+#define TP_DBGOS	std::cout
+#define TP_DBGOSH	std::cout<<"TP:"
+#define TP_ERROS	std::cerr
+#define TP_ERROSH	std::cerr<<"TP:"
+
 #include "TextParserCommon.h"
 #ifdef __cplusplus
 #include <iostream>
