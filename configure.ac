@@ -11,7 +11,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([TextParser], [1.3.2], [keno@iis.u-tokyo.ac.jp], [TextParser])
+AC_INIT([TextParser], [1.3.3], [keno@iis.u-tokyo.ac.jp], [TextParser])
 AM_INIT_AUTOMAKE()
 AC_CONFIG_SRCDIR([src/TextParser.cpp])
 AC_CONFIG_HEADERS([config.h])
@@ -20,7 +20,7 @@ AC_CONFIG_HEADERS([config.h])
 #
 # revision No.
 #
-TP_REVISION="20130626_2300"
+TP_REVISION="20130627_1200"
 AC_SUBST(TP_REVISION)
 
 
@@ -46,7 +46,7 @@ AC_SUBST(TP_DEVICE)
 
 
 #
-# compiler libs
+# compiler libs   // Fortranのコンパイルのためのオプション
 #
 AC_ARG_WITH(comp, [AC_HELP_STRING([--with-comp=(INTEL|FJ)],[Specify Compiler type])], , with_comp=none)
 AC_SUBST(COMPILER_LIBS)
@@ -59,12 +59,13 @@ case "$with_comp" in
   ;;
 esac
 
+
+# 初期値
 enable_mpi="none"
 
 
-
 #
-# MPICH environment
+# MPICH environment  // mpichが指定されていれば変数をセット
 #
 AC_SUBST(MPICH_DIR)
 AC_SUBST(MPICH_CFLAGS)
@@ -80,7 +81,7 @@ if test "$with_mpich" != "none" ; then
 fi
 
 #
-# OpenMPI environment
+# OpenMPI environment  // mpichが指定されておらず，かつ，ompが指定されていれば変数をセット
 #
 if test "$with_mpich" = "none" ; then
   AC_ARG_WITH(ompi, [AC_HELP_STRING([--with-ompi=dir],[Specify OpenMPI install directory])], , with_ompi=none)
@@ -95,7 +96,7 @@ fi
 
 
 #
-# MPI Library
+# MPI Library  // Fortran用のライブラリ
 #
 if test "$with_comp" = "FJ" ; then
   MPICH_LIBS=""
@@ -126,7 +127,6 @@ if test "$enable_mpi" = "none" ; then
 fi
 
 
-
 #
 # default prefix setting
 #
@@ -149,11 +149,20 @@ fi
 #
 # Special flags
 #
-TP_CFLAGS="-I$TP_INST_DIR/include"
-AC_SUBST(TP_CFLAGS)
 
-TP_LDFLAGS="-L$TP_INST_DIR/lib"
-AC_SUBST(TP_LDFLAGS)
+TP_CXX="$CXX"
+AC_SUBST(TP_CXX)
+
+# if a wrapper compiler is used, "enable_mpi" is empty, but parallel.
+# wrappers like mpicxx, mpicc, mpiCC, mpic++, mpiFCCpx are taking into consideration, if not add in case.
+
+case "$TP_CXX" in
+  mpicxx)   enable_mpi="mpi" ;;
+  mpicc)    enable_mpi="mpi" ;;
+  mpiCC)    enable_mpi="mpi" ;;
+  mpic++)   enable_mpi="mpi" ;;
+  mpiFCCpx) enable_mpi="mpi" ;;
+esac
 
 
 if test "$enable_mpi" = "none" ; then
@@ -167,8 +176,11 @@ AC_SUBST(TP_LIBS)
 AM_CONDITIONAL([SERIALTARGET], [test "$enable_mpi" = "none"])
 
 
-TP_CXX="$CXX"
-AC_SUBST(TP_CXX)
+TP_CFLAGS="-I$TP_INST_DIR/include"
+AC_SUBST(TP_CFLAGS)
+
+TP_LDFLAGS="-L$TP_INST_DIR/lib"
+AC_SUBST(TP_LDFLAGS)
 
 TP_FC="$FC"
 AC_SUBST(TP_FC)

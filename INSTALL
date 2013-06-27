@@ -27,7 +27,7 @@ configure options
 
  --with-comp=(INTEL|FJ)
     If Intel compiler is used, choose INTEL, and if Fujitsu compiler, specify FJ. This option 
-    is mandatory when using both compilers to build Fortran API.
+    is mandatory when using either compiler to build Fortran API.
 
  --with-mpich=MPICH_DIR
     If you will use a MPICH library, specify the directory that MPICH library is installed.
@@ -38,10 +38,41 @@ configure options
     If you will use an OpenMPI library, specify the directory path of OpenMPI.
 
  CXX 
-   Specify C++ compiler or a wrapper compiler for MPI
+   Specify C++ compiler or a wrapper compiler for MPI. If a wrapper compiler is specified, 
+   set string as CXX=mpiCC without directory prefix. To do so, please set path before compilation.
 
  CXXFLAGS
    Specify C++ compiler option.
+
+
+
+
+Here is some examples;
+
+## Serial version
+
+  $ ./configure CXX=icpc CXXFLAGS=-O3
+
+
+## Intel compiler and MPICH
+
+  $ ./configure --prefix=/usr/local/TextParser \
+                --with-mpich=/usr/local/mpich \
+                CXX=icpc \
+                CXXFLAGS=-O3
+
+
+## OpenMPI with wrapper compiler, assume that mpicxx is a wrapper compiler for OpenMPI.
+
+  $ ./configure CXX=mpicxx CXXFLAGS=-O3
+
+
+## K-computer
+
+  $ ./configure --prefix=$1 \
+                --host=sparc64-unknown-linux-gnu \
+                CXX=mpiFCCpx \
+                CXXFLAGS="-Kfast"
 
 
 /*
