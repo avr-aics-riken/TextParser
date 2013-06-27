@@ -13,9 +13,9 @@
 CXXFLAGS+=-I../include
 CXXLDFLAGS+=-L../src -lTextParser
 CCFLAGS+=-I../include
-CCLDFLAGS+=-L../src -lstdc++ -lTextParser
+CCLDFLAGS+=-L../src -lTextParser -lstdc++
 FCFLAGS+=-I../include
-FCLDFLAGS+=-L../src -lstdc++ -lTextParser_f90api -lTextParser
+FCLDFLAGS+=-L../src -lTextParser_f90api -lTextParser -lstdc++
 CXXLINKER=$(CXX)
 CCLINKER=$(CC)
 FCLINKER=$(FC)
