@@ -37,6 +37,10 @@ configure options
  --with-ompi=OPENMPI_DIR
     If you will use an OpenMPI library, specify the directory path of OpenMPI.
 
+ --host=hostname
+    Specify in case of cross-compilation.
+
+
  CXX 
    Specify C++ compiler or a wrapper compiler for MPI. If a wrapper compiler is specified, 
    set string as CXX=mpiCC without directory prefix. To do so, please set path before compilation.
