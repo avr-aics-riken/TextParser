@@ -7,8 +7,10 @@
 
 # -*- mode: makefile -*-
 ###################################
-# 手動設定でのライブラリ作成用 Makefile
-#
+# 
+# If a wrapper compiler is specified for MPICXX, set string as MPICXX=mpiCC without
+# directory prefix. Thus, the setting of path for wrapper compiler is required before
+# compilation.
 #
 
 ##############################################
@@ -52,14 +54,14 @@ DEST_DIR=./lib
 EXAMPLE_DIR=./Examples
 
 ###################################
-SSTATIC_TARGET=$(TARGET_DIR)/libTextParser.a
+SSTATIC_TARGET=$(TARGET_DIR)/libTP.a
 
 EXAMPLE_TARGET=$(EXAMPLE_DIR)/Example1_cpp $(EXAMPLE_DIR)/Example2_cpp $(EXAMPLE_DIR)/Example3_cpp $(EXAMPLE_DIR)/Example4_cpp $(EXAMPLE_DIR)/Example5_cpp $(EXAMPLE_DIR)/Example6_cpp $(EXAMPLE_DIR)/Example1_c $(EXAMPLE_DIR)/Example2_c $(EXAMPLE_DIR)/Example3_c $(EXAMPLE_DIR)/Example4_c
 
-MPI_TARGET=$(TARGET_DIR)/libTextParser_mpi.a
+MPI_TARGET=$(TARGET_DIR)/libTP_mpi.a
 MPI_EXAMPLE=$(EXAMPLE_DIR)/Example3_cpp_mpi
 
-F90API_TARGET=$(TARGET_DIR)/libTextParser_f90api.a
+F90API_TARGET=$(TARGET_DIR)/libTP_f90api.a
 F90API_EXAMPLE=$(EXAMPLE_DIR)/Example1_f90 $(EXAMPLE_DIR)/Example2_f90 $(EXAMPLE_DIR)/Example3_f90 $(EXAMPLE_DIR)/Example4_f90
 
 .PHONY: all clean mpi

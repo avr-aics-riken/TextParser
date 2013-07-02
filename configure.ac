@@ -11,7 +11,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([TextParser], [1.3.3], [keno@iis.u-tokyo.ac.jp], [TextParser])
+AC_INIT([TextParser], [1.3.4], [keno@iis.u-tokyo.ac.jp], [TextParser])
 AM_INIT_AUTOMAKE()
 AC_CONFIG_SRCDIR([src/TextParser.cpp])
 AC_CONFIG_HEADERS([config.h])
@@ -20,7 +20,7 @@ AC_CONFIG_HEADERS([config.h])
 #
 # revision No.
 #
-TP_REVISION="20130627_1200"
+TP_REVISION="20130702_1600"
 AC_SUBST(TP_REVISION)
 
 

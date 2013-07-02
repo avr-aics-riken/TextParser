@@ -22,17 +22,18 @@ configure options
 
  --prefix=PREFIX
     Specify the directory that this library will be installed. Default directory is 
-    /usr/local/TextParser. Built library will be installed at $(PREFIX)/lib and header files 
-    are placed at $(PREFIX)/include.
+    /usr/local/TextParser. Built library will be installed at $(PREFIX)/lib and header
+    files are placed at $(PREFIX)/include.
 
  --with-comp=(INTEL|FJ)
-    If Intel compiler is used, choose INTEL, and if Fujitsu compiler, specify FJ. This option 
-    is mandatory when using either compiler to build Fortran API.
+    If Intel compiler is used, choose INTEL, and if Fujitsu compiler, specify FJ. This
+    option is mandatory when using either compiler to build Fortran API.
 
  --with-mpich=MPICH_DIR
-    If you will use a MPICH library, specify the directory that MPICH library is installed.
-    Either --with-mpich of --with-ompi option will be required except. If the wrapper compiler,
-    e.g., mpic++ or mpicxx is used to compile, both options can be eliminated.
+    If you will use a MPICH library, specify the directory that MPICH library is 
+    installed. Either --with-mpich of --with-ompi option will be required except. If the
+    wrapper compiler, e.g., mpic++ or mpicxx is used to compile, both options can be 
+    eliminated.
 
  --with-ompi=OPENMPI_DIR
     If you will use an OpenMPI library, specify the directory path of OpenMPI.
@@ -43,7 +44,8 @@ configure options
 
  CXX 
    Specify C++ compiler or a wrapper compiler for MPI. If a wrapper compiler is specified, 
-   set string as CXX=mpiCC without directory prefix. To do so, please set path before compilation.
+   set string as CXX=mpiCC without directory prefix. To do so, please set path before
+   compilation.
 
  CXXFLAGS
    Specify C++ compiler option.
@@ -112,8 +114,8 @@ Examples
 
 example 1
 
- $ g++ -o myprog myprog.cpp -I/usr/local/TextParser/include -L/usr/local/TextParser/lib \
-   -lTextParser
+ $ g++ -o myprog myprog.cpp -I/usr/local/TextParser/include \
+   -L/usr/local/TextParser/lib -lTP
 
 
  Linking shared library, following environment will be demanded.
@@ -124,12 +126,12 @@ example 1
 
 example 2
 
- $ gcc -o myprog myprog.c -I/usr/local/TextParser/include -L/usr/local/TextParser/lib \
-   -lTextParser -lstdc++
+ $ gcc -o myprog myprog.c -I/usr/local/TextParser/include \
+   -L/usr/local/TextParser/lib -lstdc++ -lTP 
 
 
 example 3
 
- $ gfortran -o myprog myprog.f90 -I/usr/local/TextParser/include -L/usr/local/TextParser/lib \
-   -lTextParser -lTextParser_f90api -lstdc++
+ $ gfortran -o myprog myprog.f90 -I/usr/local/TextParser/include \
+   -L/usr/local/TextParser/lib -lstdc++ -lTP -lTextParser_f90api 
 

@@ -10,6 +10,9 @@
 RELEASE
 =======
 
+Version 1.3.4  2013-07-02
+ - Change order of link, place stdc++ at last for gnu compiler.
+
 Version 1.3.3  2013-06-27
  - Bug fix of configure option, correction of relation between built archives 
    and tp-config --libs.
