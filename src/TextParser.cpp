@@ -4,7 +4,7 @@
  * Copyright (C) 2012-2013 Institute of Industrial Science, The University of Tokyo.
  * All rights reserved.
  *
- */
+ *
 
 /** @file TextParser.cpp
  * ここには TextParser クラスと
@@ -50,7 +50,7 @@ void TextParser::status(){dataTree()->status();}
 //TextParser* TextParser::get_instance(){
 TextParser* TextParser::get_instance_singleton(){
 #ifdef MYDEBUG
-  std::cout<< "TextParser::get_instance() called."<<std::endl;
+  TP_DBGOSH<< "TextParser::get_instance() called."<<std::endl;
 #endif
   static TextParser instance;
   return &instance;
@@ -65,7 +65,7 @@ TextParser* TextParser::get_instance_singleton(){
 TextParser::TextParser(){
    _data_tree=new TextParserTree;
    _data_tree->set_owner(this);
-  //  std::cout << __FUNCTION__ << " dataTree()=" <<dataTree() << std::endl;
+  //  TP_DBGOSH << __FUNCTION__ << " dataTree()=" <<dataTree() << std::endl;
 }
 
 /**  
@@ -89,7 +89,7 @@ TextParser::~TextParser(){
 
 TextParserError TextParser::read(const std::string& file){
 #ifdef MYDEBUG  
-    std::cout << "TextParser reading file " << file << std::endl;
+    TP_DBGOSH << "TextParser reading file " << file << std::endl;
 #endif // MYDEBUG    
   TextParserError ret = TP_NO_ERROR;
 
@@ -99,7 +99,7 @@ TextParserError TextParser::read(const std::string& file){
     ret = TextParserErrorHandler(TP_FILEINPUT_ERROR, file);
   }
 #ifdef MYDEBUG  
-  std::cout << "TextParser end reading file "<<file << std::endl;
+  TP_DBGOSH << "TextParser end reading file "<<file << std::endl;
 #endif // MYDEBUG    
    return ret;
 }
@@ -108,8 +108,8 @@ TextParserError TextParser::read(const std::string& file){
 TextParserError TextParser::read_local(const std::string& file){
   TextParserError ret = TP_NO_ERROR;
 #ifndef BUILD_MPI
-  std::cout << "ERROR - TextParser::read_local(const std::string file) is designed to be use d with MPI library. "<<std::endl;
-  std::cout << " Please USE TextParser::read(const std::stringfile)."<<std::endl;
+  TP_DBGOSH << "ERROR - TextParser::read_local(const std::string file) is designed to be use d with MPI library. "<<std::endl;
+  TP_DBGOSH << " Please USE TextParser::read(const std::stringfile)."<<std::endl;
   ret = TextParserErrorHandler(TP_FILEINPUT_ERROR, file);
   return ret;
 #else
@@ -618,7 +618,7 @@ bool TextParser::convertBool(const std::string& value, int *error)
    *error=0;
     bool returner=false;
 #ifdef MYDEBUG3
-    std::cout << "ConvertBool" << " value |" << value << "|"<<std::endl;
+    TP_DBGOSH << "ConvertBool" << " value |" << value << "|"<<std::endl;
 #endif 
     std::string tstring="true";
     if(TextParserStringCompare(value,tstring)){
@@ -662,7 +662,7 @@ TextParserError TextParser::splitVector(const std::string& vector_value,
     } catch (std::exception ex) {
         ret = TextParserErrorHandler(TP_GET_PARAMETER_ERROR, "");
     }
-    //    std::cout << velem.size() <<std::endl;
+    //    TP_DBGOSH << velem.size() <<std::endl;
     return ret;
 }
 
@@ -1017,7 +1017,7 @@ char tp_convertChar(TP_HANDLE tp_hand,char* value,int *error){
 
   int int_recieve=tp_ptr->convertInt(svalue,error);
   char returner = int_recieve;
-  //  std::cout << __FUNCTION__ << svalue  << " int "<< int_recieve<< " char "<< (int)returner <<std::endl; 
+  //  TP_DBGOSH << __FUNCTION__ << svalue  << " int "<< int_recieve<< " char "<< (int)returner <<std::endl; 
   return returner;
 
 }
@@ -1192,20 +1192,20 @@ int tp_currentNode(TP_HANDLE tp_hand,char* label){
   */
 int tp_changeNode(TP_HANDLE tp_hand,char* label){
 #ifdef MYDEBUG
-  std::cout <<__func__ <<" "<<label<<std::endl;
+  TP_DBGOSH <<__func__ <<" "<<label<<std::endl;
 #endif // MYDEBUG
   TextParser* tp_ptr= static_cast<TextParser*>(tp_hand);
   int error = 0;
   std::string slabel(label);
 
 #ifdef MYDEBUG
-  std::cout <<__func__<<" "<<slabel<<std::endl;
+  TP_DBGOSH <<__func__<<" "<<slabel<<std::endl;
 #endif // MYDEBUG
 
   error=tp_ptr->changeNode(slabel);
 
 #ifdef MYDEBUG
-  std::cout <<slabel<<" "<<__func__<<std::endl;
+  TP_DBGOSH <<slabel<<" "<<__func__<<std::endl;
 #endif // MYDEBUG
   return error;
 }
@@ -1506,9 +1506,9 @@ int tp_remove_fort_(long* ptr){
  */
 int tp_get_number_of_leaves_fort_(long* ptr,int* nleaves ){
   unsigned int i;
-  //  std::cout << "tp_get_number_of_leaves_fort_"<< std::endl;
+  //  TP_DBGOSH << "tp_get_number_of_leaves_fort_"<< std::endl;
   int error=tp_getNumberOfLeaves(reinterpret_cast<void*>(*ptr),&i);
-  //  std::cout << "tp_get_number_of_leaves_fort_"<< std::endl;
+  //  TP_DBGOSH << "tp_get_number_of_leaves_fort_"<< std::endl;
   *nleaves=i;
 
   return error;
@@ -1554,14 +1554,14 @@ int tp_get_value_fort_(long* ptr,char* label,char* value,int* label_length,int* 
   int vlen=strlen(tmp_value);
   int j;
 
-  //  std::cout <<error<<"length "<<vlen<< "|"<<tmp_value<<"|"<<std::endl;
+  //  TP_DBGOSH <<error<<"length "<<vlen<< "|"<<tmp_value<<"|"<<std::endl;
 
   for (j=0;j<vlen;j++){
     value[j]=tmp_value[j];
   }
   //  for (j=vlen;j<*value_length;j++){
     //    value[j]=' ';
-    //    std::cout<<j<<std::endl;
+    //    TP_DBGOSH<<j<<std::endl;
   //  }
   return error;
 }
@@ -1745,7 +1745,7 @@ int tp_get_number_of_cleaves_fort_(long* ptr,int* nleaves){
   return tp_getNumberOfCLeaves(reinterpret_cast<void*>(*ptr),nleaves);
 }
 int tp_get_ith_node_fort_(long* ptr,int* inode,char* node,int* node_length){
-  //  std::cout << "tp_get_ith_node_fort_" << *inode << std::endl;
+  //  TP_DBGOSH << "tp_get_ith_node_fort_" << *inode << std::endl;
   char tmp_node[TP_FORTRAN_BUFFER_SIZE];
   int i;
   int error=tp_getIthNode(reinterpret_cast<void*>(*ptr),*inode,tmp_node);
@@ -1757,7 +1757,7 @@ int tp_get_ith_node_fort_(long* ptr,int* inode,char* node,int* node_length){
 }
 
 int tp_get_ith_node_order_fort_(long* ptr,int* inode,char* node,int* order,int* node_length){
-  //  std::cout << "tp_get_ith_node_fort_" << *inode << std::endl;
+  //  TP_DBGOSH << "tp_get_ith_node_fort_" << *inode << std::endl;
   char tmp_node[TP_FORTRAN_BUFFER_SIZE];
   int i;
   int error=tp_getIthNodeOrder(reinterpret_cast<void*>(*ptr),*inode,tmp_node,*order);
@@ -1835,165 +1835,165 @@ int tp_create_leaf_fort_(long* ptr,char* label,char*value,
 TextParserError TextParser::TextParserErrorHandler(const TextParserError error_code, const std::string& sub_message)
 {
 #ifdef MYDEBUG    
-  std::cout<< "TextParserErrorHandler() start"<<std::endl;
-  std::cout<< "error_code " <<error_code <<" submessage " <<sub_message<< std::endl;
+  TP_DBGOSH<< "TextParserErrorHandler() start"<<std::endl;
+  TP_DBGOSH<< "error_code " <<error_code <<" submessage " <<sub_message<< std::endl;
 #endif // MYDEBUG    
 
 
   if (error_code > TP_NO_ERROR) {
     if (error_code < TP_WARNING ) {
-      std::cerr << "*Error #" << error_code << ": ";
+      TP_ERROSH << "*Error #" << error_code << ": ";
     } else {
-      std::cerr << "*Warning #" << error_code << ": ";
+      TP_ERROSH << "*Warning #" << error_code << ": ";
     }
     switch (error_code) {
     case TP_DATABASE_NOT_READY_ERROR:
-      std::cerr << "Database is not ready";
+      TP_ERROSH << "Database is not ready";
       break;
     case TP_DATABASE_ALREADY_SET_ERROR:
-      std::cerr << "Database has been already set";
+      TP_ERROSH << "Database has been already set";
       break;
     case TP_FILEOPEN_ERROR:
-      std::cerr << "File open failed";
+      TP_ERROSH << "File open failed";
       break;
     case TP_FILEINPUT_ERROR:
-      std::cerr << "File input failed";
+      TP_ERROSH << "File input failed";
       break;
     case TP_FILEOUTPUT_ERROR:
-      std::cerr << "File outnput failed";
+      TP_ERROSH << "File outnput failed";
       break;
     case TP_ENDOF_FILE_ERROR:
-      std::cerr << "End of file";
+      TP_ERROSH << "End of file";
       break;
     case TP_ILLEGAL_TOKEN_ERROR:
-      std::cerr << "Illegal token";
+      TP_ERROSH << "Illegal token";
       break;
     case TP_MISSING_LABEL_ERROR:
-      std::cerr << "Missing label";
+      TP_ERROSH << "Missing label";
       break;
     case TP_ILLEGAL_LABEL_ERROR:
-      std::cerr << "Illegal label";
+      TP_ERROSH << "Illegal label";
       break;
     case TP_ILLEGAL_ARRAY_LABEL_ERROR:
-      std::cerr << "Illegal array type label";
+      TP_ERROSH << "Illegal array type label";
       break;
     case TP_MISSING_ELEMENT_ERROR:
-      std::cerr << "Missing element";
+      TP_ERROSH << "Missing element";
       break;
     case TP_ILLEGAL_ELEMENT_ERROR:
-      std::cerr << "Illegal element";
+      TP_ERROSH << "Illegal element";
       break;
     case TP_NODE_END_ERROR:
-      std::cerr << "too much Node end";
+      TP_ERROSH << "too much Node end";
       break;
     case TP_NODE_END_MISSING_ERROR:
-      std::cerr << "Node termination is Missing";
+      TP_ERROSH << "Node termination is Missing";
       break;
     case TP_NODE_NOT_FOUND_ERROR:
-      std::cerr << "The Node is not found";
+      TP_ERROSH << "The Node is not found";
       break;
     case TP_LABEL_ALREADY_USED_ERROR:
-      std::cerr << "Label is already used";
+      TP_ERROSH << "Label is already used";
       break;
     case TP_LABEL_ALREADY_USED_PATH_ERROR:
-      std::cerr << "Label is already used in path";
+      TP_ERROSH << "Label is already used in path";
       break;
     case TP_ILLEGAL_CURRENT_ELEMENT_ERROR:
-      std::cerr << "Illegal current element ";
+      TP_ERROSH << "Illegal current element ";
       break;
     case TP_ILLEGAL_PATH_ELEMENT_ERROR:
-      std::cerr << "Illegal path element ";
+      TP_ERROSH << "Illegal path element ";
       break;
     case TP_MISSING_PATH_ELEMENT_ERROR:
-      std::cerr << "Missing path element";
+      TP_ERROSH << "Missing path element";
       break;
     case TP_ILLEGAL_LABEL_PATH_ERROR:
-      std::cerr << "Illegal label path";
+      TP_ERROSH << "Illegal label path";
       break;
     case TP_UNKNOWN_ELEMENT_ERROR:
-      std::cerr << "Unknown element";
+      TP_ERROSH << "Unknown element";
       break;
     case TP_MISSING_EQUAL_NOT_EQUAL_ERROR:
-      std::cerr << "Missing both == and !=";
+      TP_ERROSH << "Missing both == and !=";
       break;
     case TP_MISSING_AND_OR_ERROR:
-      std::cerr << "Missing both && and ||";
+      TP_ERROSH << "Missing both && and ||";
       break;
     case TP_MISSING_CONDITION_EXPRESSION_ERROR:
-      std::cerr << "Missing condition expression";
+      TP_ERROSH << "Missing condition expression";
       break;
     case TP_ILLEGAL_DEPENDENCE_EXPRESSION_ERROR:
-      std::cerr << "Illegal dependence expression";
+      TP_ERROSH << "Illegal dependence expression";
       break;
     case TP_MISSING_CLOSED_BRANCKET_ERROR:
-      std::cerr << "Missing closed brancket";
+      TP_ERROSH << "Missing closed brancket";
       break;
     case TP_ILLEGAL_CONDITION_EXPRESSION_ERROR:
-      std::cerr << "Illegal condition expression";
+      TP_ERROSH << "Illegal condition expression";
       break;
     case TP_MISSING_VALUE_ERROR:
-      std::cerr << "Missing value";
+      TP_ERROSH << "Missing value";
       break;
     case TP_ILLEGAL_VALUE_ERROR:
-      std::cerr << "Illegal value";
+      TP_ERROSH << "Illegal value";
       break;
     case TP_ILLEGAL_NUMERIC_VALUE_ERROR:
-      std::cerr << "Illegal numeric value";
+      TP_ERROSH << "Illegal numeric value";
       break;
     case TP_ILLEGAL_VALUE_TYPE_ERROR:
-      std::cerr << "Illegal value type";
+      TP_ERROSH << "Illegal value type";
       break;
     case TP_MISSING_VECTOR_END_ERROR:
-      std::cerr << "Missing vector end";
+      TP_ERROSH << "Missing vector end";
       break;
     case TP_VALUE_CONVERSION_ERROR:
-      std::cerr << "Value conversion failed";
+      TP_ERROSH << "Value conversion failed";
       break;
     case TP_MEMORY_ALLOCATION_ERROR:
-      std::cerr << "Memory allocation failed";
+      TP_ERROSH << "Memory allocation failed";
       break;
     case TP_MISSING_COMMENT_END_ERROR:
-      std::cerr << "Missing comment end";
+      TP_ERROSH << "Missing comment end";
       break;
     case TP_ID_OVER_ELEMENT_NUMBER_ERROR:
-      std::cerr << "ID is over the element number";
+      TP_ERROSH << "ID is over the element number";
       break;
     case TP_GET_PARAMETER_ERROR:
-      std::cerr << "Get parameter failed";
+      TP_ERROSH << "Get parameter failed";
       break;
     case TP_RANGE_STEP_SIGN_ERROR:
-      std::cerr << "Wrong sign of step at @range";
+      TP_ERROSH << "Wrong sign of step at @range";
       break;
     case  TP_ILLEGAL_RANGE_ERROR:
-      std::cerr << "Illegal expression of @range";
+      TP_ERROSH << "Illegal expression of @range";
       break;
     case  TP_ILLEGAL_LIST_ERROR:
-      std::cerr << "Illegal expression of @list";
+      TP_ERROSH << "Illegal expression of @list";
       break;
     case TP_UNSUPPORTED_ERROR:
-      std::cerr << "Unsupported function";
+      TP_ERROSH << "Unsupported function";
       break;
     case TP_UNDEFINED_VALUE_USED_WARNING:
-      std::cerr << "Undefined value used";
+      TP_ERROSH << "Undefined value used";
       break;
     case TP_UNRESOLVED_LABEL_USED_WARNING:
-      std::cerr << "Unresolved label used";
+      TP_ERROSH << "Unresolved label used";
       break;
     default:
-      std::cerr << "Undefined error code";
+      TP_ERROSH << "Undefined error code";
       break;
     }
     //    unsigned int current_line = (TextParserTree::get_instance())->_current_line;
     unsigned int current_line = dataTree()->current_line();
     //unsigned int current_line = TextParserTree::getInstance()->_current_line;
-    if (sub_message.size() > 0) std::cerr << " : " + sub_message;
-    if (current_line > 0) std::cerr << " : line " << current_line;
-    std::cerr << std::endl;
+    if (sub_message.size() > 0) TP_ERROSH << " : " + sub_message;
+    if (current_line > 0) TP_ERROSH << " : line " << current_line;
+    TP_ERROSH << std::endl;
   }
 
 
 #ifdef MYDEBUG    
-  std::cout<< "TextParserErrorHandler() end"<<std::endl;
+  TP_DBGOSH<< "TextParserErrorHandler() end"<<std::endl;
 #endif // MYDEBUG    
 
   return error_code;
@@ -2033,7 +2033,7 @@ TextParserError TextParser::splitRange(const std::string & value,
     } 
 
     vcopy=vcopy.substr(pos);
-    //    std::cout << __func__ << " pos " << pos << " vcopy " <<vcopy << std::endl;
+    //    TP_DBGOSH << __func__ << " pos " << pos << " vcopy " <<vcopy << std::endl;
     std::vector<std::string> string_content;
     ret = splitVector(vcopy,string_content);
     int ierror;
@@ -2097,7 +2097,7 @@ TextParserError TextParser::expandRange(const std::string & value,
   expanded.clear();
 
   while(element*sign<=to*sign){
-    // std::cout << element <<std::endl;
+    // TP_DBGOSH << element <<std::endl;
     expanded.push_back(element);
     element += step;
   }
@@ -2135,7 +2135,7 @@ TextParserError TextParser::splitList(const std::string & value,std::vector<doub
     } 
 
     vcopy=vcopy.substr(pos);
-    //    std::cout << __func__ << " pos " << pos << " vcopy " <<vcopy << std::endl;
+    //    TP_DBGOSH << __func__ << " pos " << pos << " vcopy " <<vcopy << std::endl;
     std::vector<std::string> string_content;
     ret = splitVector(vcopy,string_content);
     int ierror;
@@ -2210,7 +2210,7 @@ long long TextParser::convertLimitsIntx(const std::string& value,int* ierror){
 	  returner = 0;
       }
 
-      //      std::cout << __func__ << returner <<std::endl;
+      //      TP_DBGOSH << __func__ << returner <<std::endl;
       return returner;
 }
 
@@ -2246,7 +2246,7 @@ double TextParser::convertLimitsRealx(const std::string& value,int* ierror){
 	  returner = 0;
       }
 
-      //      std::cout << __func__ << returner <<std::endl;
+      //      TP_DBGOSH << __func__ << returner <<std::endl;
       return returner;
 }
 

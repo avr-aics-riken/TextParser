@@ -53,13 +53,13 @@ char charTextParserValueNext[] = {'\t', '\n', '\r', ',', ')', '\"', ':', '/'};
 TextParserTree* TextParserTree::get_instance(){
 
 #ifdef MYDEBUG
-  std::cout<< "TextParserTree::get_instance() called."<<std::endl;
+  TP_DBGOSH<< "TextParserTree::get_instance() called."<<std::endl;
 #endif //MYDEBUG
 
   static TextParserTree instance;
 
 #ifdef MYDEBUG
-  std::cout<< "address to TextParserTree :"<< &instance <<std::endl;
+  TP_DBGOSH<< "address to TextParserTree :"<< &instance <<std::endl;
 #endif //MYDEBUG
 
   if(!instance._initialized ){
@@ -76,7 +76,7 @@ TextParserTree* TextParserTree::get_instance(){
     instance._current_bool = TP_UNDEFINED_BOOL;
     instance._debug_write = false;
 #ifdef MYDEBUG
-    std::cout<< "TextParserTree is initialized."<< std::endl;
+    TP_DBGOSH<< "TextParserTree is initialized."<< std::endl;
 #endif //MYDEBUG
     
 
@@ -116,7 +116,7 @@ TextParserTree::TextParserTree(){
  */
 TextParserTree::~TextParserTree(){
 
-  //  std::cout << __FUNCTION__ <<std::endl;
+  //  TP_DBGOSH << __FUNCTION__ <<std::endl;
   _is_ready = false;
   _label = "/";
   _parse_mode = TP_NO_PARSE;
@@ -133,17 +133,17 @@ TextParserTree::~TextParserTree(){
 }
 
 void TextParserTree::status(){
-  std::cout << "_is_ready " <<_is_ready <<std::endl;
-  std::cout << " _label " <<  _label <<std::endl;
-  std::cout << " _parse_mode " <<  _parse_mode <<std::endl;
-  std::cout << " _return_parse_mode " <<  _return_parse_mode <<std::endl;
-  //  std::cout << " _current_element " <<  _current_element <<std::endl;
-  std::cout << " _current_line " <<  _current_line <<std::endl;
-  std::cout << " _current_leaf_id " <<  _current_leaf_id <<std::endl;
-  std::cout << " _node_open " <<  _node_open <<std::endl;
-  std::cout << " _result_bool " <<  _result_bool <<std::endl;
-  std::cout << " _debug_write " <<  _debug_write <<std::endl;
-  std::cout << " _initialized " <<  _initialized <<std::endl;
+  TP_DBGOSH << "_is_ready " <<_is_ready <<std::endl;
+  TP_DBGOSH << " _label " <<  _label <<std::endl;
+  TP_DBGOSH << " _parse_mode " <<  _parse_mode <<std::endl;
+  TP_DBGOSH << " _return_parse_mode " <<  _return_parse_mode <<std::endl;
+  //  TP_DBGOSH << " _current_element " <<  _current_element <<std::endl;
+  TP_DBGOSH << " _current_line " <<  _current_line <<std::endl;
+  TP_DBGOSH << " _current_leaf_id " <<  _current_leaf_id <<std::endl;
+  TP_DBGOSH << " _node_open " <<  _node_open <<std::endl;
+  TP_DBGOSH << " _result_bool " <<  _result_bool <<std::endl;
+  TP_DBGOSH << " _debug_write " <<  _debug_write <<std::endl;
+  TP_DBGOSH << " _initialized " <<  _initialized <<std::endl;
 
 }
 
@@ -168,7 +168,7 @@ TextParserError TextParserTree::SetArrayLabelIndex(std::string& label, std::map<
       std::string label0 = TextParserStringToLower(label.substr(0, a)); // ラベルの文字列部分を取り出し小文字に変換
       std::string label1 = cur_node+"/"+label0;
       int number = 0;
-      // std::cout << __FUNCTION__ << " cur_node "<<cur_node 
+      // TP_DBGOSH << __FUNCTION__ << " cur_node "<<cur_node 
       // 		<< " label0 "<<label0
       // 		<< " label1 "<<label1<<std::endl;
       
@@ -221,7 +221,7 @@ TextParserError TextParserTree::decrementArrayLabelIndex(std::string& label, std
   emess+=" bracket does'nt match.";
   int a = label.find("[");
   int b = label.find("]");
-  //  std::cout << a << b<< __FUNCTION__<<std::endl;
+  //  TP_DBGOSH << a << b<< __FUNCTION__<<std::endl;
 
   if( a<0 ) return TP_NO_ERROR;
   if( b<0 ) {
@@ -229,7 +229,7 @@ TextParserError TextParserTree::decrementArrayLabelIndex(std::string& label, std
   }
 
   std::string key = TextParserStringToLower(label.substr(0,a));
-  //  std::cout<< key <<std::endl;
+  //  TP_DBGOSH<< key <<std::endl;
 
   //key should be full path 
   std::string current_node;
@@ -239,7 +239,7 @@ TextParserError TextParserTree::decrementArrayLabelIndex(std::string& label, std
 
 
   std::map<std::string, int>::iterator li = array_label_number.find(key);
-  //  std::cout <<__FUNCTION__ << " key "<<  key << " # " <<li->second<< std::endl;
+  //  TP_DBGOSH <<__FUNCTION__ << " key "<<  key << " # " <<li->second<< std::endl;
   if(li==array_label_number.end()) {
     std::string emess=__FUNCTION__;
     emess+=" really arrayed label ?";
@@ -355,11 +355,11 @@ TextParserError TextParserTree::readParameters(const std::string& filename)
 	std::string buffer;
 	while (getline(ss, buffer)) {
 	  _current_line++;
-	  //	  std::cout<<__func__<<buffer<<std::endl;
+	  //	  TP_DBGOSH<<__func__<<buffer<<std::endl;
 	  
 //	  TextParserError ret = parseLine(ifs, buffer);     // 一行のパラメータ解析
 	  TextParserError ret = parseLine(ss, buffer);     // 一行のパラメータ解析
-	  //	  std::cout<<buffer<<std::endl;
+	  //	  TP_DBGOSH<<buffer<<std::endl;
 	  if (ret != TP_NO_ERROR) {
 	    initialize();
 	    return ret;
@@ -370,7 +370,7 @@ TextParserError TextParserTree::readParameters(const std::string& filename)
 	if (_unresolved_leaves.size() > 0) {
 #ifdef TP_DEBUG
 	  if (_debug_write) {
-	    std::cout << "☆ 未解決の依存関係付き値の総数 = " << _unresolved_leaves.size() << std::endl;
+	    TP_DBGOSH << "☆ 未解決の依存関係付き値の総数 = " << _unresolved_leaves.size() << std::endl;
 	  }
 #endif
 	  while (_unresolved_leaves.size() > 0) {
@@ -383,7 +383,7 @@ TextParserError TextParserTree::readParameters(const std::string& filename)
 	      if (ret == TP_NO_ERROR) {
 #ifdef TP_DEBUG
 		if (_debug_write) {
-		  std::cout << "★ 解決した依存関係付き値 = " << li->second->_label << std::endl;
+		  TP_DBGOSH << "★ 解決した依存関係付き値 = " << li->second->_label << std::endl;
 		}
 #endif
 		std::map<unsigned int, TextParserLeaf *>::iterator lt = li;
@@ -457,7 +457,7 @@ TextParserError TextParserTree::readParameters(const std::string& filename)
   initialize();
 
 #ifdef MYDEBUG
-  std::cout<< "readParameters(const std::string& filename) end." <<std::endl;
+  TP_DBGOSH<< "readParameters(const std::string& filename) end." <<std::endl;
 #endif
   return ret;
 }
@@ -518,7 +518,7 @@ TextParserError TextParserTree::readParameters_local(const std::string& filename
 	if (_unresolved_leaves.size() > 0) {
 #ifdef TP_DEBUG
 	  if (_debug_write) {
-	    std::cout << "☆ 未解決の依存関係付き値の総数 = " << _unresolved_leaves.size() << std::endl;
+	    TP_DBGOSH << "☆ 未解決の依存関係付き値の総数 = " << _unresolved_leaves.size() << std::endl;
 	  }
 #endif
 	  while (_unresolved_leaves.size() > 0) {
@@ -531,7 +531,7 @@ TextParserError TextParserTree::readParameters_local(const std::string& filename
 	      if (ret == TP_NO_ERROR) {
 #ifdef TP_DEBUG
 		if (_debug_write) {
-		  std::cout << "★ 解決した依存関係付き値 = " << li->second->_label << std::endl;
+		  TP_DBGOSH << "★ 解決した依存関係付き値 = " << li->second->_label << std::endl;
 		}
 #endif
 		std::map<unsigned int, TextParserLeaf *>::iterator lt = li;
@@ -605,7 +605,7 @@ TextParserError TextParserTree::readParameters_local(const std::string& filename
   initialize();
 
 #ifdef MYDEBUG
-  std::cout<< "readParameters_local(const std::string& filename) end." <<std::endl;
+  TP_DBGOSH<< "readParameters_local(const std::string& filename) end." <<std::endl;
 #endif
   return ret;
 }
@@ -646,7 +646,7 @@ TextParserError TextParserTree::GetElementAbsolutePath(TextParserElement* elemen
 unsigned int TextParserTree::GetLeafID()
 {
 #ifdef MYDEBUG
-  std::cout <<"TextParserTree::GetLeafID() started"<<std::endl;
+  TP_DBGOSH <<"TextParserTree::GetLeafID() started"<<std::endl;
 #endif //MYDEBUG
   //! インスタンスの取得
 
@@ -658,7 +658,7 @@ unsigned int TextParserTree::GetLeafID()
   _current_leaf_id++;
 
 #ifdef MYDEBUG
-  std::cout <<"extparserTree::GetLeafID() end"<<std::endl;
+  TP_DBGOSH <<"extparserTree::GetLeafID() end"<<std::endl;
 #endif //MYDEBUG
 
   return id;
@@ -782,164 +782,164 @@ bool TextParserStringCompare(const std::string& str0, const std::string& str1)
 TextParserError TextParserTree::TextParserErrorHandler(const TextParserError error_code, const std::string& sub_message)
 {
 #ifdef MYDEBUG    
-  std::cout<< "TextParserErrorHandler() start"<<std::endl;
-  std::cout<< "error_code " <<error_code <<" submessage " <<sub_message<< std::endl;
+  TP_DBGOSH<< "TextParserErrorHandler() start"<<std::endl;
+  TP_DBGOSH<< "error_code " <<error_code <<" submessage " <<sub_message<< std::endl;
 #endif // MYDEBUG    
 
 
   if (error_code > TP_NO_ERROR) {
     if (error_code < TP_WARNING ) {
-      std::cerr << "*Error #" << error_code << ": ";
+      TP_ERROSH << "*Error #" << error_code << ": ";
     } else {
-      std::cerr << "*Warning #" << error_code << ": ";
+      TP_ERROSH << "*Warning #" << error_code << ": ";
     }
     switch (error_code) {
     case TP_DATABASE_NOT_READY_ERROR:
-      std::cerr << "Database is not ready";
+      TP_ERROSH << "Database is not ready";
       break;
     case TP_DATABASE_ALREADY_SET_ERROR:
-      std::cerr << "Database has been already set";
+      TP_ERROSH << "Database has been already set";
       break;
     case TP_FILEOPEN_ERROR:
-      std::cerr << "File open failed";
+      TP_ERROSH << "File open failed";
       break;
     case TP_FILEINPUT_ERROR:
-      std::cerr << "File input failed";
+      TP_ERROSH << "File input failed";
       break;
     case TP_FILEOUTPUT_ERROR:
-      std::cerr << "File outnput failed";
+      TP_ERROSH << "File outnput failed";
       break;
     case TP_ENDOF_FILE_ERROR:
-      std::cerr << "End of file";
+      TP_ERROSH << "End of file";
       break;
     case TP_ILLEGAL_TOKEN_ERROR:
-      std::cerr << "Illegal token";
+      TP_ERROSH << "Illegal token";
       break;
     case TP_MISSING_LABEL_ERROR:
-      std::cerr << "Missing label";
+      TP_ERROSH << "Missing label";
       break;
     case TP_ILLEGAL_LABEL_ERROR:
-      std::cerr << "Illegal label";
+      TP_ERROSH << "Illegal label";
       break;
     case TP_ILLEGAL_ARRAY_LABEL_ERROR:
-      std::cerr << "Illegal array type label";
+      TP_ERROSH << "Illegal array type label";
       break;
     case TP_MISSING_ELEMENT_ERROR:
-      std::cerr << "Missing element";
+      TP_ERROSH << "Missing element";
       break;
     case TP_ILLEGAL_ELEMENT_ERROR:
-      std::cerr << "Illegal element";
+      TP_ERROSH << "Illegal element";
       break;
     case TP_NODE_END_ERROR:
-      std::cerr << "too much Node end";
+      TP_ERROSH << "too much Node end";
       break;
     case TP_NODE_END_MISSING_ERROR:
-      std::cerr << "Node termination is Missing";
+      TP_ERROSH << "Node termination is Missing";
       break;
     case TP_NODE_NOT_FOUND_ERROR:
-      std::cerr << "The Node is not found";
+      TP_ERROSH << "The Node is not found";
       break;
     case TP_LABEL_ALREADY_USED_ERROR:
-      std::cerr << "Label is already used";
+      TP_ERROSH << "Label is already used";
       break;
     case TP_LABEL_ALREADY_USED_PATH_ERROR:
-      std::cerr << "Label is already used in path";
+      TP_ERROSH << "Label is already used in path";
       break;
     case TP_ILLEGAL_CURRENT_ELEMENT_ERROR:
-      std::cerr << "Illegal current element ";
+      TP_ERROSH << "Illegal current element ";
       break;
     case TP_ILLEGAL_PATH_ELEMENT_ERROR:
-      std::cerr << "Illegal path element ";
+      TP_ERROSH << "Illegal path element ";
       break;
     case TP_MISSING_PATH_ELEMENT_ERROR:
-      std::cerr << "Missing path element";
+      TP_ERROSH << "Missing path element";
       break;
     case TP_ILLEGAL_LABEL_PATH_ERROR:
-      std::cerr << "Illegal label path";
+      TP_ERROSH << "Illegal label path";
       break;
     case TP_UNKNOWN_ELEMENT_ERROR:
-      std::cerr << "Unknown element";
+      TP_ERROSH << "Unknown element";
       break;
     case TP_MISSING_EQUAL_NOT_EQUAL_ERROR:
-      std::cerr << "Missing both == and !=";
+      TP_ERROSH << "Missing both == and !=";
       break;
     case TP_MISSING_AND_OR_ERROR:
-      std::cerr << "Missing both && and ||";
+      TP_ERROSH << "Missing both && and ||";
       break;
     case TP_MISSING_CONDITION_EXPRESSION_ERROR:
-      std::cerr << "Missing condition expression";
+      TP_ERROSH << "Missing condition expression";
       break;
     case TP_ILLEGAL_DEPENDENCE_EXPRESSION_ERROR:
-      std::cerr << "Illegal dependence expression";
+      TP_ERROSH << "Illegal dependence expression";
       break;
     case TP_MISSING_CLOSED_BRANCKET_ERROR:
-      std::cerr << "Missing closed brancket";
+      TP_ERROSH << "Missing closed brancket";
       break;
     case TP_ILLEGAL_CONDITION_EXPRESSION_ERROR:
-      std::cerr << "Illegal condition expression";
+      TP_ERROSH << "Illegal condition expression";
       break;
     case TP_MISSING_VALUE_ERROR:
-      std::cerr << "Missing value";
+      TP_ERROSH << "Missing value";
       break;
     case TP_ILLEGAL_VALUE_ERROR:
-      std::cerr << "Illegal value";
+      TP_ERROSH << "Illegal value";
       break;
     case TP_ILLEGAL_NUMERIC_VALUE_ERROR:
-      std::cerr << "Illegal numeric value";
+      TP_ERROSH << "Illegal numeric value";
       break;
     case TP_ILLEGAL_VALUE_TYPE_ERROR:
-      std::cerr << "Illegal value type";
+      TP_ERROSH << "Illegal value type";
       break;
     case TP_MISSING_VECTOR_END_ERROR:
-      std::cerr << "Missing vector end";
+      TP_ERROSH << "Missing vector end";
       break;
     case TP_VALUE_CONVERSION_ERROR:
-      std::cerr << "Value conversion failed";
+      TP_ERROSH << "Value conversion failed";
       break;
     case TP_MEMORY_ALLOCATION_ERROR:
-      std::cerr << "Memory allocation failed";
+      TP_ERROSH << "Memory allocation failed";
       break;
     case TP_MISSING_COMMENT_END_ERROR:
-      std::cerr << "Missing comment end";
+      TP_ERROSH << "Missing comment end";
       break;
     case TP_ID_OVER_ELEMENT_NUMBER_ERROR:
-      std::cerr << "ID is over the element number";
+      TP_ERROSH << "ID is over the element number";
       break;
     case TP_GET_PARAMETER_ERROR:
-      std::cerr << "Get parameter failed";
+      TP_ERROSH << "Get parameter failed";
       break;
     case TP_RANGE_STEP_SIGN_ERROR:
-      std::cerr << "Wrong sign of step at @range";
+      TP_ERROSH << "Wrong sign of step at @range";
       break;
     case  TP_ILLEGAL_RANGE_ERROR:
-      std::cerr << "Illegal expression of @range";
+      TP_ERROSH << "Illegal expression of @range";
       break;
     case  TP_ILLEGAL_LIST_ERROR:
-      std::cerr << "Illegal expression of @range";
+      TP_ERROSH << "Illegal expression of @range";
       break;
     case TP_UNSUPPORTED_ERROR:
-      std::cerr << "Unsupported function";
+      TP_ERROSH << "Unsupported function";
       break;
     case TP_UNDEFINED_VALUE_USED_WARNING:
-      std::cerr << "Undefined value used";
+      TP_ERROSH << "Undefined value used";
       break;
     case TP_UNRESOLVED_LABEL_USED_WARNING:
-      std::cerr << "Unresolved label used";
+      TP_ERROSH << "Unresolved label used";
       break;
     default:
-      std::cerr << "Undefined error code";
+      TP_ERROSH << "Undefined error code";
       break;
     }
     unsigned int current_line = _current_line;
     //unsigned int current_line = TextParserTree::getInstance()->_current_line;
-    if (sub_message.size() > 0) std::cerr << " : " + sub_message;
-    if (current_line > 0) std::cerr << " : line " << current_line;
-    std::cerr << std::endl;
+    if (sub_message.size() > 0) TP_ERROSH << " : " + sub_message;
+    if (current_line > 0) TP_ERROSH << " : line " << current_line;
+    TP_ERROSH << std::endl;
   }
 
 
 #ifdef MYDEBUG    
-  std::cout<< "TextParserErrorHandler() end"<<std::endl;
+  TP_DBGOSH<< "TextParserErrorHandler() end"<<std::endl;
 #endif // MYDEBUG    
 
   return error_code;
@@ -958,9 +958,9 @@ TextParserError TextParserTree::parseLine(std::stringstream& ss, std::string& bu
 {
   //#define MYDEBUG
 #ifdef MYDEBUG
-  std::cout << "parseLine(std::stringstream& ss, std::string& buffer) start" 
+  TP_DBGOSH << "parseLine(std::stringstream& ss, std::string& buffer) start" 
 	    <<std::endl;
-  std::cout <<"buffer "<<buffer << std::endl;
+  TP_DBGOSH <<"buffer "<<buffer << std::endl;
 #endif //MYDEBUG
   TextParserError ret;                                          // 戻り値
   bool answer;
@@ -989,9 +989,9 @@ TextParserError TextParserTree::parseLine(std::stringstream& ss, std::string& bu
 	ret = parseNode(ss, buffer, answer);
 	if (ret != TP_NO_ERROR) return ret;
 	if (answer) {                  // ディレクトリ?
-	  //	  std::cout << "tmp"  << std::endl;
+	  //	  TP_DBGOSH << "tmp"  << std::endl;
 	  ret = openNode(label);             // ディレクトリの開始
-	  //	  std::cout << "tmp"  << std::endl;
+	  //	  TP_DBGOSH << "tmp"  << std::endl;
 	  if (ret != TP_NO_ERROR) return ret;
 	  _parse_mode = TP_NODE_PARSE;     // ディレクトリ解析モード
 	  break;
@@ -1039,13 +1039,13 @@ TextParserError TextParserTree::parseLine(std::stringstream& ss, std::string& bu
       ret = parseDependValue(ss, buffer, answer);
       if (ret != TP_NO_ERROR) return ret;
       if (answer) {   // 依存関係付き値?
-	//	std::cout << "TP_LEAF_PARSE Depend Value 1"<< buffer << std::endl;
+	//	TP_DBGOSH << "TP_LEAF_PARSE Depend Value 1"<< buffer << std::endl;
 	ret = setDependenceExpression(ss, buffer);
-	//	std::cout << "TP_LEAF_PARSE Depend Value 2"<< buffer << std::endl;
+	//	TP_DBGOSH << "TP_LEAF_PARSE Depend Value 2"<< buffer << std::endl;
 	if (ret != TP_NO_ERROR) return ret;
-	//	std::cout << "TP_LEAF_PARSE Depend Value 3"<< _current_element->_label << std::endl;
+	//	TP_DBGOSH << "TP_LEAF_PARSE Depend Value 3"<< _current_element->_label << std::endl;
 	ret = parseDependenceExpression((TextParserLeaf *)_current_element);
-	//	std::cout << "TP_LEAF_PARSE Depend Value 3"<< buffer << std::endl;
+	//	TP_DBGOSH << "TP_LEAF_PARSE Depend Value 3"<< buffer << std::endl;
 	if (ret != TP_NO_ERROR) {
 	  if (ret == TP_MISSING_PATH_ELEMENT_ERROR
 	      || ret == TP_UNRESOLVED_LABEL_USED_WARNING) {
@@ -1105,7 +1105,7 @@ TextParserError TextParserTree::parseLine(std::stringstream& ss, std::string& bu
       if (answer) {// スカラー値?
 	
 	if (!isCorrectValue(value, value_type)) {    // 値のチェック
-	  std::cerr<< "TextParserTree::parseLine" <<" isCorrectValue returns false"<<std::endl;
+	  TP_ERROSH<< "TextParserTree::parseLine" <<" isCorrectValue returns false"<<std::endl;
 	  return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, value);
 	}
 	ret = setValue(value, value_type);          // 値の設定
@@ -1115,20 +1115,20 @@ TextParserError TextParserTree::parseLine(std::stringstream& ss, std::string& bu
 	break;
       }
 
-      //      std::cout<< __func__ <<" in TP_PARSE_LEAF"<<std::endl;
+      //      TP_DBGOSH<< __func__ <<" in TP_PARSE_LEAF"<<std::endl;
       return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, buffer);
       break;
 
     default:
 
-      //      std::cout<< __func__ <<" in TP_PARSE_LEAF"<<std::endl;
+      //      TP_DBGOSH<< __func__ <<" in TP_PARSE_LEAF"<<std::endl;
       return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, buffer);
 
       break;
     }
   }
 #ifdef MYDEBUG
-  std::cout << "parseLine(std::stringstream& ss, std::string& buffer) end" 
+  TP_DBGOSH << "parseLine(std::stringstream& ss, std::string& buffer) end" 
 	    <<std::endl;
 #endif //MYDEBUG
   //#undef MYDEBUG
@@ -1157,10 +1157,10 @@ bool TextParserTree::isReady()
 TextParserError TextParserTree::removeCommentsAndSpaces(std::stringstream& ss, std::string& buffer)
 {
 #ifdef MYDEBUG
-  std::cout << 
+  TP_DBGOSH << 
     "removeCommentsAndSpaces(std::stringstream& ss, std::string& buffer) start"
 	    <<  std::endl;
-  std::cout << "buffer "<<buffer <<std::endl;
+  TP_DBGOSH << "buffer "<<buffer <<std::endl;
 #endif //MYDEBUG
   bool answer = false;
   while (true) {
@@ -1179,10 +1179,10 @@ TextParserError TextParserTree::removeCommentsAndSpaces(std::stringstream& ss, s
   }
 
 #ifdef MYDEBUG
-  std::cout << 
+  TP_DBGOSH << 
     "removeCommentsAndSpaces(std::stringstream& ss, std::string& buffer) end"
 	    <<  std::endl;
-  std::cout << "buffer "<<buffer <<std::endl;
+  TP_DBGOSH << "buffer "<<buffer <<std::endl;
 #endif //MYDEBUG
 
   return TP_NO_ERROR;
@@ -1373,19 +1373,19 @@ TextParserError TextParserTree::parseLabel(std::stringstream& ss, std::string& b
 {
   //#define MYDEBUG
 #ifdef MYDEBUG
-  std::cout << "parseLabel(std::stringstream& ss, std::string& buffer, bool& answer, std::string& label) start"<<std::endl;
-  std::cout << "label" << label <<std::endl;
+  TP_DBGOSH << "parseLabel(std::stringstream& ss, std::string& buffer, bool& answer, std::string& label) start"<<std::endl;
+  TP_DBGOSH << "label" << label <<std::endl;
 #endif
 
   TextParserError ret;
   answer=false;
  loop:
 #ifdef MYDEBUG
-    std::cout << "parseLabel 1\""<< buffer <<"\"" <<std::endl;
+    TP_DBGOSH << "parseLabel 1\""<< buffer <<"\"" <<std::endl;
 #endif //MYDEBUG
     ret = removeCommentsAndSpaces(ss, buffer);
 #ifdef MYDEBUG
-  std::cout << "parseLabel 2\""<< buffer <<"\"" <<std::endl;
+  TP_DBGOSH << "parseLabel 2\""<< buffer <<"\"" <<std::endl;
 #endif //MYDEBUG
   if (ret != TP_NO_ERROR) return ret;
 
@@ -1404,7 +1404,7 @@ TextParserError TextParserTree::parseLabel(std::stringstream& ss, std::string& b
   // right curly brace
   int pos_rcb=buffer.find('}');
 #ifdef MYDEBUG2
-  std::cout << "parseLabel pos_eq "<< pos_eq 
+  TP_DBGOSH << "parseLabel pos_eq "<< pos_eq 
 	    << " pos_lcb"<< pos_lcb 
 	    << " pos_rcb"<< pos_rcb
 	    <<std::endl;
@@ -1416,12 +1416,12 @@ TextParserError TextParserTree::parseLabel(std::stringstream& ss, std::string& b
     _current_line++;
     buffer+=tmp_buffer;
 #ifdef MYDEBUG2
-    std::cout << "parseLabel tmp_buffer\""<< tmp_buffer <<"\"" 
+    TP_DBGOSH << "parseLabel tmp_buffer\""<< tmp_buffer <<"\"" 
 	      <<" buffer \""<< buffer 
 	      <<"\" _current_line "<< _current_line
 	      <<std::endl;
     //      getline(std::cin,tmp_buffer);
-    std::cout << "buffer in parseLabel \""<< buffer <<"\"" <<std::endl;
+    TP_DBGOSH << "buffer in parseLabel \""<< buffer <<"\"" <<std::endl;
 #endif // MYDEBUG2
     goto loop;
   } else {
@@ -1434,7 +1434,7 @@ TextParserError TextParserTree::parseLabel(std::stringstream& ss, std::string& b
   if (ret != TP_NO_ERROR) return ret;
 
 #ifdef MYDEBUG
-  std::cout << "parseLabel(std::stringstream& ss, std::string& buffer, bool& answer, std::string& label) end"<<std::endl;
+  TP_DBGOSH << "parseLabel(std::stringstream& ss, std::string& buffer, bool& answer, std::string& label) end"<<std::endl;
 #endif
 
 
@@ -1453,10 +1453,10 @@ TextParserError TextParserTree::parseLabel(std::string& buffer, bool& answer, st
 {
 
 #ifdef MYDEBUG2
-  std::cout<< "parseLabel(std::string& buffer, bool& answer, std::string& label) start" << std::endl;
-  std::cout<< "buffer :" << buffer <<    std::endl;
-  std::cout<< "label :" << label <<    std::endl;
-  std::cout<< "answer :" << answer <<    std::endl;
+  TP_DBGOSH<< "parseLabel(std::string& buffer, bool& answer, std::string& label) start" << std::endl;
+  TP_DBGOSH<< "buffer :" << buffer <<    std::endl;
+  TP_DBGOSH<< "label :" << label <<    std::endl;
+  TP_DBGOSH<< "answer :" << answer <<    std::endl;
 
 #endif
   answer = false;
@@ -1479,7 +1479,7 @@ TextParserError TextParserTree::parseLabel(std::string& buffer, bool& answer, st
   int pos_exc=buffer.find('!');
   int pos=-100;
 #ifdef MYDEBUG2    
-  std::cout << "pos_eq " << pos_eq 
+  TP_DBGOSH << "pos_eq " << pos_eq 
 	    << " pos_lcb "<<pos_lcb 
 	    << " pos_exc "<<pos_exc
 	    <<std::endl;
@@ -1489,34 +1489,34 @@ TextParserError TextParserTree::parseLabel(std::string& buffer, bool& answer, st
   if(pos_eq >=0) {
     tmp_pos_list.push_back(pos_eq);
 #ifdef MYDEBUG2    
-    std::cout << "pos_eq label? " << buffer.substr(0,pos_eq) 
+    TP_DBGOSH << "pos_eq label? " << buffer.substr(0,pos_eq) 
 	      << " buffer? " << buffer.substr(pos_eq) << std::endl;
 #endif // MYDEBUG2    
   }
   if(pos_lcb >=0) {
     tmp_pos_list.push_back(pos_lcb);
 #ifdef MYDEBUG2    
-    std::cout << "pos_lcb label? " << buffer.substr(0,pos_lcb) 
+    TP_DBGOSH << "pos_lcb label? " << buffer.substr(0,pos_lcb) 
 	      << " buffer? " << buffer.substr(pos_lcb) << std::endl;
 #endif // MYDEBUG2    
   }
   if(pos_exc >=0) {
     tmp_pos_list.push_back(pos_exc);
 #ifdef MYDEBUG2    
-    std::cout << "pos_exc label? " << buffer.substr(0,pos_exc) 
+    TP_DBGOSH << "pos_exc label? " << buffer.substr(0,pos_exc) 
 	      << " buffer? " << buffer.substr(pos_exc) << std::endl;
 #endif // MYDEBUG2    
   }
     
   if(tmp_pos_list.size()==0){
 #ifdef MYDEBUG2    
-    std::cout << "It may not be a label." << std::endl;
+    TP_DBGOSH << "It may not be a label." << std::endl;
 #endif // MYDEBUG2    
     return TP_NO_ERROR;
   } else {
     answer = true;
 #ifdef MYDEBUG2    
-    std::cout << "It may be a label." << std::endl;
+    TP_DBGOSH << "It may be a label." << std::endl;
 #endif //MYDEBUG2
     pos=*( std::min_element( tmp_pos_list.begin(), tmp_pos_list.end() ) );
   }
@@ -1532,7 +1532,7 @@ TextParserError TextParserTree::parseLabel(std::string& buffer, bool& answer, st
   }
 #endif
 #ifdef MYDEBUG
-  std::cout << " pos " << pos <<std::endl;	    
+  TP_DBGOSH << " pos " << pos <<std::endl;	    
 #endif // MYDEBUG2
   //std::string tmp_label=buffer.substr(0,pos-1);
   //TextParserRemoveHeadSpaces(tmp_label);
@@ -1540,8 +1540,8 @@ TextParserError TextParserTree::parseLabel(std::string& buffer, bool& answer, st
   label=buffer.substr(0,pos);
   buffer=buffer.substr(pos);
 #ifdef MYDEBUG
-  std::cout<< "label :\"" << label << "\""<<   std::endl;
-  std::cout<< "buffer :\"" << buffer <<"\""   << std::endl;
+  TP_DBGOSH<< "label :\"" << label << "\""<<   std::endl;
+  TP_DBGOSH<< "buffer :\"" << buffer <<"\""   << std::endl;
 #endif // MYDEBUG
   //    TextParserRemoveHeadSpaces(label);
 
@@ -1549,37 +1549,37 @@ TextParserError TextParserTree::parseLabel(std::string& buffer, bool& answer, st
   std::string tmp_label=label;
   int fdq=tmp_label.find('\"');
 
-  //  std::cout<< "parseLabel fdq: "<<fdq<<std::endl;
+  //  TP_DBGOSH<< "parseLabel fdq: "<<fdq<<std::endl;
   if(fdq>=0){
     tmp_label=tmp_label.substr(fdq+1);
-    //    std::cout<< "parseLabel tmp_label 1:\""<<tmp_label<<std::endl;
+    //    TP_DBGOSH<< "parseLabel tmp_label 1:\""<<tmp_label<<std::endl;
     int sdq=tmp_label.find('\"');
-    //    std::cout<< "parseLabel sdq: "<<sdq<<std::endl;
+    //    TP_DBGOSH<< "parseLabel sdq: "<<sdq<<std::endl;
     if(sdq>=0){
       tmp_label=tmp_label.substr(0,sdq);
-      //      std::cout<< "parseLabel tmp_label 2:\""<<tmp_label<<std::endl;
+      //      TP_DBGOSH<< "parseLabel tmp_label 2:\""<<tmp_label<<std::endl;
     } else {	
       TextParserErrorHandler(TP_ILLEGAL_TOKEN_ERROR,label);
       return TP_ILLEGAL_TOKEN_ERROR;
     }
   }
-  //  std::cout<<"label :|"<<label
+  //  TP_DBGOSH<<"label :|"<<label
   //	   <<"| tmp_label |"<<tmp_label<<"|"<<std::endl;
   label=TextParserRemoveTailSpaces(tmp_label);
 
 
 #if 0
   if(label[0]!='\"'){
-    std::cout << "no  double quote" <<std::endl;
+    TP_DBGOSH << "no  double quote" <<std::endl;
     label=TextParserRemoveTailSpaces(label);
   }else{
-    std::cout << "has a pare of double quotes " <<std::endl;
+    TP_DBGOSH << "has a pare of double quotes " <<std::endl;
     label=label.substr(1);
     int e = label.find("\""); // second double quote.
     label=label.substr(0,e);
   } 
 #endif
-  //  std::cout <<  "final label |" <<label<<"|"<<std::endl;
+  //  TP_DBGOSH <<  "final label |" <<label<<"|"<<std::endl;
 
 #endif // new version
 
@@ -1604,15 +1604,15 @@ TextParserError TextParserTree::parseLabel(std::string& buffer, bool& answer, st
 
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << "ラベル : " + label << std::endl;
+    TP_DBGOSH << "ラベル : " + label << std::endl;
   }
 #endif
 
 #ifdef MYDEBUG2
-  std::cout<< "parseLabel(std::string& buffer, bool& answer, std::string& label) end" << std::endl;
-  std::cout<< "buffer :\"" << buffer <<"\""   << std::endl;
-  std::cout<< "label :\"" << label << "\""<<   std::endl;
-  std::cout<< "answer :\"" << answer << "\"" <<  std::endl;
+  TP_DBGOSH<< "parseLabel(std::string& buffer, bool& answer, std::string& label) end" << std::endl;
+  TP_DBGOSH<< "buffer :\"" << buffer <<"\""   << std::endl;
+  TP_DBGOSH<< "label :\"" << label << "\""<<   std::endl;
+  TP_DBGOSH<< "answer :\"" << answer << "\"" <<  std::endl;
 #endif
 
   return TP_NO_ERROR;
@@ -1629,7 +1629,7 @@ bool TextParserTree::isCorrectLabel(std::string& label, bool pathlabel)
 {
 
 #ifdef MYDDEEBUG2
-  std::cout <<" isCorrectLabel(std::string& label, bool pathlabel) !" << label<<"| start"<<std::endl
+  TP_DBGOSH <<" isCorrectLabel(std::string& label, bool pathlabel) !" << label<<"| start"<<std::endl
 #endif // MYDDEEBUG2
 
     std::string label0 = label;
@@ -1639,7 +1639,7 @@ bool TextParserTree::isCorrectLabel(std::string& label, bool pathlabel)
       label0 = label.substr(0, a);
     } else {
 #ifdef MYDDEEBUG2
-      std::cout <<" isCorrectLabel(std::string& label, bool pathlabel) !" << label<<"| end 2 "<<std::endl
+      TP_DBGOSH <<" isCorrectLabel(std::string& label, bool pathlabel) !" << label<<"| end 2 "<<std::endl
 #endif // MYDDEEBUG2
 	return true;
     }
@@ -1658,13 +1658,13 @@ bool TextParserTree::isCorrectLabel(std::string& label, bool pathlabel)
     }
     // 使用できない文字
 #ifdef MYDDEEBUG2
-    std::cout <<" isCorrectLabel(std::string& label, bool pathlabel) !" << label<<"| end 1 "<<std::endl
+    TP_DBGOSH <<" isCorrectLabel(std::string& label, bool pathlabel) !" << label<<"| end 1 "<<std::endl
 #endif // MYDDEEBUG2
       return false;
   }
 
 #ifdef MYDDEEBUG2
-  std::cout <<" isCorrectLabel(std::string& label, bool pathlabel) !" << label<<"| end 0 "<<std::endl
+  TP_DBGOSH <<" isCorrectLabel(std::string& label, bool pathlabel) !" << label<<"| end 0 "<<std::endl
 #endif // MYDDEEBUG2
     return true;
 }
@@ -1821,7 +1821,7 @@ TextParserError TextParserTree::parseNode(std::stringstream& ss, std::string& bu
 #ifdef TP_DEBUG
   /*
     if (_debug_write) {
-    std::cout << "<ディレクトリ>" << std::endl;
+    TP_DBGOSH << "<ディレクトリ>" << std::endl;
     }
   */
 #endif
@@ -1853,7 +1853,7 @@ TextParserError TextParserTree::parseEndOfNode(std::stringstream& ss, std::strin
 #ifdef TP_DEBUG
   /*
     if (_debug_write) {
-    std::cout << "<ディレクトリの終わり>" << std::endl;
+    TP_DBGOSH << "<ディレクトリの終わり>" << std::endl;
     }
   */
 #endif
@@ -1872,8 +1872,8 @@ TextParserError TextParserTree::parseEndOfNode(std::stringstream& ss, std::strin
 TextParserError TextParserTree::openNode(const std::string& label)
 {
 #ifdef MYDEBUG
-  std::cout<<"openNode(const std::string& label) start" <<std::endl;
-  std::cout<<"label :"<<label <<std::endl;
+  TP_DBGOSH<<"openNode(const std::string& label) start" <<std::endl;
+  TP_DBGOSH<<"label :"<<label <<std::endl;
 #endif
   TextParserError ret;
   TextParserNode *node = 0;
@@ -1894,12 +1894,12 @@ TextParserError TextParserTree::openNode(const std::string& label)
   } else {
     // ラベルの異常検出
     if (!isCorrectLabel(path, false)) {
-      //      std::cout << "test "<< std::endl;
+      //      TP_DBGOSH << "test "<< std::endl;
       return TextParserErrorHandler(TP_ILLEGAL_LABEL_ERROR, label);
     }
-    //  std::cout << __FUNCTION__ <<" tmp1"  << std::endl;
+    //  TP_DBGOSH << __FUNCTION__ <<" tmp1"  << std::endl;
     ret = getOrAddNode(path, parent_element, &node);   // ディレクトリの取得又は追加
-    //  std::cout << __FUNCTION__ << " tmp2"  << std::endl;
+    //  TP_DBGOSH << __FUNCTION__ << " tmp2"  << std::endl;
     if (ret != TP_NO_ERROR) return ret;
     node->_return_elements.push_back(_current_element);    // カレントエレメントを戻り先にスタック
     _current_element = node;                               // カレントエレメントに設定
@@ -1910,15 +1910,15 @@ TextParserError TextParserTree::openNode(const std::string& label)
 #ifdef TP_DEBUG
   if (_debug_write) {
     if (_current_element == 0) {
-      std::cout << "ディレクトリの開始 : /" << std::endl;
+      TP_DBGOSH << "ディレクトリの開始 : /" << std::endl;
     } else {
-      std::cout << "ディレクトリの開始 : " + _current_element->_label << std::endl;
+      TP_DBGOSH << "ディレクトリの開始 : " + _current_element->_label << std::endl;
     }
   }
 #endif
     
 #ifdef MYDEBUG
-  std::cout<<"openNode(const std::string& label) end"
+  TP_DBGOSH<<"openNode(const std::string& label) end"
 	   <<std::endl;
 #endif
   return TP_NO_ERROR;
@@ -1948,7 +1948,7 @@ TextParserError TextParserTree::closeNode()
 
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << "ディレクトリの終了 : " + current_dir->_label << std::endl;
+    TP_DBGOSH << "ディレクトリの終了 : " + current_dir->_label << std::endl;
   }
 #endif
   return TP_NO_ERROR;
@@ -1967,31 +1967,31 @@ TextParserError TextParserTree::closeNode()
 TextParserError TextParserTree::getOrAddNode(std::string& label, TextParserElement *parent_element, TextParserNode **node)
 {
   TextParserError ret;
-  //  std::cout << __FUNCTION__ << " tmp1"  << std::endl;
+  //  TP_DBGOSH << __FUNCTION__ << " tmp1"  << std::endl;
   *node = 0;
-  //  std::cout << __FUNCTION__ << " tmp2 "  <<parent_element<< std::endl;
+  //  TP_DBGOSH << __FUNCTION__ << " tmp2 "  <<parent_element<< std::endl;
   
   if (parent_element == 0) {	// 親エレメントがルートディレクトリ
     if (isArrayLabelExist(label, parent_element, TP_LEAF_ELEMENT)) {
       return TextParserErrorHandler(TP_LABEL_ALREADY_USED_ERROR, label);
     }
-    //    std::cout << __FUNCTION__ << " tmp3"  << std::endl;
+    //    TP_DBGOSH << __FUNCTION__ << " tmp3"  << std::endl;
     ret = setArrayLabelIndex(label);                // 配列型ラベルのインデックス設定
-    //    std::cout << __FUNCTION__ << " tmp4"  << std::endl;
+    //    TP_DBGOSH << __FUNCTION__ << " tmp4"  << std::endl;
     if (ret != TP_NO_ERROR) {
       return TextParserErrorHandler(ret, label);
     }
-    //    std::cout << __FUNCTION__ << " tmp5"  << std::endl;
+    //    TP_DBGOSH << __FUNCTION__ << " tmp5"  << std::endl;
     *node = getNode(label);               // 既存のディレクトリを取得
-    //    std::cout << __FUNCTION__ << " tmp6"  << std::endl;
+    //    TP_DBGOSH << __FUNCTION__ << " tmp6"  << std::endl;
     if (*node == 0) {   // 存在しない
       try {
-	//	std::cout << __FUNCTION__ << " tmp1"  << std::endl;
+	//	TP_DBGOSH << __FUNCTION__ << " tmp1"  << std::endl;
 	//*node = new TextParserNode(label);      // 新規にディレクトリを作成
 	*node = new TextParserNode(label,this);      // 新規にディレクトリを作成
 	// 追加
 	//	node->SetTree(this);
-	//	std::cout << __FUNCTION__ << " tmp2"  << std::endl;
+	//	TP_DBGOSH << __FUNCTION__ << " tmp2"  << std::endl;
 
 
 	if (*node == 0) {
@@ -2005,14 +2005,14 @@ TextParserError TextParserTree::getOrAddNode(std::string& label, TextParserEleme
       (*node)->_parent = parent_element;		// 親エレメントを設定
 #ifdef TP_DEBUG
       if (_debug_write) {
-	std::cout << "★ ディレクトリの作成 : " + label << std::endl;
+	TP_DBGOSH << "★ ディレクトリの作成 : " + label << std::endl;
       }
 #endif
     }
   } else if (parent_element->_type == TP_NODE_ELEMENT) {
-    //    std::cout << __FUNCTION__ << " tmp10"  << std::endl;
+    //    TP_DBGOSH << __FUNCTION__ << " tmp10"  << std::endl;
     TextParserNode *parent_dir = (TextParserNode *)parent_element;
-    //    std::cout << __FUNCTION__ << " tmp11"  << std::endl;
+    //    TP_DBGOSH << __FUNCTION__ << " tmp11"  << std::endl;
     if (isIncludedInPath(label, parent_dir)) {
       return TextParserErrorHandler(TP_LABEL_ALREADY_USED_PATH_ERROR, label);
     }
@@ -2021,9 +2021,9 @@ TextParserError TextParserTree::getOrAddNode(std::string& label, TextParserEleme
     }
 
     //    ret = parent_dir->setArrayLabelIndex(label);    // 配列型ラベルのインデックス設定
-    //    std::cout << __FUNCTION__ << " tmp12"  << std::endl;
+    //    TP_DBGOSH << __FUNCTION__ << " tmp12"  << std::endl;
     ret = setArrayLabelIndex(label);    // 配列型ラベルのインデックス設定
-    //    std::cout << __FUNCTION__ << " tmp13"  << std::endl;
+    //    TP_DBGOSH << __FUNCTION__ << " tmp13"  << std::endl;
     if (ret != TP_NO_ERROR) {
       return TextParserErrorHandler(ret, label);
     }
@@ -2046,12 +2046,12 @@ TextParserError TextParserTree::getOrAddNode(std::string& label, TextParserEleme
       (*node)->_parent = parent_element;		// 親エレメントを設定
 #ifdef TP_DEBUG
       if (_debug_write) {
-	std::cout << "★ ディレクトリの作成 : " + label << std::endl;
+	TP_DBGOSH << "★ ディレクトリの作成 : " + label << std::endl;
       }
 #endif
     }
   } else {
-    //    std::cout << __FUNCTION__ << " tmp20"  << std::endl;
+    //    TP_DBGOSH << __FUNCTION__ << " tmp20"  << std::endl;
     return TextParserErrorHandler(TP_ILLEGAL_CURRENT_ELEMENT_ERROR, "");
   }
 
@@ -2084,7 +2084,7 @@ TextParserError TextParserTree::parseLeaf(std::stringstream& ss, std::string& bu
 #ifdef TP_DEBUG
   /*
     if (_debug_write) {
-    std::cout << "<リーフ>" << std::endl;
+    TP_DBGOSH << "<リーフ>" << std::endl;
     }
   */
 #endif
@@ -2103,8 +2103,8 @@ TextParserError TextParserTree::parseLeaf(std::stringstream& ss, std::string& bu
 TextParserError TextParserTree::openLeaf(const std::string& label)
 {
 #ifdef MYDEBUG
-  std::cout << "openLeaf(const std::string& label) start"<<  std::endl;
-  std::cout << "label :"<<label <<std::endl;
+  TP_DBGOSH << "openLeaf(const std::string& label) start"<<  std::endl;
+  TP_DBGOSH << "label :"<<label <<std::endl;
 #endif
   TextParserError ret = TP_NO_ERROR;
   TextParserElement *parent_element = 0;
@@ -2162,13 +2162,13 @@ TextParserError TextParserTree::openLeaf(const std::string& label)
 
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << "★ リーフの作成 : " + leaf->_label << std::endl;
+    TP_DBGOSH << "★ リーフの作成 : " + leaf->_label << std::endl;
   }
 #endif //TP_DEBUG
 
 #ifdef MYDEBUG
-  std::cout << "openLeaf(const std::string& label) end"<<  std::endl;
-  std::cout << "label :"<<label <<std::endl;
+  TP_DBGOSH << "openLeaf(const std::string& label) end"<<  std::endl;
+  TP_DBGOSH << "label :"<<label <<std::endl;
 #endif //MYDEBUG
 
 
@@ -2185,7 +2185,7 @@ TextParserError TextParserTree::openLeaf(const std::string& label)
 TextParserError TextParserTree::closeLeaf()
 {
 #ifdef MYDEBUG
-  std::cout<<  "closeLeaf() start"<<std::endl;
+  TP_DBGOSH<<  "closeLeaf() start"<<std::endl;
 #endif //MYDEBUG
   TextParserLeaf *current_leaf = (TextParserLeaf *)_current_element;
   if (current_leaf != 0) {
@@ -2204,11 +2204,11 @@ TextParserError TextParserTree::closeLeaf()
 
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << "リーフの終了 : " + current_leaf->_label << std::endl;
+    TP_DBGOSH << "リーフの終了 : " + current_leaf->_label << std::endl;
   }
 #endif //TP_DEBUG
 #ifdef MYDEBUG
-  std::cout<<  "closeLeaf() end"<<std::endl;
+  TP_DBGOSH<<  "closeLeaf() end"<<std::endl;
 #endif //MYDEBUG
   return TP_NO_ERROR;
 }
@@ -2237,7 +2237,7 @@ TextParserError TextParserTree::parseDependValue(std::stringstream& ss, std::str
 
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << "<依存関係付き値>" << std::endl;
+    TP_DBGOSH << "<依存関係付き値>" << std::endl;
   }
 #endif //TP_DEBUG
   return TP_NO_ERROR;
@@ -2301,7 +2301,7 @@ TextParserError TextParserTree::parseRangeValue(std::stringstream& ss, std::stri
     return TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR," @range expression is wrong.");
   }
 
-  //  std::cout<<__func__<<" "<<buffer<< std::endl;
+  //  TP_DBGOSH<<__func__<<" "<<buffer<< std::endl;
   std::string dummy = buffer.substr(6);
 
   //@rangeの後ろはVector様
@@ -2310,7 +2310,7 @@ TextParserError TextParserTree::parseRangeValue(std::stringstream& ss, std::stri
     return TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR," @range expression is wrong.");
   }
   if(answer) {
-    //     std::cout << __func__ << " "<<buffer << std::endl;
+    //     TP_DBGOSH << __func__ << " "<<buffer << std::endl;
   } else {
       return TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR," @range expression is wrong.");
   }
@@ -2322,7 +2322,7 @@ TextParserError TextParserTree::parseRangeValue(std::stringstream& ss, std::stri
 
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << "値範囲指定値 @range" << std::endl;
+    TP_DBGOSH << "値範囲指定値 @range" << std::endl;
   }
 #endif //TP_DEBUG
   return TP_NO_ERROR;
@@ -2377,7 +2377,7 @@ TextParserError TextParserTree::parseRangeValue(std::string& buffer, bool& answe
     return TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR," @range expression is wrong.");
   }
   if(answer) {
-    //     std::cout << __func__ << " "<<buffer << std::endl;
+    //     TP_DBGOSH << __func__ << " "<<buffer << std::endl;
   } else {
       return TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR," @range expression is wrong.");
   }
@@ -2389,7 +2389,7 @@ TextParserError TextParserTree::parseRangeValue(std::string& buffer, bool& answe
 
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << "値範囲指定値 @range" << std::endl;
+    TP_DBGOSH << "値範囲指定値 @range" << std::endl;
   }
 #endif //TP_DEBUG
   return TP_NO_ERROR;
@@ -2460,7 +2460,7 @@ TextParserError TextParserTree::parseListValue(std::stringstream& ss, std::strin
 
   //  parseVectorValue(ss,dummy,answer);o
   if(answer) {
-    // std::cout << __func__ << " "<<dummy << std::endl;
+    // TP_DBGOSH << __func__ << " "<<dummy << std::endl;
   } else {
       return TextParserErrorHandler(TP_ILLEGAL_LIST_ERROR," @list expression is wrong.");
   }
@@ -2472,7 +2472,7 @@ TextParserError TextParserTree::parseListValue(std::stringstream& ss, std::strin
 
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << "値範囲指定値 @list" << std::endl;
+    TP_DBGOSH << "値範囲指定値 @list" << std::endl;
   }
 #endif //TP_DEBUG
   return TP_NO_ERROR;
@@ -2533,7 +2533,7 @@ TextParserError TextParserTree::parseListValue( std::string& buffer, bool& answe
 
 
   if(answer) {
-    // std::cout << __func__ << " "<<dummy << std::endl;
+    // TP_DBGOSH << __func__ << " "<<dummy << std::endl;
   } else {
       return TextParserErrorHandler(TP_ILLEGAL_LIST_ERROR," @list expression is wrong.");
   }
@@ -2545,7 +2545,7 @@ TextParserError TextParserTree::parseListValue( std::string& buffer, bool& answe
 
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << "値範囲指定値 @list" << std::endl;
+    TP_DBGOSH << "値範囲指定値 @list" << std::endl;
   }
 #endif //TP_DEBUG
   return TP_NO_ERROR;
@@ -2592,7 +2592,7 @@ TextParserError TextParserTree::parseVectorValue(std::string& buffer, bool& answ
 
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << "<ベクトル値>" << std::endl;
+    TP_DBGOSH << "<ベクトル値>" << std::endl;
   }
 #endif
   return TP_NO_ERROR;
@@ -2649,7 +2649,7 @@ TextParserError TextParserTree::parseUndefinedValue(std::string& buffer, bool& a
 
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << "<未定義値>" << std::endl;
+    TP_DBGOSH << "<未定義値>" << std::endl;
   }
 #endif
   return TP_NO_ERROR;
@@ -2698,7 +2698,7 @@ TextParserError TextParserTree::parseValue(std::string& buffer,
 {
   //#define MYDEBUG3
 #ifdef MYDEBUG3
-  std::cout << "parseValue start buffer|"<<buffer<<"|"<<std::endl;
+  TP_DBGOSH << "parseValue start buffer|"<<buffer<<"|"<<std::endl;
 #endif //MYDEBUG3
 
   answer = false;
@@ -2730,12 +2730,12 @@ TextParserError TextParserTree::parseValue(std::string& buffer,
     if (buffer[0] != '+' && buffer[0] != '-' && buffer[0] != '.'
         && (buffer[0] < '0' || buffer[0] > '9') 
 	&& !checkNumericalLimits(buffer) ){
-      //      std::cout <<" NOT_NUMERIC "<<std::endl;
+      //      TP_DBGOSH <<" NOT_NUMERIC "<<std::endl;
       TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR,buffer);
       return TP_NO_ERROR;
     }
 		
-    //      std::cout << " NUMERIC "<<std::endl;
+    //      TP_DBGOSH << " NUMERIC "<<std::endl;
 
     // 値の区切りの検出
     unsigned int end = buffer.size();
@@ -2755,19 +2755,19 @@ TextParserError TextParserTree::parseValue(std::string& buffer,
       candidate = TextParserRemoveTailSpaces(candidate); // 末尾の空白を削除
       int lspace=candidate.rfind(' ');
 #ifdef MYDEBUG3
-      std::cout << "parseValue: have next label on back in the line."
+      TP_DBGOSH << "parseValue: have next label on back in the line."
 		<< std::endl;
-      std::cout << "pos_eq "<<pos_eq << std::endl;
-      std::cout << "end "<<end << std::endl;
-      std::cout << "candidate |"<<candidate<<"|"<<std::endl;
-      std::cout << "lspace "<<lspace << std::endl;
+      TP_DBGOSH << "pos_eq "<<pos_eq << std::endl;
+      TP_DBGOSH << "end "<<end << std::endl;
+      TP_DBGOSH << "candidate |"<<candidate<<"|"<<std::endl;
+      TP_DBGOSH << "lspace "<<lspace << std::endl;
 #endif //MYDEBUG3
       if(lspace!=std::string::npos){
 	if(end>lspace) end=lspace;
        }
 #ifdef MYDEBUG3      
-      std::cout<< "test value  |"<< buffer.substr(0,end)<<"|"<<std::endl;
-      std::cout<< "test buffer |"<< buffer.substr(end) <<"|"<<std::endl;
+      TP_DBGOSH<< "test value  |"<< buffer.substr(0,end)<<"|"<<std::endl;
+      TP_DBGOSH<< "test buffer |"<< buffer.substr(end) <<"|"<<std::endl;
 #endif //MYDEBUG3      
     }
 
@@ -2815,7 +2815,7 @@ TextParserError TextParserTree::parseValue(std::string& buffer,
     for (unsigned int i = 0; i < nvalue.size(); i++) {
       if ((nvalue[i] < '0' || nvalue[i] > '9') && nvalue[i] != '.') {   // 仮数部に数値と.以外がある
 #ifdef MYDEBUG3
-  std::cout << "parseValue 0 buffer=|"<<buffer
+  TP_DBGOSH << "parseValue 0 buffer=|"<<buffer
 	    << "| value=|"<<value<<"|"<<std::endl;
 #endif //MYDEBUG3
 
@@ -2838,7 +2838,7 @@ TextParserError TextParserTree::parseValue(std::string& buffer,
     } catch (std::exception ex) {
 
 #ifdef MYDEBUG3
-  std::cout << "parseValue 1 buffer=|"<<buffer
+  TP_DBGOSH << "parseValue 1 buffer=|"<<buffer
 	    << "| value=|"<<value<<"|"<<std::endl;
 #endif //MYDEBUG3
       return TextParserErrorHandler(TP_ILLEGAL_NUMERIC_VALUE_ERROR, value);
@@ -2850,7 +2850,7 @@ TextParserError TextParserTree::parseValue(std::string& buffer,
 
 
 #ifdef MYDEBUG3
-  std::cout << "parseValue end buffer=|"<<buffer
+  TP_DBGOSH << "parseValue end buffer=|"<<buffer
 	    << "| value=|"<<value<<"|"<<std::endl;
 #endif //MYDEBUG3
 
@@ -2861,9 +2861,9 @@ TextParserError TextParserTree::parseValue(std::string& buffer,
 #ifdef TP_DEBUG
   if (_debug_write) {
     if (value_type == TP_STRING_VALUE) {
-      std::cout << "値（文字列） : " + value << std::endl;
+      TP_DBGOSH << "値（文字列） : " + value << std::endl;
     } else if (value_type == TP_NUMERIC_VALUE) {
-      std::cout << "値（数値） : " + value << std::endl;
+      TP_DBGOSH << "値（数値） : " + value << std::endl;
     }
   }
 #endif //TP_DEBUG
@@ -2910,7 +2910,7 @@ TextParserError TextParserTree::parseOpenBrancket(std::string& buffer, bool& ans
 
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << "(" << std::endl;
+    TP_DBGOSH << "(" << std::endl;
   }
 #endif //TP_DEBUG
   return TP_NO_ERROR;
@@ -2956,7 +2956,7 @@ TextParserError TextParserTree::parseClosedBrancket(std::string& buffer, bool& a
 
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << ")" << std::endl;
+    TP_DBGOSH << ")" << std::endl;
   }
 #endif //TP_DEBUG
   return TP_NO_ERROR;
@@ -3002,7 +3002,7 @@ TextParserError TextParserTree::parseEqual(std::string& buffer, bool& answer)
 
 #ifdef TP_DEBUG
     if (_debug_write) {
-    std::cout << "==" << std::endl;
+    TP_DBGOSH << "==" << std::endl;
     }
 #endif //TP_DEBUG
   return TP_NO_ERROR;
@@ -3049,7 +3049,7 @@ TextParserError TextParserTree::parseNotEqual(std::string& buffer, bool& answer)
 #ifdef TP_DEBUG
   /*
     if (_debug_write) {
-    std::cout << "!=" << std::endl;
+    TP_DBGOSH << "!=" << std::endl;
     }
   */
 #endif //TP_DEBUG
@@ -3088,7 +3088,7 @@ TextParserError TextParserTree::parseAnd(std::string& buffer, bool& answer)
 {
   answer = false;
 #ifdef MYDEBUG3
-  std::cout<< "parseAnd |"<<buffer<<std::endl;
+  TP_DBGOSH<< "parseAnd |"<<buffer<<std::endl;
 #endif // MYDEBUG3
 
   // 最初が && ?
@@ -3099,7 +3099,7 @@ TextParserError TextParserTree::parseAnd(std::string& buffer, bool& answer)
 
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << "&&" << std::endl;
+    TP_DBGOSH << "&&" << std::endl;
   }
 #endif //TP_DEBUG
   return TP_NO_ERROR;
@@ -3145,7 +3145,7 @@ TextParserError TextParserTree::parseOr(std::string& buffer, bool& answer)
 
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << "||" << std::endl;
+    TP_DBGOSH << "||" << std::endl;
   }
 #endif //TP_DEBUG
   return TP_NO_ERROR;
@@ -3184,7 +3184,7 @@ TextParserError TextParserTree::parseQuestion(std::string& buffer, bool& answer)
   answer = false;
 
 #ifdef MYDEBUG3    
-  std::cout << "@@@ parseQuestion buffer="<<buffer<<std::endl;
+  TP_DBGOSH << "@@@ parseQuestion buffer="<<buffer<<std::endl;
 #endif //MYDEBUG3    
 
   // 最初が ? ?
@@ -3195,7 +3195,7 @@ TextParserError TextParserTree::parseQuestion(std::string& buffer, bool& answer)
 
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << "?" << std::endl;
+    TP_DBGOSH << "?" << std::endl;
   }
 #endif //TP_DEBUG
   return TP_NO_ERROR;
@@ -3241,7 +3241,7 @@ TextParserError TextParserTree::parseColon(std::string& buffer, bool& answer)
 
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << ":" << std::endl;
+    TP_DBGOSH << ":" << std::endl;
   }
 #endif //TP_DEBUG
   return TP_NO_ERROR;
@@ -3287,7 +3287,7 @@ TextParserError TextParserTree::parseDelimiter(std::string& buffer, bool& answer
 
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << "デリミタ" << std::endl;
+    TP_DBGOSH << "デリミタ" << std::endl;
   }
 #endif
   return TP_NO_ERROR;
@@ -3333,7 +3333,7 @@ TextParserError TextParserTree::parseEndOfVector(std::string& buffer, bool& answ
 
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << "ベクトルの終わり" << std::endl;
+    TP_DBGOSH << "ベクトルの終わり" << std::endl;
   }
 #endif //TP_DEBUG
   return TP_NO_ERROR;
@@ -3362,7 +3362,7 @@ bool TextParserTree::isCorrectValue(std::string& value, TextParserValueType& val
     }
   } else if (value_type == TP_NUMERIC_VALUE) {  // 数値
     if(!checkNumericalLimits(value)){ // exception for numeric_limits
-      //	std::cout << __func__ << " numeric " << value << std::endl;
+      //	TP_DBGOSH << __func__ << " numeric " << value << std::endl;
 	for (unsigned int i = 0; i < value.size(); i++) {
 	  if (value[i] >= '0' && value[i] <= '9') continue;
 	  if (value[i] == '+') continue;
@@ -3377,7 +3377,7 @@ bool TextParserTree::isCorrectValue(std::string& value, TextParserValueType& val
 	  return false;
 	}
       } else {
-      //	std::cout << __func__ << " numeric_limit " << value << std::endl;
+      //	TP_DBGOSH << __func__ << " numeric_limit " << value << std::endl;
       }
   } else {
     return false;
@@ -3401,7 +3401,7 @@ TextParserError TextParserTree::setValue(std::string& value, TextParserValueType
     if (current_leaf->_value_type == TP_DEPENDENCE_VALUE) {   // 依存関係値
       TextParserValue *value_element = current_leaf->_value;    // 値のエレメントを取得
       if (value_element == 0) {
-	std::cerr << "TextParserTree::setValue" << " Can not create value_element!";
+	TP_ERROSH << "TextParserTree::setValue" << " Can not create value_element!";
 	return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, current_leaf->_label);
       }
       value_element->_value = value;
@@ -3428,9 +3428,9 @@ TextParserError TextParserTree::setValue(std::string& value, TextParserValueType
 
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << "★ 値の設定 : ";
+    TP_DBGOSH << "★ 値の設定 : ";
     debugWriteValue(value, value_type);
-    std::cout << std::endl;
+    TP_DBGOSH << std::endl;
   }
 #endif
   return TP_NO_ERROR;
@@ -3449,7 +3449,7 @@ TextParserError TextParserTree::setUndefinedValue()
     if (current_leaf->_value_type == TP_DEPENDENCE_VALUE) {   // 依存関係値
       TextParserValue *value_element = current_leaf->_value;    // 値のエレメントを取得
       if (value_element == 0) {
-	std::cerr << "TextParserTree::setUndefinedValue" << " Can not create value_element!";
+	TP_ERROSH << "TextParserTree::setUndefinedValue" << " Can not create value_element!";
 	return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, current_leaf->_label);
       }
       value_element->_value = "UNDEF";
@@ -3476,7 +3476,7 @@ TextParserError TextParserTree::setUndefinedValue()
 
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << "★ 未定義値の設定" << std::endl;
+    TP_DBGOSH << "★ 未定義値の設定" << std::endl;
   }
 #endif
   return TP_NO_ERROR;
@@ -3495,7 +3495,7 @@ TextParserError TextParserTree::setUndefinedValue()
  */
 TextParserError TextParserTree::setRangeValue(std::stringstream& ss, std::string& buffer)
 {
-  //  std::cout << __func__ << " start "<< std::endl;
+  //  TP_DBGOSH << __func__ << " start "<< std::endl;
   TextParserError ret;
   bool answer = false;
   TextParserValue *value_element = 0;
@@ -3509,7 +3509,7 @@ TextParserError TextParserTree::setRangeValue(std::stringstream& ss, std::string
       std::string string1 = buffer.substr(0,rrp+1);
       std::string string2 = buffer.substr(rrp+1);
       //      buffer = buffer.substr(rrp+1);
-      // std::cout << __func__ << " rrp "<< rrp 
+      // TP_DBGOSH << __func__ << " rrp "<< rrp 
       // 		<< " buffer "<<"|"<< buffer<<"|"
       // 		<< " string1 "<<"|"<< string1<<"|"
       // 		<< " string2 "<<"|"<< string2<<"|"
@@ -3531,7 +3531,7 @@ TextParserError TextParserTree::setRangeValue(std::stringstream& ss, std::string
 
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << "<値範囲指定>：" + value_element->_value << std::endl;
+    TP_DBGOSH << "<値範囲指定>：" + value_element->_value << std::endl;
   }
 #endif
   return TP_NO_ERROR;
@@ -3561,7 +3561,7 @@ TextParserError TextParserTree::setListValue(std::stringstream& ss, std::string&
       std::string string1 = buffer.substr(0,rrp+1);
       std::string string2 = buffer.substr(rrp+1);
       //      buffer = buffer.substr(rrp+1);
-      // std::cout << __func__ << " rrp "<< rrp 
+      // TP_DBGOSH << __func__ << " rrp "<< rrp 
       // 		<< " buffer "<<"|"<< buffer<<"|"
       // 		<< " string1 "<<"|"<< string1<<"|"
       // 		<< " string2 "<<"|"<< string2<<"|"
@@ -3582,7 +3582,7 @@ TextParserError TextParserTree::setListValue(std::stringstream& ss, std::string&
   }
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << "<値範囲指定>：" + value_element->_value << std::endl;
+    TP_DBGOSH << "<値範囲指定>：" + value_element->_value << std::endl;
   }
 #endif
   return TP_NO_ERROR;
@@ -3600,16 +3600,16 @@ TextParserError TextParserTree::checkRangeVectorValue(std::stringstream& ss, std
 {
   
   answer = false;
-  //  std::cout << __func__ << " start "<<vstring <<std::endl;
+  //  TP_DBGOSH << __func__ << " start "<<vstring <<std::endl;
   TextParserError ret=TP_NO_ERROR;
   std::string::size_type lrp=vstring.find("(");
   if(lrp == std::string::npos){
-    std::cerr << "TextParserTree::checkRangeVectorValue" <<" cannot find left round parenthesis"<< vstring <<std::endl;
+    TP_ERROSH << "TextParserTree::checkRangeVectorValue" <<" cannot find left round parenthesis"<< vstring <<std::endl;
     ret = TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR," @range expression is wrong.");
   } 
 
   vstring = vstring.substr(lrp+1);
-  //  std::cout << __func__ <<" "<< vstring <<std::endl;
+  //  TP_DBGOSH << __func__ <<" "<< vstring <<std::endl;
   std::string value;
   TextParserValueType value_type;
   std::vector<std::string> velem;
@@ -3617,7 +3617,7 @@ TextParserError TextParserTree::checkRangeVectorValue(std::stringstream& ss, std
 
   while(true){
         ret = parseValue(ss, vstring, answer2, value, value_type);
-    //    std::cout << __func__ <<" "<< vstring <<" "<<value << " "<<value_type<<std::endl;
+    //    TP_DBGOSH << __func__ <<" "<< vstring <<" "<<value << " "<<value_type<<std::endl;
     if(answer2){
       if(value_type == TP_NUMERIC_VALUE){
           velem.push_back(value);
@@ -3646,7 +3646,7 @@ TextParserError TextParserTree::checkRangeVectorValue(std::stringstream& ss, std
       double tmpdouble;
       tmpss >> tmpdouble;
       vvalue.push_back(tmpdouble);
-      //      std::cout << i << " " << tmpdouble <<std::endl;
+      //      TP_DBGOSH << i << " " << tmpdouble <<std::endl;
     }
     
     if( ((vvalue[0] < vvalue[1]) && (vvalue[2]<0)) || ((vvalue[0]>vvalue[1]) && vvalue[2]>0) )
@@ -3655,7 +3655,7 @@ TextParserError TextParserTree::checkRangeVectorValue(std::stringstream& ss, std
 
 
   answer = true;
-  //  std::cout << __func__ <<" end "<< answer <<std::endl;
+  //  TP_DBGOSH << __func__ <<" end "<< answer <<std::endl;
   return TP_NO_ERROR;
 
 }
@@ -3671,16 +3671,16 @@ TextParserError TextParserTree::checkRangeVectorValue(std::string vstring,bool &
 {
   
   answer = false;
-  //  std::cout << __func__ << " start "<<vstring <<std::endl;
+  //  TP_DBGOSH << __func__ << " start "<<vstring <<std::endl;
   TextParserError ret=TP_NO_ERROR;
   std::string::size_type lrp=vstring.find("(");
   if(lrp == std::string::npos){
-    std::cerr << "TextParserTree::checkRangeVectorValue" <<" cannot find left round parenthesis"<< vstring <<std::endl;
+    TP_ERROSH << "TextParserTree::checkRangeVectorValue" <<" cannot find left round parenthesis"<< vstring <<std::endl;
     ret = TextParserErrorHandler(TP_ILLEGAL_RANGE_ERROR," @range expression is wrong.");
   } 
 
   vstring = vstring.substr(lrp+1);
-  //  std::cout << __func__ <<" "<< vstring <<std::endl;
+  //  TP_DBGOSH << __func__ <<" "<< vstring <<std::endl;
   std::string value;
   TextParserValueType value_type;
   std::vector<std::string> velem;
@@ -3688,7 +3688,7 @@ TextParserError TextParserTree::checkRangeVectorValue(std::string vstring,bool &
 
   while(true){
     ret = parseValue(vstring, answer2, value, value_type);
-    //    std::cout << __func__ <<" "<< vstring <<" "<<value << " "<<value_type<<std::endl;
+    //    TP_DBGOSH << __func__ <<" "<< vstring <<" "<<value << " "<<value_type<<std::endl;
     if(answer2){
       if(value_type == TP_NUMERIC_VALUE){
           velem.push_back(value);
@@ -3717,7 +3717,7 @@ TextParserError TextParserTree::checkRangeVectorValue(std::string vstring,bool &
       double tmpdouble;
       tmpss >> tmpdouble;
       vvalue.push_back(tmpdouble);
-      //      std::cout << i << " " << tmpdouble <<std::endl;
+      //      TP_DBGOSH << i << " " << tmpdouble <<std::endl;
     }
     
     if( ((vvalue[0] < vvalue[1]) && (vvalue[2]<0)) || ((vvalue[0]>vvalue[1]) && vvalue[2]>0) )
@@ -3726,7 +3726,7 @@ TextParserError TextParserTree::checkRangeVectorValue(std::string vstring,bool &
 
 
   answer = true;
-  //  std::cout << __func__ <<" end "<< answer <<std::endl;
+  //  TP_DBGOSH << __func__ <<" end "<< answer <<std::endl;
   return TP_NO_ERROR;
 
 }
@@ -3743,16 +3743,16 @@ TextParserError TextParserTree::checkListVectorValue(std::stringstream& ss, std:
 {
   
   answer = false;
-  //  std::cout << __func__ << " start "<<vstring <<std::endl;
+  //  TP_DBGOSH << __func__ << " start "<<vstring <<std::endl;
   TextParserError ret=TP_NO_ERROR;
   std::string::size_type lrp=vstring.find("(");
   if(lrp == std::string::npos){
-    std::cerr << "TextParserTree::checkListVectorValue" <<" cannot find left round parenthesis"<< vstring <<std::endl;
+    TP_ERROSH << "TextParserTree::checkListVectorValue" <<" cannot find left round parenthesis"<< vstring <<std::endl;
     ret = TextParserErrorHandler(TP_ILLEGAL_LIST_ERROR," @list expression is wrong.");
   } 
 
   vstring = vstring.substr(lrp+1);
-  //  std::cout << __func__ <<" "<< vstring <<std::endl;
+  //  TP_DBGOSH << __func__ <<" "<< vstring <<std::endl;
   std::string value;
   TextParserValueType value_type;
   std::vector<std::string> velem;
@@ -3761,7 +3761,7 @@ TextParserError TextParserTree::checkListVectorValue(std::stringstream& ss, std:
   //check numerical vector
   while(true){
     ret = parseValue(ss, vstring, answer2, value, value_type);
-    //    std::cout << __func__ <<" "<< vstring <<" "<<value << " "<<value_type<<std::endl;
+    //    TP_DBGOSH << __func__ <<" "<< vstring <<" "<<value << " "<<value_type<<std::endl;
     if(answer2){
       if(value_type == TP_NUMERIC_VALUE){
           velem.push_back(value);
@@ -3779,7 +3779,7 @@ TextParserError TextParserTree::checkListVectorValue(std::stringstream& ss, std:
   }
 
   answer = true;
-  //  std::cout << __func__ <<" end "<< answer <<std::endl;
+  //  TP_DBGOSH << __func__ <<" end "<< answer <<std::endl;
   return TP_NO_ERROR;
 
 }
@@ -3795,16 +3795,16 @@ TextParserError TextParserTree::checkListVectorValue( std::string vstring,bool &
 {
   
   answer = false;
-  //  std::cout << __func__ << " start "<<vstring <<std::endl;
+  //  TP_DBGOSH << __func__ << " start "<<vstring <<std::endl;
   TextParserError ret=TP_NO_ERROR;
   std::string::size_type lrp=vstring.find("(");
   if(lrp == std::string::npos){
-    std::cerr << "TextParserTree::checkListVectorValue" <<" cannot find left round parenthesis"<< vstring <<std::endl;
+    TP_ERROSH << "TextParserTree::checkListVectorValue" <<" cannot find left round parenthesis"<< vstring <<std::endl;
     ret = TextParserErrorHandler(TP_ILLEGAL_LIST_ERROR," @list expression is wrong.");
   } 
 
   vstring = vstring.substr(lrp+1);
-  //  std::cout << __func__ <<" "<< vstring <<std::endl;
+  //  TP_DBGOSH << __func__ <<" "<< vstring <<std::endl;
   std::string value;
   TextParserValueType value_type;
   std::vector<std::string> velem;
@@ -3813,7 +3813,7 @@ TextParserError TextParserTree::checkListVectorValue( std::string vstring,bool &
   //check numerical vector
   while(true){
     ret = parseValue( vstring, answer2, value, value_type);
-    //    std::cout << __func__ <<" "<< vstring <<" "<<value << " "<<value_type<<std::endl;
+    //    TP_DBGOSH << __func__ <<" "<< vstring <<" "<<value << " "<<value_type<<std::endl;
     if(answer2){
       if(value_type == TP_NUMERIC_VALUE){
           velem.push_back(value);
@@ -3831,7 +3831,7 @@ TextParserError TextParserTree::checkListVectorValue( std::string vstring,bool &
   }
 
   answer = true;
-  //  std::cout << __func__ <<" end "<< answer <<std::endl;
+  //  TP_DBGOSH << __func__ <<" end "<< answer <<std::endl;
   return TP_NO_ERROR;
 
 }
@@ -3892,11 +3892,11 @@ TextParserError TextParserTree::setVectorValue(std::stringstream& ss, std::strin
 	  value_element->_value += "\"" + value + "\"";
 	  value_element->_value_type = TP_VECTOR_STRING;
 	} else {
-      std::cerr << "test2 TP_ILLEGAL_TYPE_ERROR" << std::endl;
+      TP_ERROSH << "test2 TP_ILLEGAL_TYPE_ERROR" << std::endl;
 	  return TextParserErrorHandler(TP_ILLEGAL_VALUE_TYPE_ERROR, buffer);
 	}
       } else {
-	std::cerr << "TextParserTree::setVectorValue" << " Can not create value_element!";
+	TP_ERROSH << "TextParserTree::setVectorValue" << " Can not create value_element!";
 	return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, buffer);
       }
     }
@@ -3921,7 +3921,7 @@ TextParserError TextParserTree::setVectorValue(std::stringstream& ss, std::strin
   }
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << "<ベクトル値>：" + value_element->_value << std::endl;
+    TP_DBGOSH << "<ベクトル値>：" + value_element->_value << std::endl;
   }
 #endif
   return TP_NO_ERROR;
@@ -3943,7 +3943,7 @@ TextParserError TextParserTree::setDependenceExpression(std::stringstream& ss, s
   TextParserValue *value_element = 0;
 
 #ifdef MYDEBUG3
-  std::cout <<"aaa " << buffer<< std::endl;
+  TP_DBGOSH <<"aaa " << buffer<< std::endl;
 #endif //MYDEBUG3
 
   // 値の追加
@@ -3964,7 +3964,7 @@ TextParserError TextParserTree::setDependenceExpression(std::stringstream& ss, s
   }
   ret = parseOpenBrancket(ss, buffer, answer);
 #ifdef MYDEBUG3
-  std::cout <<"bbb " << buffer<< std::endl;
+  TP_DBGOSH <<"bbb " << buffer<< std::endl;
 #endif //MYDEBUG3
 
   if (ret != TP_NO_ERROR) return ret;
@@ -3972,7 +3972,7 @@ TextParserError TextParserTree::setDependenceExpression(std::stringstream& ss, s
     value_element->_value = "(";
     ret = setConditionalExpression(ss, buffer);  // 条件式の登録
 #ifdef MYDEBUG3
-    std::cout <<"ccc " << buffer<< std::endl;
+    TP_DBGOSH <<"ccc " << buffer<< std::endl;
 #endif //MYDEBUG3
     if (ret != TP_NO_ERROR) return ret;
     ret = parseQuestion(ss, buffer, answer);
@@ -3989,21 +3989,21 @@ TextParserError TextParserTree::setDependenceExpression(std::stringstream& ss, s
 	if (ret != TP_NO_ERROR) return ret;
       } else {
 #ifdef MYDEBUG3	      
-	std::cout << "setDependenceExpression1 buffer=" 
+	TP_DBGOSH << "setDependenceExpression1 buffer=" 
 		  <<buffer<<std::endl;
 #endif
 	return TextParserErrorHandler(TP_ILLEGAL_DEPENDENCE_EXPRESSION_ERROR, buffer);
       }
     } else {
 #ifdef MYDEBUG3	      
-      std::cout << "setDependenceExpression2 buffer|" 
+      TP_DBGOSH << "setDependenceExpression2 buffer|" 
 		<<buffer <<" answer "<< answer <<std::endl;
 #endif
       return TextParserErrorHandler(TP_ILLEGAL_DEPENDENCE_EXPRESSION_ERROR, buffer);
     }
   } else {
 #ifdef MYDEBUG3	      
-    std::cout << "setDependenceExpression3 buffer=" 
+    TP_DBGOSH << "setDependenceExpression3 buffer=" 
 	      <<buffer <<" answer "<< answer <<std::endl;
 #endif
     return TextParserErrorHandler(TP_ILLEGAL_DEPENDENCE_EXPRESSION_ERROR, buffer);
@@ -4011,7 +4011,7 @@ TextParserError TextParserTree::setDependenceExpression(std::stringstream& ss, s
 
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << "<依存関係式>：" + value_element->_value << std::endl;
+    TP_DBGOSH << "<依存関係式>：" + value_element->_value << std::endl;
   }
 #endif
   return TP_NO_ERROR;
@@ -4034,7 +4034,7 @@ TextParserError TextParserTree::setConditionalExpression(std::stringstream& ss, 
 
 
 #ifdef MYDEBUG3
-  std::cout << "setConditionalExpression 1 |"<<buffer <<std::endl;
+  TP_DBGOSH << "setConditionalExpression 1 |"<<buffer <<std::endl;
 #endif //MYDEBUG3
 
   // 値の取得
@@ -4042,7 +4042,7 @@ TextParserError TextParserTree::setConditionalExpression(std::stringstream& ss, 
     TextParserLeaf *current_leaf = (TextParserLeaf *)_current_element;
     value_element = current_leaf->_value;
     if (value_element == 0) {
-      std::cerr << "TextParserTree::setConditionalExpression" << " Can not create value_element!";
+      TP_ERROSH << "TextParserTree::setConditionalExpression" << " Can not create value_element!";
       return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR,
 				    current_leaf->_label);
     }
@@ -4055,7 +4055,7 @@ TextParserError TextParserTree::setConditionalExpression(std::stringstream& ss, 
   std::string label;
   ret = parseLabel(ss, buffer, answer, label);
 #ifdef MYDEBUG3
-  std::cout << "setConditionalExpression 2 |"<<buffer <<std::endl;
+  TP_DBGOSH << "setConditionalExpression 2 |"<<buffer <<std::endl;
 #endif //MYDEBUG3
 
   if (ret != TP_NO_ERROR) return ret;
@@ -4063,7 +4063,7 @@ TextParserError TextParserTree::setConditionalExpression(std::stringstream& ss, 
     value_element->_value += "\"" + label + "\"";
     ret = parseEqual(ss, buffer, answer);
 #ifdef MYDEBUG3
-    std::cout << "setConditionalExpression 3 |"<<buffer <<std::endl;
+    TP_DBGOSH << "setConditionalExpression 3 |"<<buffer <<std::endl;
 #endif //MYDEBUG3
 
     if (ret != TP_NO_ERROR) return ret;
@@ -4071,7 +4071,7 @@ TextParserError TextParserTree::setConditionalExpression(std::stringstream& ss, 
       value_element->_value += "==";
       ret = parseUndefinedValue(ss, buffer, answer);
 #ifdef MYDEBUG3
-      std::cout << "setConditionalExpression 4 |"<<buffer <<std::endl;
+      TP_DBGOSH << "setConditionalExpression 4 |"<<buffer <<std::endl;
 #endif //MYDEBUG3
 
       if (ret != TP_NO_ERROR) return ret;
@@ -4083,13 +4083,13 @@ TextParserError TextParserTree::setConditionalExpression(std::stringstream& ss, 
       } else {
 	ret = parseValue(ss, buffer, answer, value, value_type);
 #ifdef MYDEBUG3
-	std::cout << "setConditionalExpression 5 |"<<buffer <<std::endl;
+	TP_DBGOSH << "setConditionalExpression 5 |"<<buffer <<std::endl;
 #endif //MYDEBUG3
 
 	if (ret != TP_NO_ERROR) return ret;
 	if (answer) {
 	  if (!isCorrectValue(value, value_type)) {    // 値のチェック
-	    std::cerr << "TextParserTree::setConditionalExpression" <<  " Can not create value_element!";
+	    TP_ERROSH << "TextParserTree::setConditionalExpression" <<  " Can not create value_element!";
 	    return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, value);
 	  }
 	  if (value_type == TP_STRING_VALUE) {
@@ -4104,7 +4104,7 @@ TextParserError TextParserTree::setConditionalExpression(std::stringstream& ss, 
     } else {
       ret = parseNotEqual(ss, buffer, answer);
 #ifdef MYDEBUG3
-      std::cout << "setConditionalExpression 6 |"<<buffer <<std::endl;
+      TP_DBGOSH << "setConditionalExpression 6 |"<<buffer <<std::endl;
 #endif //MYDEBUG3
 
 
@@ -4113,7 +4113,7 @@ TextParserError TextParserTree::setConditionalExpression(std::stringstream& ss, 
 	value_element->_value += "!=";
 	ret = parseUndefinedValue(ss, buffer, answer);
 #ifdef MYDEBUG3
-	std::cout << "setConditionalExpression 7 |"<<buffer <<std::endl;
+	TP_DBGOSH << "setConditionalExpression 7 |"<<buffer <<std::endl;
 #endif //MYDEBUG3
 
 	if (ret != TP_NO_ERROR) return ret;
@@ -4125,12 +4125,12 @@ TextParserError TextParserTree::setConditionalExpression(std::stringstream& ss, 
 	} else { // not undefined value
 	  ret = parseValue(ss, buffer, answer, value, value_type);
 #ifdef MYDEBUG3
-	  std::cout << "setConditionalExpression 8 |"<<buffer <<std::endl;
+	  TP_DBGOSH << "setConditionalExpression 8 |"<<buffer <<std::endl;
 #endif //MYDEBUG3
 	  if (ret != TP_NO_ERROR) return ret;
 	  if (answer) { // parseValue answer 
 	    if (!isCorrectValue(value, value_type)) {    // 値のチェック
-	      std::cerr << "TextParserTree::setConditionalExpression" << " Can not create value_element!";
+	      TP_ERROSH << "TextParserTree::setConditionalExpression" << " Can not create value_element!";
 	      return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, value);
 	    }
 	    if (value_type == TP_STRING_VALUE) { //string
@@ -4138,7 +4138,7 @@ TextParserError TextParserTree::setConditionalExpression(std::stringstream& ss, 
 	    } else if (value_type == TP_NUMERIC_VALUE) { //numerical
 	      value_element->_value += value;
 	    } else {
-	      //std::cout << "test3 TP_ILLEGAL_TYPE_ERROR" << std::endl;
+	      //TP_DBGOSH << "test3 TP_ILLEGAL_TYPE_ERROR" << std::endl;
 	      return TextParserErrorHandler(TP_ILLEGAL_VALUE_TYPE_ERROR, 
 					    value);
 	    }
@@ -4153,7 +4153,7 @@ TextParserError TextParserTree::setConditionalExpression(std::stringstream& ss, 
     ret = parseClosedBrancket(ss, buffer, answer);
 
 #ifdef MYDEBUG3
-    std::cout << "setConditionalExpression 9 |"
+    TP_DBGOSH << "setConditionalExpression 9 |"
 	      <<buffer << "| answer "<< answer <<std::endl;
 #endif //MYDEBUG3
 
@@ -4164,13 +4164,13 @@ TextParserError TextParserTree::setConditionalExpression(std::stringstream& ss, 
       return TextParserErrorHandler(TP_MISSING_CLOSED_BRANCKET_ERROR, buffer);
     }
 #ifdef MYDEBUG3
-    std::cout << value_element->_value << std::endl;
+    TP_DBGOSH << value_element->_value << std::endl;
 #endif //MYDEBUG3
 
     buffer=TextParserRemoveHeadSpaces(buffer);
     int qpos=buffer.find("?");
 #ifdef MYDEBUG3
-    std::cout << "qpos "<< qpos << " buffer "<< buffer<< std::endl;
+    TP_DBGOSH << "qpos "<< qpos << " buffer "<< buffer<< std::endl;
 #endif //MYDEBUG3
     if (qpos<0) 
       return TextParserErrorHandler(
@@ -4186,7 +4186,7 @@ TextParserError TextParserTree::setConditionalExpression(std::stringstream& ss, 
     ret = parseOpenBrancket(ss, buffer, answer);
 
 #ifdef MYDEBUG3
-    std::cout << "setConditionalExpression 10 |"<< buffer <<std::endl;
+    TP_DBGOSH << "setConditionalExpression 10 |"<< buffer <<std::endl;
 #endif //MYDEBUG3
 
     if (ret != TP_NO_ERROR) return ret;
@@ -4195,14 +4195,14 @@ TextParserError TextParserTree::setConditionalExpression(std::stringstream& ss, 
       ret = setConditionalExpression(ss, buffer);
 
 #ifdef MYDEBUG3
-      std::cout << "setConditionalExpression 11 |"<<buffer <<std::endl;
+      TP_DBGOSH << "setConditionalExpression 11 |"<<buffer <<std::endl;
 #endif //MYDEBUG3
 
       if (ret != TP_NO_ERROR) return ret;
       ret = parseAnd(ss, buffer, answer);
 
 #ifdef MYDEBUG3
-      std::cout << "setConditionalExpression 12 |"<<buffer <<std::endl;
+      TP_DBGOSH << "setConditionalExpression 12 |"<<buffer <<std::endl;
 #endif //MYDEBUG3
 
       if (ret != TP_NO_ERROR) return ret;
@@ -4261,7 +4261,7 @@ TextParserError TextParserTree::setConditionalExpression(std::stringstream& ss, 
       } 
     } else { //条件式の開始？　
 #ifdef MYDEBUG3
-      std::cout << "no no no ( " << std::endl;
+      TP_DBGOSH << "no no no ( " << std::endl;
 #endif
      
       return
@@ -4271,7 +4271,7 @@ TextParserError TextParserTree::setConditionalExpression(std::stringstream& ss, 
   }
 
 #ifdef MYDEBUG3
-  std::cout << "no error:set conditional " << std::endl;
+  TP_DBGOSH << "no error:set conditional " << std::endl;
 #endif
 
   return TP_NO_ERROR;
@@ -4297,7 +4297,7 @@ TextParserError TextParserTree::setDependenceValue(std::stringstream& ss, std::s
     TextParserLeaf *current_leaf = (TextParserLeaf *)_current_element;
     value_element = current_leaf->_value;
     if (value_element == 0) {
-      std::cerr << "TextParserTree::setDependenceValue" << " Can not create value_element!";
+      TP_ERROSH << "TextParserTree::setDependenceValue" << " Can not create value_element!";
       return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, current_leaf->_label);
     }
   } else {
@@ -4314,7 +4314,7 @@ TextParserError TextParserTree::setDependenceValue(std::stringstream& ss, std::s
 	if (ret != TP_NO_ERROR) return ret;
 	if (answer) {       // スカラー値?
 	  if (!isCorrectValue(value, value_type)) {   // 値のチェック
-	    std::cerr << "TextParserTree::setDependenceValue" << " Can not create value_element!";
+	    TP_ERROSH << "TextParserTree::setDependenceValue" << " Can not create value_element!";
 	    return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, value);
 	  }
 	  if (value_type == TP_STRING_VALUE) {
@@ -4337,14 +4337,14 @@ TextParserError TextParserTree::setDependenceValue(std::stringstream& ss, std::s
 	      break;
 	    }
 #ifdef MYDEBUG3	      
-	    std::cout << "setDependenceValue1 buffer=" 
+	    TP_DBGOSH << "setDependenceValue1 buffer=" 
 		      <<buffer<<std::endl;
 #endif
 	    return TextParserErrorHandler(TP_ILLEGAL_DEPENDENCE_EXPRESSION_ERROR, buffer);
 	  }
 	} else {
 #ifdef MYDEBUG3	      
-	  std::cout << "setDependenceValue2 buffer=" 
+	  TP_DBGOSH << "setDependenceValue2 buffer=" 
 		    <<buffer<<std::endl;
 #endif
 	  return TextParserErrorHandler(TP_ILLEGAL_DEPENDENCE_EXPRESSION_ERROR, buffer);
@@ -4363,7 +4363,7 @@ TextParserError TextParserTree::setDependenceValue(std::stringstream& ss, std::s
     if (ret != TP_NO_ERROR) return ret;
     if (answer) {    // スカラー値?
       if (!isCorrectValue(value, value_type)) {       // 値のチェック
-	std::cerr << "TextParserTree::setDependenceValue" << " Can not create value_element!";
+	TP_ERROSH << "TextParserTree::setDependenceValue" << " Can not create value_element!";
 	return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, value);
       }
       if (value_type == TP_STRING_VALUE) {
@@ -4374,7 +4374,7 @@ TextParserError TextParserTree::setDependenceValue(std::stringstream& ss, std::s
       break;
     }
 #ifdef MYDEBUG3	      
-    std::cout << "setDependenceValue3 buffer=" 
+    TP_DBGOSH << "setDependenceValue3 buffer=" 
 	      <<buffer<<std::endl;
 #endif
     return TextParserErrorHandler(TP_ILLEGAL_DEPENDENCE_EXPRESSION_ERROR, buffer);
@@ -4398,7 +4398,7 @@ TextParserError TextParserTree::parseDependenceExpression(TextParserLeaf *leaf)
   //#define MYDEBUG3
 
 #ifdef MYDEBUG3
-  std::cout << "parseDependenceExpression start" <<std::endl;
+  TP_DBGOSH << "parseDependenceExpression start" <<std::endl;
 #endif //MYDEBUG3
 
   // 値の取得
@@ -4406,7 +4406,7 @@ TextParserError TextParserTree::parseDependenceExpression(TextParserLeaf *leaf)
     TextParserLeaf *current_leaf = (TextParserLeaf *)_current_element;
     value_element = current_leaf->_value;
     if (value_element == 0) {
-      std::cerr << "TextParserTree::parseDependenceExpression" << " Can not create value_element!";
+      TP_ERROSH << "TextParserTree::parseDependenceExpression" << " Can not create value_element!";
       return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, current_leaf->_label);
     }
   } else {
@@ -4416,26 +4416,26 @@ TextParserError TextParserTree::parseDependenceExpression(TextParserLeaf *leaf)
   std::string buffer = value_element->_value;
 
 #ifdef MYDEBUG3
-  std::cout << "buffer0 |"<<buffer<<"|" <<std::endl;
+  TP_DBGOSH << "buffer0 |"<<buffer<<"|" <<std::endl;
 #endif //MYDEBUG3
 
 
 #ifdef TP_DEBUG
   if (_debug_write) {
-    std::cout << "依存関係式：" + buffer << std::endl;
+    TP_DBGOSH << "依存関係式：" + buffer << std::endl;
   }
 #endif
 
   ret = parseOpenBrancket(buffer, answer);
 #ifdef MYDEBUG3
-  std::cout << "buffer1 |"<<buffer<<"|" <<answer<<std::endl;
+  TP_DBGOSH << "buffer1 |"<<buffer<<"|" <<answer<<std::endl;
 #endif //MYDEBUG3
 
   if (ret != TP_NO_ERROR) return ret;
   if (answer) {   //parseOpenBrancket true                 // 条件式の開始？
     ret = parseConditionalExpression(buffer, result);
 #ifdef MYDEBUG3
-    std::cout << "buffer2 |"<<buffer<<"|" <<std::endl;
+    TP_DBGOSH << "buffer2 |"<<buffer<<"|" <<std::endl;
 #endif //MYDEBUG3
 
     if (ret != TP_NO_ERROR) {
@@ -4443,7 +4443,7 @@ TextParserError TextParserTree::parseDependenceExpression(TextParserLeaf *leaf)
     }
     ret = parseQuestion(buffer, answer);    // ?
 #ifdef MYDEBUG3
-    std::cout << "buffer3 |"<<buffer<<"|" <<std::endl;
+    TP_DBGOSH << "buffer3 |"<<buffer<<"|" <<std::endl;
 #endif //MYDEBUG3
 
     if (ret != TP_NO_ERROR) return ret;
@@ -4451,7 +4451,7 @@ TextParserError TextParserTree::parseDependenceExpression(TextParserLeaf *leaf)
       ret = parseDependenceValue(buffer, result);
       // resultがtrueなら値を設定
 #ifdef MYDEBUG3
-      std::cout << "buffer4 |"<<buffer<<"|" <<std::endl;
+      TP_DBGOSH << "buffer4 |"<<buffer<<"|" <<std::endl;
 #endif //MYDEBUG3
                          
 
@@ -4459,7 +4459,7 @@ TextParserError TextParserTree::parseDependenceExpression(TextParserLeaf *leaf)
       if (ret != TP_NO_ERROR) return ret;
       ret = parseColon(buffer, answer);
 #ifdef MYDEBUG3
-      std::cout << "buffer5 |"<<buffer<<"|" <<std::endl;
+      TP_DBGOSH << "buffer5 |"<<buffer<<"|" <<std::endl;
 #endif //MYDEBUG3
 
       if (ret != TP_NO_ERROR) return ret;
@@ -4468,21 +4468,21 @@ TextParserError TextParserTree::parseDependenceExpression(TextParserLeaf *leaf)
 	if (ret != TP_NO_ERROR) return ret;
       } else { //parseColon false 
 #ifdef MYDEBUG3	      
-	std::cout << "parseDependenceExpression1a buffer=" 
+	TP_DBGOSH << "parseDependenceExpression1a buffer=" 
 		  <<buffer<<std::endl;
 #endif
 	return TextParserErrorHandler(TP_ILLEGAL_DEPENDENCE_EXPRESSION_ERROR, buffer);
       } //parseColon end
     } else { //parseQuetion false
 #ifdef MYDEBUG3	      
-      std::cout << "parseDependenceExpression2a buffer=" 
+      TP_DBGOSH << "parseDependenceExpression2a buffer=" 
 		<<buffer<<std::endl;
 #endif
       return TextParserErrorHandler(TP_ILLEGAL_DEPENDENCE_EXPRESSION_ERROR, buffer);
     } //parseQuetion end
   } else {  //parseOpenBrancket false     // 条件式の開始？
 #ifdef MYDEBUG3	      
-    std::cout << "parseDependenceExpression3a buffer=" 
+    TP_DBGOSH << "parseDependenceExpression3a buffer=" 
 	      <<buffer<<std::endl;
 #endif
     return TextParserErrorHandler(TP_ILLEGAL_DEPENDENCE_EXPRESSION_ERROR, buffer);
@@ -4500,11 +4500,11 @@ TextParserError TextParserTree::parseDependenceExpression(TextParserLeaf *leaf)
  */
 TextParserError TextParserTree::parseConditionalExpression(std::string& buffer, TextParserBool& result)
 {
-  //    std::cout << "<条件式の解析>" << std::endl;
+  //    TP_DBGOSH << "<条件式の解析>" << std::endl;
 
 #ifdef TP_DEBUG
     // if (_debug_write) {
-    // std::cout << "<条件式の解析>" << std::endl;
+    // TP_DBGOSH << "<条件式の解析>" << std::endl;
     // }
 #endif
   TextParserError ret;
@@ -4516,7 +4516,7 @@ TextParserError TextParserTree::parseConditionalExpression(std::string& buffer, 
 
   std::string label;
   ret = parseLabel(buffer, answer, label);
-  //  std::cout << __FUNCTION__<<" "<< buffer <<" "<< answer <<" "<<label<< std::endl;
+  //  TP_DBGOSH << __FUNCTION__<<" "<< buffer <<" "<< answer <<" "<<label<< std::endl;
 
   if (ret != TP_NO_ERROR) return ret;
   if (answer) {
@@ -4535,12 +4535,12 @@ TextParserError TextParserTree::parseConditionalExpression(std::string& buffer, 
 	if (ret != TP_NO_ERROR) return ret;
 	if (answer) {
 	  if (!isCorrectValue(value, value_type)) {    // 値のチェック
-	    std::cerr << "TextParserTree::parseConditionalExpression" << " Can not create value_element!";
+	    TP_ERROSH << "TextParserTree::parseConditionalExpression" << " Can not create value_element!";
 	    return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, value);
 	  }
-	  //	  std::cout << __FUNCTION__<<" "<<label <<" "<< value <<" "<<value_type<< std::endl;
+	  //	  TP_DBGOSH << __FUNCTION__<<" "<<label <<" "<< value <<" "<<value_type<< std::endl;
 	  ret = resolveConditionalExpression(label, value, value_type, TP_TRUE, result);
-	  //	  std::cout << __FUNCTION__<<" "<<label <<" "
+	  //	  TP_DBGOSH << __FUNCTION__<<" "<<label <<" "
 	  //		    << value <<" "<<value_type<< " "<< result <<std::endl;
 	  if (ret != TP_NO_ERROR) return ret;
 	  if (result == TP_UNDEFINED_BOOL) {
@@ -4566,7 +4566,7 @@ TextParserError TextParserTree::parseConditionalExpression(std::string& buffer, 
 	  if (ret != TP_NO_ERROR) return ret;
 	  if (answer) {
 	    if (!isCorrectValue(value, value_type)) {    // 値のチェック
-	      std::cerr << "TextParserTree::parseConditionalExpression" << " Can not create value_element!";
+	      TP_ERROSH << "TextParserTree::parseConditionalExpression" << " Can not create value_element!";
 	      return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, value);
 	    }
 	    ret = resolveConditionalExpression(label, value, value_type, TP_FALSE, result);
@@ -4645,7 +4645,7 @@ TextParserError TextParserTree::parseConditionalExpression(std::string& buffer, 
       return TextParserErrorHandler(TP_ILLEGAL_CONDITION_EXPRESSION_ERROR, buffer);
     }
   }
-  //    std::cout << "<条件式の解析> end" << std::endl;
+  //    TP_DBGOSH << "<条件式の解析> end" << std::endl;
   return TP_NO_ERROR;
 }
 
@@ -4673,7 +4673,7 @@ TextParserError TextParserTree::parseDependenceValue(std::string& buffer, TextPa
 	if (ret != TP_NO_ERROR) return ret;
 	if (answer) {       // スカラー値?
 	  if (!isCorrectValue(value, value_type)) {   // 値のチェック
-	    std::cerr << "TextParserTree::parseDependenceValue" << " Can not create value_element!";
+	    TP_ERROSH << "TextParserTree::parseDependenceValue" << " Can not create value_element!";
 	    return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, value);
 	  }
 	  if (set == TP_TRUE) {
@@ -4693,14 +4693,14 @@ TextParserError TextParserTree::parseDependenceValue(std::string& buffer, TextPa
 	      break;
 	    }
 #ifdef MYDEBUG3	      
-	    std::cout << "parseDependenceValue1 buffer=" 
+	    TP_DBGOSH << "parseDependenceValue1 buffer=" 
 		      <<buffer<<std::endl;
 #endif
 	    return TextParserErrorHandler(TP_ILLEGAL_DEPENDENCE_EXPRESSION_ERROR, buffer);
 	  }
 	} else {
 #ifdef MYDEBUG3	      
-	  std::cout << "parseDependenceValue2 buffer=" 
+	  TP_DBGOSH << "parseDependenceValue2 buffer=" 
 		    <<buffer<<std::endl;
 #endif
 	  return TextParserErrorHandler(TP_ILLEGAL_DEPENDENCE_EXPRESSION_ERROR, buffer);
@@ -4722,7 +4722,7 @@ TextParserError TextParserTree::parseDependenceValue(std::string& buffer, TextPa
     if (ret != TP_NO_ERROR) return ret;
     if (answer) {    // スカラー値?
       if (!isCorrectValue(value, value_type)) {       // 値のチェック
-	std::cerr << "TextParserTree::parseDependenceValue" << " Can not create value_element!";
+	TP_ERROSH << "TextParserTree::parseDependenceValue" << " Can not create value_element!";
 	return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, value);
       }
       if (set == TP_TRUE) {
@@ -4732,7 +4732,7 @@ TextParserError TextParserTree::parseDependenceValue(std::string& buffer, TextPa
       break;
     }
 #ifdef MYDEBUG3	      
-    std::cout << "parseDependenceValue3 buffer=" 
+    TP_DBGOSH << "parseDependenceValue3 buffer=" 
 	      <<buffer<<std::endl;
 #endif
     return TextParserErrorHandler(TP_ILLEGAL_DEPENDENCE_EXPRESSION_ERROR, buffer);
@@ -4756,14 +4756,14 @@ TextParserError TextParserTree::resolveConditionalExpression(std::string& label,
   //#define TP_DEBUG
 #ifdef TP_DEBUG
     if (_debug_write) {
-    std::cout << "条件式 (" + label;
+    TP_DBGOSH << "条件式 (" + label;
     if (is_equal == TP_TRUE) {
-      std::cout << " == ";
+      TP_DBGOSH << " == ";
     } else {
-      std::cout << " != ";
+      TP_DBGOSH << " != ";
     }
     debugWriteValue(value, value_type);
-    std::cout << ")" << std::endl;
+    TP_DBGOSH << ")" << std::endl;
     }
 #endif
   TextParserError ret;
@@ -4793,14 +4793,14 @@ TextParserError TextParserTree::resolveConditionalExpression(std::string& label,
       return TextParserErrorHandler(TP_ILLEGAL_CURRENT_ELEMENT_ERROR, label);
     }
   }
-  //  std::cout << __FUNCTION__ << " "<<path<<std::endl;
+  //  TP_DBGOSH << __FUNCTION__ << " "<<path<<std::endl;
 
   TextParserValue *leaf_value = 0;
   ret = getLeafValue(path, &leaf_value);
-  //  std::cout << __FUNCTION__ << path<<std::endl;
+  //  TP_DBGOSH << __FUNCTION__ << path<<std::endl;
   if (ret != TP_NO_ERROR) return ret;
   if (leaf_value == 0) {
-    std::cerr << "leaf_value is not ready."<<std::endl;
+    TP_ERROSH << "leaf_value is not ready."<<std::endl;
       return TextParserErrorHandler(TP_UNRESOLVED_LABEL_USED_WARNING, label);
       //    return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, label);
   } 
@@ -4809,7 +4809,7 @@ TextParserError TextParserTree::resolveConditionalExpression(std::string& label,
 
 #ifdef TP_DEBUG
         if (_debug_write) {
-      std::cout << "未解決の依存関係付き値：" + label << std::endl;
+      TP_DBGOSH << "未解決の依存関係付き値：" + label << std::endl;
         }
 #endif
       return TP_UNRESOLVED_LABEL_USED_WARNING;
@@ -4856,7 +4856,7 @@ TextParserError TextParserTree::resolveConditionalExpression(std::string& label,
 	  } else if (leaf_value->_value_type == TP_UNDEFFINED_VALUE) {
       result = TP_UNDEFINED_BOOL;
     } else {
-      std::cout << "test1 TP_ILLEGAL_TYPE_ERROR" << std::endl;
+      TP_DBGOSH << "test1 TP_ILLEGAL_TYPE_ERROR" << std::endl;
       return TextParserErrorHandler(TP_ILLEGAL_VALUE_TYPE_ERROR, value);
     }
     if (result != TP_UNDEFINED_BOOL) {
@@ -4868,9 +4868,9 @@ TextParserError TextParserTree::resolveConditionalExpression(std::string& label,
 
 #ifdef TP_DEBUG
     if (_debug_write) {
-    std::cout << "☆ 結果 == ";
+    TP_DBGOSH << "☆ 結果 == ";
     debugWriteTextParserBool(result);
-    std::cout << std::endl;
+    TP_DBGOSH << std::endl;
     }
 #endif
     //#undef TP_DEBUG
@@ -4889,21 +4889,21 @@ TextParserBool TextParserTree::resolveAnd(TextParserBool& left, TextParserBool& 
   if (left == TP_UNDEFINED_BOOL || right == TP_UNDEFINED_BOOL) {
 #ifdef TP_DEBUG
     if (_debug_write) {
-      std::cout << "☆ 論理積 = 不定" << std::endl;
+      TP_DBGOSH << "☆ 論理積 = 不定" << std::endl;
     }
 #endif
     return TP_UNDEFINED_BOOL;
   } else if (left == TP_TRUE && right == TP_TRUE) {
 #ifdef TP_DEBUG
     if (_debug_write) {
-      std::cout << "☆ 論理積 = True" << std::endl;
+      TP_DBGOSH << "☆ 論理積 = True" << std::endl;
     }
 #endif
     return TP_TRUE;
   } else {
 #ifdef TP_DEBUG
     if (_debug_write) {
-      std::cout << "☆ 論理積 = False" << std::endl;
+      TP_DBGOSH << "☆ 論理積 = False" << std::endl;
     }
 #endif
     return TP_FALSE;
@@ -4922,21 +4922,21 @@ TextParserBool TextParserTree::resolveOr(TextParserBool& left, TextParserBool& r
   if (left == TP_UNDEFINED_BOOL || right == TP_UNDEFINED_BOOL) {
 #ifdef TP_DEBUG
     if (_debug_write) {
-      std::cout << "☆ 論理和 = 不定" << std::endl;
+      TP_DBGOSH << "☆ 論理和 = 不定" << std::endl;
     }
 #endif
     return TP_UNDEFINED_BOOL;
   } else if (left == TP_TRUE || right == TP_TRUE) {
 #ifdef TP_DEBUG
     if (_debug_write) {
-      std::cout << "☆ 論理和 = True" << std::endl;
+      TP_DBGOSH << "☆ 論理和 = True" << std::endl;
     }
 #endif
     return TP_TRUE;
   } else {
 #ifdef TP_DEBUG
     if (_debug_write) {
-      std::cout << "☆ 論理和 = False" << std::endl;
+      TP_DBGOSH << "☆ 論理和 = False" << std::endl;
     }
 #endif
     return TP_FALSE;
@@ -4954,7 +4954,7 @@ TextParserBool TextParserTree::resolveOr(TextParserBool& left, TextParserBool& r
 TextParserError TextParserTree::getElementRelativePath (std::string& path, bool add, TextParserElement **parent_element)
 {
   #ifdef MYDEBUG
-  std::cout << "getElementRelativePath (std::string& path, bool add, TextParserElement **parent_element) start" <<std::endl;
+  TP_DBGOSH << "getElementRelativePath (std::string& path, bool add, TextParserElement **parent_element) start" <<std::endl;
   #endif //MYDEBUG
 
   TextParserError ret = TP_NO_ERROR;
@@ -5006,7 +5006,7 @@ TextParserError TextParserTree::getElementRelativePath (std::string& path, bool 
   }
 
 #ifdef MYDEBUG
-  std::cout << "getElementRelativePath (std::string& path, bool add, TextParserElement **parent_element) end" <<std::endl;
+  TP_DBGOSH << "getElementRelativePath (std::string& path, bool add, TextParserElement **parent_element) end" <<std::endl;
 #endif //MYDEBUG
 
 
@@ -5025,17 +5025,17 @@ TextParserError TextParserTree::getElement(const std::string& label, const TextP
 {
   TextParserError ret = TP_NO_ERROR;
   *element = 0;
-  //    std::cout << "getElement 0" << label <<std::endl;
+  //    TP_DBGOSH << "getElement 0" << label <<std::endl;
   if (type != TP_NODE_ELEMENT && type != TP_LEAF_ELEMENT) {
     return TextParserErrorHandler(TP_ILLEGAL_ELEMENT_ERROR, label);
   }
-  //    std::cout << "getElement 1" << label <<std::endl;
+  //    TP_DBGOSH << "getElement 1" << label <<std::endl;
   TextParserElement *parent_element = 0;
   std::string path = label;
   ret = getElementRelativePath (path, false, &parent_element);
-  //  std::cout << "getElement 2" << label << " "<< parent_element->_label<<std::endl;
+  //  TP_DBGOSH << "getElement 2" << label << " "<< parent_element->_label<<std::endl;
   if (ret != TP_NO_ERROR) return ret;
-  //   std::cout << "getElement 3" << label <<std::endl;
+  //   TP_DBGOSH << "getElement 3" << label <<std::endl;
   if (path.size() == 0) { // "/"や".."の場合
     if (type == TP_NODE_ELEMENT) {
       *element = 0;
@@ -5044,43 +5044,43 @@ TextParserError TextParserTree::getElement(const std::string& label, const TextP
       return TP_MISSING_PATH_ELEMENT_ERROR;
     }
   }
-  //    std::cout << "getElement 4" << label <<std::endl;
+  //    TP_DBGOSH << "getElement 4" << label <<std::endl;
   TextParserNode *parent_dir = 0;
   if (parent_element == 0) {  // ルートディレクトリ
     *element = getNode(path);
-    //      std::cout << "getElement 5" << label <<std::endl;
+    //      TP_DBGOSH << "getElement 5" << label <<std::endl;
     if (*element == 0) {
-      //      std::cout << "getElement 6" << label <<std::endl;
+      //      TP_DBGOSH << "getElement 6" << label <<std::endl;
       return TP_MISSING_PATH_ELEMENT_ERROR;
     }
   } else if (parent_element->_type == TP_NODE_ELEMENT) {
     parent_dir = (TextParserNode *)parent_element;
     if (type == TP_NODE_ELEMENT) {
       *element = parent_dir->getNode(path);
-      //      std::cout << "getElement 7" << label << path 
+      //      TP_DBGOSH << "getElement 7" << label << path 
       //		<<parent_dir->_label<<" "<<(*element) <<std::endl;
 
     } else if (type == TP_LEAF_ELEMENT) {
-      //          std::cout << "getElement 8" << label <<std::endl;
+      //          TP_DBGOSH << "getElement 8" << label <<std::endl;
       *element = parent_dir->getLeaf(path);
-      //    std::cout << "getElement 8" << path << *element <<std::endl;
+      //    TP_DBGOSH << "getElement 8" << path << *element <<std::endl;
     }
     // if (*element == 0) {
-    //       std::cout << "getElement 9" << label <<std::endl;
+    //       TP_DBGOSH << "getElement 9" << label <<std::endl;
     //   return TP_MISSING_PATH_ELEMENT_ERROR;
     // }
 
     if (element==NULL && *element == 0) {
-          //std::cout << "getElement 9" << label <<std::endl;
+          //TP_DBGOSH << "getElement 9" << label <<std::endl;
       return TP_MISSING_PATH_ELEMENT_ERROR;
     }
 
   } else {
-      //std::cout << "getElement 10" << label <<std::endl;
+      //TP_DBGOSH << "getElement 10" << label <<std::endl;
     return TextParserErrorHandler(TP_ILLEGAL_PATH_ELEMENT_ERROR, "");
   }
-  //    std::cout << "getElement 11" << label <<std::endl;
-  //    std::cout << "getElement " << path << " " <<(*element) << std::endl;
+  //    TP_DBGOSH << "getElement 11" << label <<std::endl;
+  //    TP_DBGOSH << "getElement " << path << " " <<(*element) << std::endl;
   return ret;
 }
 
@@ -5098,29 +5098,29 @@ TextParserError TextParserTree::getElement(const std::string& label, const TextP
 TextParserError TextParserTree::getLeafValue(const  std::string& path, TextParserValue **value)
 //TextParserError TextParserTree::getLeafValue(cosnt std::string* path, TextParserValue **value)
 {
-  //  std::cout<<__FUNCTION__<<" 1 "<<path<<std::endl;
+  //  TP_DBGOSH<<__FUNCTION__<<" 1 "<<path<<std::endl;
   *value=0;
   TextParserError ret;
   TextParserElement* element = 0;
   ret = getElement(path, TP_LEAF_ELEMENT, &element); // パスからエレメントを取得
-  //  std::cout<<__FUNCTION__<<" 2 "<<path<<std::endl;
+  //  TP_DBGOSH<<__FUNCTION__<<" 2 "<<path<<std::endl;
 
   if (ret != TP_NO_ERROR){
-    //    std::cout<<__FUNCTION__<<" 3 "<<path<<std::endl;
+    //    TP_DBGOSH<<__FUNCTION__<<" 3 "<<path<<std::endl;
     return ret;}
-  //  std::cout<<__FUNCTION__<<" 3-1 "<<path<<" "<< element <<std::endl;
+  //  TP_DBGOSH<<__FUNCTION__<<" 3-1 "<<path<<" "<< element <<std::endl;
   if(element!=0){
     if (element->_type == TP_LEAF_ELEMENT) {
 
-      //      std::cout<<__FUNCTION__<<" 4 "<<path<<std::endl;
+      //      TP_DBGOSH<<__FUNCTION__<<" 4 "<<path<<std::endl;
       TextParserLeaf *leaf = (TextParserLeaf *)element;
-      //      std::cout<<__FUNCTION__<<" 5 "<<path<<std::endl;
+      //      TP_DBGOSH<<__FUNCTION__<<" 5 "<<path<<std::endl;
       if (leaf->_value == 0) {
-	//	std::cout<<__FUNCTION__<<" 6 "<<path<<std::endl;
-	std::cerr << "TextParserTree::getLeafValue" << " Can not create value_element!";
+	//	TP_DBGOSH<<__FUNCTION__<<" 6 "<<path<<std::endl;
+	TP_ERROSH << "TextParserTree::getLeafValue" << " Can not create value_element!";
 	return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, "");
       } else {
-	//	std::cout<<__FUNCTION__<<" 7 "<<path<<std::endl;
+	//	TP_DBGOSH<<__FUNCTION__<<" 7 "<<path<<std::endl;
 	*value = leaf->_value;
 
       }
@@ -5130,9 +5130,9 @@ TextParserError TextParserTree::getLeafValue(const  std::string& path, TextParse
   }
   //#ifdef TP_DEBUG
   //  if (_debug_write) {
-  //  std::cout<<__FUNCTION__<<" 7 "<<path<<" "<<(*value) <<std::endl;
-  //  if(*value!=0) std::cout << "リーフの値（" + path + " = " + (*value)->_value + ")" << std::endl;
-  //  std::cout<<__FUNCTION__<<" 7 "<<path<<" "<<(*value) <<std::endl;
+  //  TP_DBGOSH<<__FUNCTION__<<" 7 "<<path<<" "<<(*value) <<std::endl;
+  //  if(*value!=0) TP_DBGOSH << "リーフの値（" + path + " = " + (*value)->_value + ")" << std::endl;
+  //  TP_DBGOSH<<__FUNCTION__<<" 7 "<<path<<" "<<(*value) <<std::endl;
     //  }
     //#endif
   return TP_NO_ERROR;
@@ -5147,7 +5147,7 @@ TextParserError TextParserTree::getLeafValue(const  std::string& path, TextParse
 TextParserError TextParserTree::writeParameters(const std::string& filename,int order)
 {
 #ifdef MYDEBUG
-  std::cout<<"writeParameters(const std::string& filename) start"<<std::endl;
+  TP_DBGOSH<<"writeParameters(const std::string& filename) start"<<std::endl;
 #endif //MYDEBUG
 
   TextParserError ret = TP_NO_ERROR;
@@ -5195,7 +5195,7 @@ TextParserError TextParserTree::writeParameters(const std::string& filename,int 
 
 
 #ifdef MYDEBUG
-  std::cout<<"writeParameters(const std::string& filename) endl"<<std::endl;
+  TP_DBGOSH<<"writeParameters(const std::string& filename) endl"<<std::endl;
 #endif //MYDEBUG
   return ret;
 }
@@ -5246,9 +5246,9 @@ TextParserError TextParserTree::changeNode(const std::string& label)
 #ifdef TP_DEBUG
   if (_debug_write) {
     if (_current_element == 0) {
-      std::cout << "ディレクトリの移動 : /" << std::endl;
+      TP_DBGOSH << "ディレクトリの移動 : /" << std::endl;
     } else {
-      std::cout << "ディレクトリの移動 : " + _current_element->_label << std::endl;
+      TP_DBGOSH << "ディレクトリの移動 : " + _current_element->_label << std::endl;
     }
   }
 #endif
@@ -5468,7 +5468,7 @@ TextParserError TextParserTree::splitVectorValue(const std::string &vector_value
 	if (answer) {       // スカラー値?
 	  values.push_back(value);
 	} else {
-	  std::cerr << "TextParserTree::splitVectorValue" << " Can not create value_element!";
+	  TP_ERROSH << "TextParserTree::splitVectorValue" << " Can not create value_element!";
 	  return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, buffer);
 	}
       }
@@ -5485,7 +5485,7 @@ TextParserError TextParserTree::splitVectorValue(const std::string &vector_value
       }
     }
   } else {
-	std::cerr << "TextParserTree::splitVectorValue" << " Can not create value_element!";
+	TP_ERROSH << "TextParserTree::splitVectorValue" << " Can not create value_element!";
     ret = TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, buffer);
   }
 
@@ -5515,9 +5515,9 @@ void TextParserTree::debugWriteValue(const std::string& value, const TextParserV
 {
 #ifdef TP_DEBUG
   if (_debug_write) {
-    if (value_type == TP_STRING_VALUE) std::cout << "\"";
-    std::cout << value;
-    if (value_type == TP_STRING_VALUE) std::cout << "\"";
+    if (value_type == TP_STRING_VALUE) TP_DBGOSH << "\"";
+    TP_DBGOSH << value;
+    if (value_type == TP_STRING_VALUE) TP_DBGOSH << "\"";
   }
 #endif
 }
@@ -5532,11 +5532,11 @@ void TextParserTree::debugWriteTextParserBool(const TextParserBool& result)
 #ifdef TP_DEBUG
   if (_debug_write) {
     if (result == TP_UNDEFINED_BOOL) {
-      std::cout << "不定";
+      TP_DBGOSH << "不定";
     } else if (result == TP_TRUE) {
-      std::cout << "True";
+      TP_DBGOSH << "True";
     } else if (result == TP_FALSE) {
-      std::cout << "False";
+      TP_DBGOSH << "False";
     }
   }
 #endif
@@ -5557,7 +5557,7 @@ TextParserError TextParserTree::labelSort(const std::vector<std::string>& input,
 					  int iswitch)
 {
   TextParserError ret =TP_NO_ERROR;
-  //  std::cout << "labelSort "<< iswitch<< std::endl;  
+  //  TP_DBGOSH << "labelSort "<< iswitch<< std::endl;  
   if(iswitch==0){
     output=input;
     return ret;
@@ -5599,7 +5599,7 @@ TextParserTree::labelSort_1(const std::vector<std::string>& input,
   std::vector< std::string >::const_iterator iter=input.begin();
   while ( iter !=input.end() ){
     std::string label=(*iter);
-    // std::cout <<label <<std::endl;
+    // TP_DBGOSH <<label <<std::endl;
     int number=array_label_test(label,key);
     
     if( number==-10000 || number == -1000){
@@ -5621,7 +5621,7 @@ TextParserTree::labelSort_1(const std::vector<std::string>& input,
 	key_list.push_back(key);
 	key_number.push_back(key_list.size());
 	order_switch.push_back(key_list.size());
-	//std::cout << "new key "<< key <<" "<<key_list.size()<<std::endl;
+	//TP_DBGOSH << "new key "<< key <<" "<<key_list.size()<<std::endl;
 	
 	std::map<int,std::string> dummy;
 	dummy.insert(std::map<int,std::string>::value_type(number,label) );
@@ -5650,12 +5650,12 @@ TextParserTree::labelSort_1(const std::vector<std::string>& input,
      if(order_switch[i]==0) {
        output.push_back(label);
      } else {
-       //std::cout<<"order_switch " << order_switch[i] << std::endl;
+       //TP_DBGOSH<<"order_switch " << order_switch[i] << std::endl;
        if(map_buffer_iter[order_switch[i]-1]
 	  !=map_buffer_iter_end[order_switch[i]-1]){
-	 //	 std::cout << "aaa " <<  std::endl; 
+	 //	 TP_DBGOSH << "aaa " <<  std::endl; 
 	 output.push_back(map_buffer_iter[order_switch[i]-1]->second);
-	 //	 std::cout << "bbb " <<  std::endl; 
+	 //	 TP_DBGOSH << "bbb " <<  std::endl; 
 	 map_buffer_iter[order_switch[i]-1]++;
        } else {
 	 return TextParserErrorHandler(TP_ERROR,label);
@@ -5665,7 +5665,7 @@ TextParserTree::labelSort_1(const std::vector<std::string>& input,
      ++i;
    }
 
-   //std::cout << "labelSort_1 end" <<std::endl;
+   //TP_DBGOSH << "labelSort_1 end" <<std::endl;
 
  return ret;
 
@@ -5691,13 +5691,13 @@ TextParserTree::labelSort_2(const std::vector<std::string>& input,
   while ( iter !=input.end() ){
     std::string label=(*iter);
     TextParserElement* element=0; 
-    //    std::cout << label  <<std::endl; 
+    //    TP_DBGOSH << label  <<std::endl; 
     ret=getElement(label,TP_LEAF_ELEMENT,&element);
     TextParserLeaf* leaf = (TextParserLeaf*) element; 
     if (ret!=TP_NO_ERROR) {
       return TextParserErrorHandler(ret,label);
     }    
-    //    std::cout << label  << " "<< leaf->_id<<std::endl; 
+    //    TP_DBGOSH << label  << " "<< leaf->_id<<std::endl; 
     map_buffer.insert(std::map<int,std::string>::value_type(leaf->_id,label) );
     
     iter++;
@@ -5745,7 +5745,7 @@ int TextParserTree::array_label_test(const std::string& label,std::string& key){
       ts << num_string;
       
       ts >>number;
-       // std::cout << "array_label_test lsb rsb "<< lsb << " "<< rsb 
+       // TP_DBGOSH << "array_label_test lsb rsb "<< lsb << " "<< rsb 
        // 		 << " key " <<key 
        // 		<< " num_string "<< num_string 
        // 		<<" number "<< number<<std::endl;
@@ -5768,7 +5768,7 @@ TextParserError TextParserTree::nodeSort(const std::vector<std::string>& input,
 					  int iswitch)
 {
   TextParserError ret =TP_NO_ERROR;
-  //  std::cout << "labelSort "<< iswitch<< std::endl;  
+  //  TP_DBGOSH << "labelSort "<< iswitch<< std::endl;  
   if(iswitch==0){
     output=input;
     return ret;
@@ -5807,13 +5807,13 @@ TextParserTree::nodeSort_2(const std::vector<std::string>& input,
   while ( iter !=input.end() ){
     std::string label=(*iter);
     TextParserElement* element=0; 
-    //    std::cout << label  <<std::endl; 
+    //    TP_DBGOSH << label  <<std::endl; 
     ret=getElement(label,TP_NODE_ELEMENT,&element);
     TextParserNode* node = (TextParserNode*) element; 
     if (ret!=TP_NO_ERROR) {
       return TextParserErrorHandler(ret,label);
     }    
-    //    std::cout << label  << " "<< leaf->_id<<std::endl; 
+    //    TP_DBGOSH << label  << " "<< leaf->_id<<std::endl; 
     map_buffer.
       insert(std::multimap<int,std::string>::value_type(node->line(),label) );
     
@@ -5835,7 +5835,7 @@ TextParserError TextParserTree::updateValue(const std::string& label,
 					    const std::string& value){
 
   TextParserError error=TP_NO_ERROR;
-  //  std::cout << __FUNCTION__ << std::endl;
+  //  TP_DBGOSH << __FUNCTION__ << std::endl;
   std::string path=label;
   TextParserElement* element = 0;
   std::string tmpvalue;
@@ -5844,7 +5844,7 @@ TextParserError TextParserTree::updateValue(const std::string& label,
   if (element->_type == TP_LEAF_ELEMENT) {
     TextParserLeaf *leaf = (TextParserLeaf *)element;
     if (leaf->_value == 0) {
-	std::cerr << "TextParserTree::updateValue" << " Can not create value_element!";
+	TP_ERROSH << "TextParserTree::updateValue" << " Can not create value_element!";
       return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, "");
     } else {
       //value = leaf->_value;
@@ -5856,12 +5856,12 @@ TextParserError TextParserTree::updateValue(const std::string& label,
     return TextParserErrorHandler(TP_ILLEGAL_PATH_ELEMENT_ERROR, "");
   }
 
-  //  std::cout << "label: " << label  << "value: " << tmpvalue<< std::endl;
+  //  TP_DBGOSH << "label: " << label  << "value: " << tmpvalue<< std::endl;
 
 
 // #ifdef TP_DEBUG
 //   if (_debug_write) {
-//     std::cout << "リーフの値（" + path + " = " + (*value)->_value + ")" << std::endl;
+//     TP_DBGOSH << "リーフの値（" + path + " = " + (*value)->_value + ")" << std::endl;
 //   }
 // #endif
     return error;
@@ -5872,7 +5872,7 @@ TextParserError TextParserTree::updateValue(const std::string& label,
 
 TextParserError TextParserTree::deleteLeaf(const std::string& label){
   TextParserError error=TP_NO_ERROR;
-  //  std::cout << __FUNCTION__ << std::endl;
+  //  TP_DBGOSH << __FUNCTION__ << std::endl;
   TextParserElement* element = 0;
   std::string path=label;
   error = getElement(path, TP_LEAF_ELEMENT, &element); // パスからエレメントを取得
@@ -5891,7 +5891,7 @@ TextParserError TextParserTree::deleteLeaf(const std::string& label){
       // check if key is array label;
       error=decrementArrayLabelIndex(key, _array_label_number);
 
-      // std::cout << "parent "<< parent->_label <<std::endl;
+      // TP_DBGOSH << "parent "<< parent->_label <<std::endl;
       parent->removeLeaf(leaf);
       //    }
   } else {
@@ -5907,7 +5907,7 @@ TextParserError TextParserTree::createLeaf(const std::string& label,const std::s
 
   error = openLeaf(label);
   std::string leaf_label=_current_element->_label;
-  // std::cout<<__FUNCTION__ << " ::  "<<leaf_label<<std::endl;
+  // TP_DBGOSH<<__FUNCTION__ << " ::  "<<leaf_label<<std::endl;
 
 
   if (error != TP_NO_ERROR) return error;
@@ -5916,7 +5916,7 @@ TextParserError TextParserTree::createLeaf(const std::string& label,const std::s
   bool answer, answer2, answer3;
   std::stringstream ssdummy;
   TextParserValueType value_type;                               // 値のタイプ
-  // std::cout << __FUNCTION__ << " ddd " << label << buffer<< std::endl;
+  // TP_DBGOSH << __FUNCTION__ << " ddd " << label << buffer<< std::endl;
 
 
       // @range 
@@ -5942,30 +5942,30 @@ TextParserError TextParserTree::createLeaf(const std::string& label,const std::s
   error = parseVectorValue(buffer, answer);
   if (error != TP_NO_ERROR) return error;
   if (answer) {             // ベクトル値?
-    //std::cout << __FUNCTION__ << "Vector?" << std::endl;
+    //TP_DBGOSH << __FUNCTION__ << "Vector?" << std::endl;
     error = setVectorValue(ssdummy, buffer);
     if (error != TP_NO_ERROR) return error;
     error = closeLeaf();                          // リーフの終了
     if (error != TP_NO_ERROR) return error;
   } else {
-    //std::cout << __FUNCTION__ << " not Vector?" << std::endl;
+    //TP_DBGOSH << __FUNCTION__ << " not Vector?" << std::endl;
     error = parseUndefinedValue(buffer, answer2);  
     
     if (error != TP_NO_ERROR) return error;
     if (answer2) {          // 未定義の値?
-          //std::cout << __FUNCTION__ << "UNDEF?" << std::endl;
+          //TP_DBGOSH << __FUNCTION__ << "UNDEF?" << std::endl;
       error = setUndefinedValue();                  // 未定義値の設定
       if (error != TP_NO_ERROR) return error;
       error = closeLeaf();                          // リーフの終了
       if (error != TP_NO_ERROR) return error;
     } else {
-      //std::cout << __FUNCTION__ << "not UNDEF?" << std::endl;
+      //TP_DBGOSH << __FUNCTION__ << "not UNDEF?" << std::endl;
       error = parseValue(buffer, answer3, value2, value_type);
       if (error != TP_NO_ERROR) return error;
       if (answer3) {// スカラー値?
-	//std::cout << __FUNCTION__ << " SCALAR? " << value2 << value_type<< std::endl;
+	//TP_DBGOSH << __FUNCTION__ << " SCALAR? " << value2 << value_type<< std::endl;
       	if (!isCorrectValue(value2, value_type)) {    // 値のチェック
-	  std::cerr << "TextParserTree::createLeaf" << " Can not create value_element!";
+	  TP_ERROSH << "TextParserTree::createLeaf" << " Can not create value_element!";
       	  return TextParserErrorHandler(TP_ILLEGAL_VALUE_ERROR, value);
       	}
       	error = setValue(value2, value_type);          // 値の設定
@@ -5973,11 +5973,11 @@ TextParserError TextParserTree::createLeaf(const std::string& label,const std::s
       	error = closeLeaf();                          // リーフの終了
       	if (error != TP_NO_ERROR) return error;
       } else{
-	//std::cout << __FUNCTION__ << " not SCALAR?" << value2 << std::endl;
+	//TP_DBGOSH << __FUNCTION__ << " not SCALAR?" << value2 << std::endl;
       }
     }
   }
-  //  std::cout << __FUNCTION__ << " END?" << std::endl;
+  //  TP_DBGOSH << __FUNCTION__ << " END?" << std::endl;
   return error;
 }
 
@@ -6061,18 +6061,18 @@ bool TextParserTree::checkNumericalLimits(const std::string buffer) {
 
 
 
-  //  std::cout << __func__ << " true." <<std::endl;
+  //  TP_DBGOSH << __func__ << " true." <<std::endl;
   return (checkNumericalLimitsInt(buffer) || checkNumericalLimitsReal(buffer)) ;
 }
 
 
 bool TextParserTree::checkNumericalLimitsInt(const std::string buffer) {
   
-  //  std::cout << __func__ << " " << buffer <<std::endl;
+  //  TP_DBGOSH << __func__ << " " << buffer <<std::endl;
   // if(buffer[0]!='C' && buffer[0]!='S' 
   //    && buffer[0]!='I' && buffer[0]!='L' 
   //    && buffer[0]!='F' && buffer[0]!='D') return false;
-  //  std::cout <<__func__<< "|"<<buffer<<"|"<<  std::endl;
+  //  TP_DBGOSH <<__func__<< "|"<<buffer<<"|"<<  std::endl;
 
   std::string::size_type p = buffer.find("CHAR_MIN");
   if(p!=std::string::npos) {
@@ -6120,16 +6120,16 @@ bool TextParserTree::checkNumericalLimitsInt(const std::string buffer) {
   if(p!=std::string::npos) {
     if(p==0)return true;
   }
-  //  std::cout << __func__ << " true." <<std::endl;
+  //  TP_DBGOSH << __func__ << " true." <<std::endl;
     return false;
 }
 bool TextParserTree::checkNumericalLimitsReal(const std::string buffer) {
   
-  //  std::cout << __func__ << " " << buffer <<std::endl;
+  //  TP_DBGOSH << __func__ << " " << buffer <<std::endl;
   // if(buffer[0]!='C' && buffer[0]!='S' 
   //    && buffer[0]!='I' && buffer[0]!='L' 
   //    && buffer[0]!='F' && buffer[0]!='D') return false;
-  //  std::cout <<__func__<< "|"<<buffer<<"|"<<  std::endl;
+  //  TP_DBGOSH <<__func__<< "|"<<buffer<<"|"<<  std::endl;
 
   std::string::size_type p = buffer.find("FLOAT_MIN");
   if(p!=std::string::npos) {
@@ -6151,6 +6151,6 @@ bool TextParserTree::checkNumericalLimitsReal(const std::string buffer) {
   }
 
 
-  //  std::cout << __func__ << " true." <<std::endl;
+  //  TP_DBGOSH << __func__ << " true." <<std::endl;
     return false;
 }
