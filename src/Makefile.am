@@ -8,8 +8,6 @@
 ###################################################################################
 #
 
-EXTRA_DIST=TextParser_fapi.f90
-
 if SERIALTARGET
   lib_LIBRARIES = libTP.a
   libTP_a_SOURCES  = TextParser.cpp TextParserElement.cpp TextParserTree.cpp
@@ -20,10 +18,11 @@ else
   libMPITP_a_CXXFLAGS = @MPICH_CFLAGS@ -I$(top_builddir)/include
 endif
 
-
-#libTP_fapi_a_SOURCES  = TextParser_fapi.f90
-#libTP_fapi_a_CXXFLAGS = @MPICH_CFLAGS@ -I$(top_builddir)/include
-
+if TP_FAPI
+  lib_LIBRARIES += libTP_fapi.a
+  libTP_fapi_a_SOURCES  = TextParser_fapi.f90
+  libTP_fapi_a_CXXFLAGS = @MPICH_CFLAGS@ -I$(top_builddir)/include
+endif
 
 nobase_include_HEADERS = \
   $(top_builddir)/include/TextParser.h \

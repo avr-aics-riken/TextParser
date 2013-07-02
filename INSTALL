@@ -20,6 +20,13 @@ $ sudo make install or # make install
 
 configure options
 
+ --enable-fapi=(no|yes) or --enable-fapi | --disable-fapi
+    This option is mandatory when using either compiler to build Fortran API. Default
+    id no (--disable-fapi).
+
+ --host=hostname
+    Specify in case of cross-compilation.
+
  --prefix=PREFIX
     Specify the directory that this library will be installed. Default directory is 
     /usr/local/TextParser. Built library will be installed at $(PREFIX)/lib and header
@@ -38,9 +45,6 @@ configure options
  --with-ompi=OPENMPI_DIR
     If you will use an OpenMPI library, specify the directory path of OpenMPI.
 
- --host=hostname
-    Specify in case of cross-compilation.
-
 
  CXX 
    Specify C++ compiler or a wrapper compiler for MPI. If a wrapper compiler is specified, 
@@ -50,7 +54,14 @@ configure options
  CXXFLAGS
    Specify C++ compiler option.
 
+ FC=FORTRAN90_COMPILER
+    Specify a fortran compiler. *
 
+ FCFLAGS=FORTRAN_OPTIONS
+    Specify compiler options. *
+
+ LDFLAGS=LD_OPTIONS
+    Specify directory path for Fortran libraries. *
 
 
 Here is some examples;
@@ -59,7 +70,9 @@ Here is some examples;
 
   $ ./configure CXX=icpc CXXFLAGS=-O3
 
+  $ ./configure CXX=icpc CXXFLAGS=-O3 --enable-fapi FC=ifort FCFLAGS=-O3
 
+ 
 ## Intel compiler and MPICH
 
   $ ./configure --prefix=/usr/local/TextParser \

@@ -10,6 +10,9 @@
 RELEASE
 =======
 
+Version 1.3.5  2013-07-03
+ - Introduce --with-fapi option for configure.
+
 Version 1.3.4  2013-07-02
  - Change order of link, place stdc++ at last for gnu compiler.
 

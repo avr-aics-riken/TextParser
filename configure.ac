@@ -11,7 +11,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([TextParser], [1.3.4], [keno@iis.u-tokyo.ac.jp], [TextParser])
+AC_INIT([TextParser], [1.3.5], [keno@iis.u-tokyo.ac.jp], [TextParser])
 AM_INIT_AUTOMAKE()
 AC_CONFIG_SRCDIR([src/TextParser.cpp])
 AC_CONFIG_HEADERS([config.h])
@@ -20,7 +20,7 @@ AC_CONFIG_HEADERS([config.h])
 #
 # revision No.
 #
-TP_REVISION="20130702_1600"
+TP_REVISION="20130703_0700"
 AC_SUBST(TP_REVISION)
 
 
@@ -35,30 +35,32 @@ AC_SUBST(TP_DEVICE)
 #
 # FORTRAN API
 #
-#AC_ARG_WITH(fapi, [AC_HELP_STRING([--with-fapi=(no|yes)],[Specify fortran api mode])], , with_fapi=no)
-#AC_SUBST(TP_FAPI)
-#if test "$with_fapi" = "enable" ; then
-#  TP_FAPI=
-#else
-#  TP_FAPI=
-#fi
+AC_ARG_ENABLE(fapi,
+[  --enable-fapi    Turn on Fortran API [[default=no]]],
+[case "${enableval}" in
+  yes) enable_fapi=yes ;;
+  no)  enable_fapi=no ;;
+  *) AC_MSG_ERROR(bad value for --enable-fapi) ;;
+esac],
+enable_fapi=no)
+
+# TP_FAPI is true, if measure timing
+AC_SUBST(TP_FAPI)
+AM_CONDITIONAL([TP_FAPI], [test x"${enable_fapi}" = x"yes"])
 
 
 
 #
 # compiler libs   // Fortranのコンパイルのためのオプション
 #
-AC_ARG_WITH(comp, [AC_HELP_STRING([--with-comp=(INTEL|FJ)],[Specify Compiler type])], , with_comp=none)
-AC_SUBST(COMPILER_LIBS)
-case "$with_comp" in
-"INTEL")
-  COMPILER_LIBS="-lifport -lifcore"
-  ;;
-"FJ")
-  COMPILER_LIBS="--linkfortran"
-  ;;
-esac
-
+if test x"${enable_fapi}" = x"yes" ; then
+  AC_ARG_WITH(comp, [AC_HELP_STRING([--with-comp=(INTEL|FJ)],[Specify Compiler type])], , with_comp=none)
+  AC_SUBST(COMPILER_LIBS)
+  case "$with_comp" in
+    "INTEL") COMPILER_LIBS="-lifport -lifcore" ;;
+    "FJ")    COMPILER_LIBS="--linkfortran" ;;
+  esac
+fi
 
 # 初期値
 enable_mpi="none"
@@ -98,27 +100,27 @@ fi
 #
 # MPI Library  // Fortran用のライブラリ
 #
-if test "$with_comp" = "FJ" ; then
-  MPICH_LIBS=""
-  case "$host" in
-  sparc*)
+if test x"${enable_fapi}" = x"yes" ; then
+
+  if test "$with_comp" = "FJ" ; then
+    MPICH_LIBS=""
+    case "$host" in
+      sparc*) MPICH_FCLIBS="$MPICH_LIBS"" -lmpi_f77 -lmpi_f90" ;;
+    esac
+  elif test "$enable_mpi" = "mpich" ; then
+    MPICH_LIBS="-lmpich"
+    MPICH_FCLIBS="$MPICH_LIBS"" -lfmpich"
+    case "$CPM_DEVICE" in
+      "Lion"|"Snow_Leopard"|"Leopard"|"Mountain_Lion") ;;
+    esac
+  elif test "$enable_mpi" = "ompi" ; then
+    MPICH_LIBS="-lmpi"
     MPICH_FCLIBS="$MPICH_LIBS"" -lmpi_f77 -lmpi_f90"
-    ;;
+    case "$CPM_DEVICE" in
+    "Lion"|"Snow_Leopard"|"Leopard"|"Mountain_Lion") ;;
   esac
-elif test "$enable_mpi" = "mpich" ; then
-  MPICH_LIBS="-lmpich"
-  MPICH_FCLIBS="$MPICH_LIBS"" -lfmpich"
-  case "$CPM_DEVICE" in
-  "Lion"|"Snow_Leopard"|"Leopard"|"Mountain_Lion")
-    ;;
-  esac
-elif test "$enable_mpi" = "ompi" ; then
-  MPICH_LIBS="-lmpi"
-  MPICH_FCLIBS="$MPICH_LIBS"" -lmpi_f77 -lmpi_f90"
-  case "$CPM_DEVICE" in
-  "Lion"|"Snow_Leopard"|"Leopard"|"Mountain_Lion")
-    ;;
-  esac
+fi
+
 fi
 
 if test "$enable_mpi" = "none" ; then
@@ -185,13 +187,15 @@ AC_SUBST(TP_LDFLAGS)
 TP_FC="$FC"
 AC_SUBST(TP_FC)
 
-TP_FC_LD="$FC"
-if test "$with_comp" = "FJ"; then
-  TP_FC_LD="$CXX"" --linkfortran"
-else
-  TP_LIBS="$TP_LIBS"" -lstdc++"
+if test x"${enable_fapi}" = x"yes" ; then
+  TP_FC_LD="$FC"
+  if test "$with_comp" = "FJ"; then
+    TP_FC_LD="$CXX"" --linkfortran"
+  else
+    TP_LIBS="$TP_LIBS"" -lstdc++"
+  fi
+  AC_SUBST(TP_FC_LD)
 fi
-AC_SUBST(TP_FC_LD)
 
 
 #

@@ -15,6 +15,10 @@ Known values for OPTION are:
 
   --cxx       print C++ compiler command
   --cflags    print C/C++ pre-processor and compiler flags
+  --fc        print Fortran90 compiler command
+  --fcflags   print Fortran90 pre-processor and compiler flags
+  --fclibs    print library linking information for Fortran90 program
+  --fclink    print Fortran90 program linker command
   --libs      print library linking information for C++ program
   --help      display this help and exit
   --version   output version information
@@ -60,6 +64,22 @@ EOF
 
     --cflags)
       echo @TP_CFLAGS@ @MPICH_CFLAGS@
+      ;;
+
+    --fc)
+      echo @TP_FC@
+      ;;
+
+    --fclink)
+      echo @TP_FC_LD@
+      ;;
+
+    --fcflags)
+      echo @TP_CFLAGS@ @MPICH_CFLAGS@
+      ;;
+
+    --fclibs)
+      echo @TP_LDFLAGS@ @TP_LIBS@ @MPICH_LDFLAGS@ @MPICH_FCLIBS@
       ;;
 
     --libs)

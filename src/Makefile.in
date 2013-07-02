@@ -59,6 +59,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+@TP_FAPI_TRUE@am__append_1 = libTP_fapi.a
 subdir = src
 DIST_COMMON = $(nobase_include_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(top_srcdir)/depcomp
@@ -118,6 +119,11 @@ am__libTP_a_SOURCES_DIST = TextParser.cpp TextParserElement.cpp \
 @SERIALTARGET_TRUE@	libTP_a-TextParserElement.$(OBJEXT) \
 @SERIALTARGET_TRUE@	libTP_a-TextParserTree.$(OBJEXT)
 libTP_a_OBJECTS = $(am_libTP_a_OBJECTS)
+libTP_fapi_a_AR = $(AR) $(ARFLAGS)
+libTP_fapi_a_LIBADD =
+am__libTP_fapi_a_SOURCES_DIST = TextParser_fapi.f90
+@TP_FAPI_TRUE@am_libTP_fapi_a_OBJECTS = TextParser_fapi.$(OBJEXT)
+libTP_fapi_a_OBJECTS = $(am_libTP_fapi_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -127,9 +133,14 @@ CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-SOURCES = $(libMPITP_a_SOURCES) $(libTP_a_SOURCES)
+FCCOMPILE = $(FC) $(AM_FCFLAGS) $(FCFLAGS)
+FCLD = $(FC)
+FCLINK = $(FCLD) $(AM_FCFLAGS) $(FCFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o \
+	$@
+SOURCES = $(libMPITP_a_SOURCES) $(libTP_a_SOURCES) \
+	$(libTP_fapi_a_SOURCES)
 DIST_SOURCES = $(am__libMPITP_a_SOURCES_DIST) \
-	$(am__libTP_a_SOURCES_DIST)
+	$(am__libTP_a_SOURCES_DIST) $(am__libTP_fapi_a_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -200,6 +211,7 @@ STRIP = @STRIP@
 TP_CFLAGS = @TP_CFLAGS@
 TP_CXX = @TP_CXX@
 TP_DEVICE = @TP_DEVICE@
+TP_FAPI = @TP_FAPI@
 TP_FC = @TP_FC@
 TP_FC_LD = @TP_FC_LD@
 TP_LDFLAGS = @TP_LDFLAGS@
@@ -251,16 +263,14 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-EXTRA_DIST = TextParser_fapi.f90
-@SERIALTARGET_FALSE@lib_LIBRARIES = libMPITP.a
-@SERIALTARGET_TRUE@lib_LIBRARIES = libTP.a
+@SERIALTARGET_FALSE@lib_LIBRARIES = libMPITP.a $(am__append_1)
+@SERIALTARGET_TRUE@lib_LIBRARIES = libTP.a $(am__append_1)
 @SERIALTARGET_TRUE@libTP_a_SOURCES = TextParser.cpp TextParserElement.cpp TextParserTree.cpp
 @SERIALTARGET_TRUE@libTP_a_CXXFLAGS = -I$(top_builddir)/include
 @SERIALTARGET_FALSE@libMPITP_a_SOURCES = TextParser.cpp TextParserElement.cpp TextParserTree.cpp
 @SERIALTARGET_FALSE@libMPITP_a_CXXFLAGS = @MPICH_CFLAGS@ -I$(top_builddir)/include
-
-#libTP_fapi_a_SOURCES  = TextParser_fapi.f90
-#libTP_fapi_a_CXXFLAGS = @MPICH_CFLAGS@ -I$(top_builddir)/include
+@TP_FAPI_TRUE@libTP_fapi_a_SOURCES = TextParser_fapi.f90
+@TP_FAPI_TRUE@libTP_fapi_a_CXXFLAGS = @MPICH_CFLAGS@ -I$(top_builddir)/include
 nobase_include_HEADERS = \
   $(top_builddir)/include/TextParser.h \
   $(top_builddir)/include/TextParserCommon.h \
@@ -271,7 +281,7 @@ nobase_include_HEADERS = \
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .cpp .o .obj
+.SUFFIXES: .cpp .f90 .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -341,6 +351,10 @@ libTP.a: $(libTP_a_OBJECTS) $(libTP_a_DEPENDENCIES) $(EXTRA_libTP_a_DEPENDENCIES
 	-rm -f libTP.a
 	$(libTP_a_AR) libTP.a $(libTP_a_OBJECTS) $(libTP_a_LIBADD)
 	$(RANLIB) libTP.a
+libTP_fapi.a: $(libTP_fapi_a_OBJECTS) $(libTP_fapi_a_DEPENDENCIES) $(EXTRA_libTP_fapi_a_DEPENDENCIES) 
+	-rm -f libTP_fapi.a
+	$(libTP_fapi_a_AR) libTP_fapi.a $(libTP_fapi_a_OBJECTS) $(libTP_fapi_a_LIBADD)
+	$(RANLIB) libTP_fapi.a
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -452,6 +466,12 @@ libTP_a-TextParserTree.obj: TextParserTree.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TextParserTree.cpp' object='libTP_a-TextParserTree.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libTP_a_CXXFLAGS) $(CXXFLAGS) -c -o libTP_a-TextParserTree.obj `if test -f 'TextParserTree.cpp'; then $(CYGPATH_W) 'TextParserTree.cpp'; else $(CYGPATH_W) '$(srcdir)/TextParserTree.cpp'; fi`
+
+.f90.o:
+	$(FCCOMPILE) -c -o $@ $<
+
+.f90.obj:
+	$(FCCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 install-nobase_includeHEADERS: $(nobase_include_HEADERS)
 	@$(NORMAL_INSTALL)
 	@list='$(nobase_include_HEADERS)'; test -n "$(includedir)" || list=; \
