@@ -6,17 +6,61 @@
  *
  */
 
-Release News
 
-  2013-05-07  1.3  修正BSDライセンス
-  2012-11-27  1.2  値記述方式、@range, @listを追加
-  2012-10-09  1.1  Makefile_handでの手動ビルド時にlib/ディレクトリを自動作成
-                   configure時のパッケージ名、バージョン番号不整合の修正
-  2012-10-08  1.0e AUTHORS, COPYING, NEWSファイルを追加
-  2012-09-04  1.0d BG/P対応
-  2012-06-22  1.0  build方法の変更
-                   singletonに加え，インスタンス方式追加
-                   京, FX10対応
-                   パッケージ方法変更
-  2012-04-27  0.9  pre release Version
+REVISION HISTORY
+================
+
+----------------
+2013-07-07
+
+    r14 reflect master's update to r13 by hand
+        - hand merge
+        - update style of ChangeLog and NEWS
+        - update configure.ac, fortran api
+        - remove stdc++ from TP_LIBS
+
+----------------
+2013-07-03
+
+    r13 exp.branch, add --enable-fapi option
+
+----------------
+2013-07-02
+
+    r12 exp.branch, change order of link lib., place stdc++ at last
+
+----------------
+2013-06-27
+
+    r11 update INSTALL
+
+    r10 exp. branch; bug fix of configure
+
+----------------
+2013-06-26
+
+    r9 exp. branch, update NES/ChangeLog
+
+    r8 exp. branch, select serial/mpi target
+
+----------------
+2013-06-25
+
+    r7 start experimental branch & 1.3.1
+
+    r6 ver 1.3
+       - registration of ver. 1.3
+
+    r5 ver 1.2
+       - registration of ver. 1.2 again
+
+    r4 ver 1.2
+       - registration of ver. 1.2
+
+    r3 ver 1.1
+       - registration of ver. 1.1
+
+    r ver 1.0
+       - registration of ver. 1.0
+    
 

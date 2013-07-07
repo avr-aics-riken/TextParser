@@ -1,91 +1,277 @@
+###################################################################################
+#
+# TextParser - Text Parsing Library
+#
+# Copyright (C) 2012-2013 Institute of Industrial Science, The University of Tokyo.
+# All rights reserved.
+#
+###################################################################################
+#
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.59])
-AC_INIT([TextParser],[1.3],[keno@iis.u-tokyo.ac.jp],[TextParser])
-
-AC_CONFIG_SRCDIR([include/TextParser.h])
+AC_PREREQ([2.69])
+AC_INIT([TextParser], [1.3.6], [keno@iis.u-tokyo.ac.jp], [TextParser])
+AM_INIT_AUTOMAKE()
+AC_CONFIG_SRCDIR([src/TextParser.cpp])
 AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_MACRO_DIR([m4])
-#AC_CONFIG_MACRO_DIR([m4 libltdl/m4])
-#AC_CONFIG_AUX_DIR([libltdl/config])
 
-AM_INIT_AUTOMAKE([foreign])
 
-dnl mpi option
-AC_MSG_CHECKING(whether to enable mpi feature)
-AC_ARG_ENABLE(mpi,AS_HELP_STRING([--enable-mpi],
-	[turn on mpi feature [default no]]),
-	[enable_mpi="$enableval"],[enable_mpi="no"])
-if test $enable_mpi != "no"; then
-   AC_MSG_RESULT(yes)
-   AC_DEFINE(ENABLE_MPI, ,
-   Enable mpi. Please set CXX to mpi enabled c++ compiler.)
+#
+# revision No.
+#
+TP_REVISION="20130707_1500"
+AC_SUBST(TP_REVISION)
 
-#   AC_SUBST(enablempi,[yes])
-else
-   AC_MSG_RESULT(no)
-#   AC_SUBST(enablempi,[no])
+
+#
+# platform
+#
+TGT_DEVICE="$($SHELL ./chk-uname)"
+AC_SUBST(TGT_DEVICE)
+
+
+
+#
+# compiler
+#
+AC_ARG_WITH(comp, [AC_HELP_STRING([--with-comp=(INTEL|FJ)],[Specify Compiler type])], , with_comp=none)
+
+
+
+#
+# FORTRAN API
+#
+AC_ARG_ENABLE(fapi,
+[  --enable-fapi    Turn on Fortran API [[default=no]]],
+[case "${enableval}" in
+  yes) enable_fapi=yes ;;
+  no)  enable_fapi=no ;;
+  *) AC_MSG_ERROR(bad value for --enable-fapi) ;;
+esac],
+enable_fapi=no)
+
+# TP_FAPI is true, if measure timing
+AC_SUBST(TP_FAPI)
+AM_CONDITIONAL([TP_FAPI], [test x"${enable_fapi}" = x"yes"])
+
+
+
+
+#
+# MPI setting. wrappers like mpicxx, mpicc, mpiCC, mpic++, mpiFCCpx are taking 
+# into consideration, if not add in case.
+#
+
+enable_mpi="none"
+
+
+TP_CXX="$CXX"
+AC_SUBST(TP_CXX)
+
+case "$TP_CXX" in
+  mpicxx)   enable_mpi="wrappermpi" ;;
+  mpicc)    enable_mpi="wrappermpi" ;;
+  mpiCC)    enable_mpi="wrappermpi" ;;
+  mpic++)   enable_mpi="wrappermpi" ;;
+  mpiFCCpx) enable_mpi="wrappermpi" ;;
+esac
+
+
+
+
+
+#
+# MPI environment
+#
+AC_SUBST(MPICH_DIR)
+AC_SUBST(MPICH_CFLAGS)
+AC_SUBST(MPICH_LDFLAGS)
+AC_SUBST(MPICH_LIBS)
+AC_SUBST(MPICH_FCLIBS)
+
+
+#
+# if wrapper compiler is specified, skip this part
+#
+
+if test "$enable_mpi" = "none" ; then
+
+# MPICH
+  AC_ARG_WITH(mpich, [AC_HELP_STRING([--with-mpich=dir],[Specify MPICH install directory])], , with_mpich=none)
+  if test "$with_mpich" != "none" ; then
+    MPICH_DIR=$with_mpich;
+    MPICH_CFLAGS=-I$MPICH_DIR/include
+    MPICH_LDFLAGS=-L$MPICH_DIR/lib
+    enable_mpi="mpich"
+  fi
+
+# OpenMPI // mpichが指定されておらず，かつ，ompが指定されていれば変数をセット
+  if test "$with_mpich" = "none" ; then
+    AC_ARG_WITH(ompi, [AC_HELP_STRING([--with-ompi=dir],[Specify OpenMPI install directory])], , with_ompi=none)
+
+    if test "$with_ompi" != "none" ; then
+      MPICH_DIR=$with_ompi;
+      MPICH_CFLAGS=-I$MPICH_DIR/include
+      MPICH_LDFLAGS=-L$MPICH_DIR/lib
+      enable_mpi="ompi"
+    fi
+  fi
+
 fi
-   AM_CONDITIONAL(MPI,test $enable_mpi != "no")	
 
-dnl fortran option
-AC_MSG_CHECKING(whether to enable fortran feature)
-AC_ARG_ENABLE(fortran,AS_HELP_STRING([--enable-fortran],
-	[turn on fortran feature [default no]]),
-	[enable_fortran="$enableval"],[enable_mpi="no"])
-if test $enable_fortran != "no"; then
-   AC_MSG_RESULT(yes)
-   AC_DEFINE(ENABLE_MPI, ,
-   Enable mpi. Please set FC to fortran 90 compiler.)
 
-#   AC_SUBST(enablempi,[yes])
-else
-   AC_MSG_RESULT(no)
-#   AC_SUBST(enablempi,[no])
+
+#
+# MPI Library for fortran
+#
+
+if test "$with_comp" = "FJ" ; then
+  MPICH_LIBS=""
+  case "$host" in
+  sparc*)
+    MPICH_FCLIBS="$MPICH_LIBS"" -lmpi_f77 -lmpi_f90"
+    ;;
+  esac
+elif test "$enable_mpi" = "mpich" ; then
+  MPICH_LIBS="-lmpich"
+  MPICH_FCLIBS="$MPICH_LIBS"" -lfmpich"
+  case "$TGT_DEVICE" in
+  "Lion"|"Snow_Leopard"|"Leopard"|"Tiger_Intel"|"Tiger_PPC"|"Panther"|"Mountain_Lion")
+#    MPICH_LIBS="$MPICH_LIBS"" -lpmpich"
+    ;;
+  esac
+elif test "$enable_mpi" = "ompi" ; then
+  MPICH_LIBS="-lmpi"
+  MPICH_FCLIBS="$MPICH_LIBS"" -lmpi_f77 -lmpi_f90"
+  case "$TGT_DEVICE" in
+  "Lion"|"Snow_Leopard"|"Leopard"|"Tiger_Intel"|"Tiger_PPC"|"Panther"|"Mountain_Lion")
+#    MPICH_LIBS="$MPICH_LIBS"" -lmpi_cxx"
+    ;;
+  esac
 fi
-   AM_CONDITIONAL(FORTRAN,test $enable_fortran != "no")	
 
+
+# warning. if a wrapper compiler is used, "enable_mpi" is empty, but parallel.
+#
+if test "$enable_mpi" = "none" ; then
+  echo "  Warning: Neither MPICH nor OpenMPI library is not specified."
+  echo "           If compilation error occurs about MPI, specify --with-mpich or --with-ompi option."
+fi
+
+
+
+#
+# default prefix setting
+#
+AC_PREFIX_DEFAULT([/usr/local/TextParser])
+if test "$prefix" = "NONE" ; then
+  TP_INST_DIR=/usr/local/TextParser
+else
+  TP_INST_DIR="$prefix"
+fi
+
+
+
+#
+# example
+#
+#AC_ARG_WITH(example, [AC_HELP_STRING([--with-example=(no|yes)],[make example [no]])], , with_example=no)
+
+
+
+#
+# Special flags
+#
+
+
+if test "$enable_mpi" = "none" ; then
+  TP_LIBS="-lTP"
+else
+  TP_LIBS="-lMPITP"
+fi
+AC_SUBST(TP_LIBS)
+
+# SERIALTARGET = true, if serial
+AM_CONDITIONAL([SERIALTARGET], [test "$enable_mpi" = "none"])
+
+
+TP_CFLAGS="-I$TP_INST_DIR/include"
+AC_SUBST(TP_CFLAGS)
+
+TP_LDFLAGS="-L$TP_INST_DIR/lib"
+AC_SUBST(TP_LDFLAGS)
+
+TP_FC="$FC"
+AC_SUBST(TP_FC)
+
+
+if test x"${enable_fapi}" = x"yes" ; then
+  TP_FC_LD="$FC"
+  if test "$with_comp" = "FJ"; then
+    TP_FC_LD="$CXX"" --linkfortran"
+  else
+    TP_LIBS="$TP_LIBS"
+# TP_LIBS="$TP_LIBS"" -lstdc++"
+  fi
+  AC_SUBST(TP_FC_LD)
+fi
+
+
+#
+# MAKE_SUB_DIRS
+#
+AC_SUBST(MAKE_SUB_DIRS)
+MAKE_SUB_DIRS="src doc"
+
+#if test "$with_example" = "yes" ; then
+#  MAKE_SUB_DIRS="$MAKE_SUB_DIRS"" Examples"
+#fi
+
+
+
+#
 # Checks for programs.
+#
 AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_F77
 AC_PROG_FC
-AC_LIBTOOL_WIN32_DLL
-AC_PROG_LIBTOOL
-AM_PROG_LIBTOOL
-
-#AC_LIBLTDL_CONVENIENCE
-dnl AC_LIBLTDL_INSTALLABLE
-#AC_LIBTOOL_DLOPEN
-
-#AC_CONFIG_SUBDIRS(libltdl)
-
-#LT_CONFIG_LTDL_DIR([libltdl])
-#AC_LIB_LTDL
-#AC_SUBST(INCLTDL)
-
-#AC_SUBST(LIBLTDL)
+AC_PROG_RANLIB
 
 
-
-
+#
 # Checks for libraries.
-# FIXME: Replace `main' with a function in `-lTextParser':
-AC_CHECK_LIB([TextParser], [TextParser::get_instance()])
+#
 
+
+
+#
 # Checks for header files.
-AC_CHECK_HEADERS([stdlib.h])
+#
+AC_CHECK_HEADERS([stdlib.h string.h])
 
+
+
+#
 # Checks for typedefs, structures, and compiler characteristics.
-AC_HEADER_STDBOOL
+#
+AC_CHECK_HEADER_STDBOOL
+AC_C_INLINE
+AC_TYPE_SIZE_T
 
+
+#
 # Checks for library functions.
+#
+AC_CONFIG_FILES([ \
+                 Makefile \
+                 src/Makefile \
+                 doc/Makefile \
+                 tp-config
+                 ])
 
-AC_CONFIG_FILES([
-                 Makefile	
-		 Examples/Makefile
-		 Examples/tpp_examples/Makefile
-                 include/Makefile
-		 src/Makefile])
 AC_OUTPUT
+
+chmod +x ./tp-config
+

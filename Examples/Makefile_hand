@@ -11,11 +11,11 @@
 ##########################
 # Settings for generic
 CXXFLAGS+=-I../include
-CXXLDFLAGS+=-L../src -lTextParser
+CXXLDFLAGS+=-L../src -lTP
 CCFLAGS+=-I../include
-CCLDFLAGS+=-L../src -lTextParser -lstdc++
+CCLDFLAGS+=-L../src -lTP -lstdc++ 
 FCFLAGS+=-I../include
-FCLDFLAGS+=-L../src -lTextParser_f90api -lTextParser -lstdc++
+FCLDFLAGS+=-L../src -lTP_f90api -lTP -lstdc++
 CXXLINKER=$(CXX)
 CCLINKER=$(CC)
 FCLINKER=$(FC)
@@ -23,11 +23,11 @@ FCLINKER=$(FC)
 ##########################
 # Settings for FX10
 #CXXFLAGS+=-I../include
-#CXXLDFLAGS+=-L../src -lTextParser
+#CXXLDFLAGS+=-L../src -lTP
 #CCFLAGS+=-I../include
-#CCLDFLAGS+=-L../src -lTextParser
+#CCLDFLAGS+=-L../src -lTP
 #FCFLAGS+=-I../include
-#FCLDFLAGS+=-L../src --linkfortran -lTextParser_f90api -lTextParser
+#FCLDFLAGS+=-L../src --linkfortran -lTP_f90api -lTP
 #CXX=FCCpx
 #CC=fccpx
 #FC=frtpx
@@ -126,7 +126,7 @@ mpi:Example3_cpp_mpi
 f90api: $(FTARGET) 
 
 Example3_cpp_mpi:Example3_cpp_mpi.cpp
-	$(MPICXX) -DENABLE_MPI -o $@ $^  -I ../include -L../src -lstdc++ -lTextParser_mpi
+	$(MPICXX) -DENABLE_MPI -o $@ $^  -I ../include -L../src -lTP_mpi -lstdc++
 
 clean:
 	-rm $(CXXOBJS) $(COBJS) $(FOBJS) $(CXXTARGET) $(CTARGET) $(FTARGET) Example3_cpp_mpi

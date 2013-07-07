@@ -1,22 +1,70 @@
 /*
- * TextParser Library
+ * TextParser - Text Parsing Library
  *
- * Copyright (C) 2012 All rights reserved.
- *
- * Institute of Industrial Science, The University of Tokyo.
+ * Copyright (C) 2012-2013 Institute of Industrial Science, The University of Tokyo.
+ * All rights reserved.
  *
  */
 
-Release News
-  2013-05-07  1.3  修正BSDライセンス
-  2012-11-27  1.2  値記述方式、@range, @listを追加
-  2012-10-09  1.1  Makefile_handでの手動ビルド時にlib/ディレクトリを自動作成
-                   configure時のパッケージ名、バージョン番号不整合の修正
-  2012-10-08  1.0e AUTHORS, COPYING, NEWSファイルを追加
-  2012-09-04  1.0d BG/P対応
-  2012-06-22  1.0  build方法の変更
-                   singletonに加え，インスタンス方式追加
-                   京, FX10対応
-                   パッケージ方法変更
-  2012-04-27  0.9  pre release Version
+
+RELEASE
+=======
+
+-------------------------
+Version 1.3.6  2013-07-07
+ - Merge experimental to master
+
+-------------------------
+Version 1.3.5  2013-07-03
+ - Exp. branch; Introduce --with-fapi option for configure.
+
+-------------------------
+Version 1.3.4  2013-07-02
+ - Exp. branch; Change order of link, place stdc++ at last for gnu compiler.
+
+-------------------------
+Version 1.3.3  2013-06-27
+ - Exp. branch; Bug fix of configure option, correction of relation between built 
+   archives and tp-config --libs.
+
+-------------------------
+Version 1.3.2  2013-06-26
+ - Exp. branch; Choose build target serial or parallel.
+
+-------------------------
+Version 1.3.1  2013-06-25
+ - Exp. branch; Modify README, NEWS, ChangeLog, INSTALL files.
+
+-------------------------
+Version 1.3    2013-05-07   
+ - Add BSD (2-clause) license.
+
+-------------------------
+Version 1.2  2012-11-27
+ - Add @range, @list for description of values.
+
+-------------------------
+Version 1.1  2012-10-09
+ - Create lib/ directory at using Makefile_hand.
+ - Modify the name of package at configure.
+ - Correct version number.
+
+-------------------------
+Version 1.0e  2012-10-08
+ - Add AUTHORS, COPYING, NEWS files.
+
+-------------------------
+Version 1.0d  2012-09-04
+ - Compile test for BG/P.
+
+-------------------------
+Version 1.0  2012-06-22
+ - Change build method.
+ - Add instance method in addition to singleton policy.
+ - Build for K-computer and FX10.
+ - Change packaging.
+
+-------------------------
+Version 0.9  2012-04-27
+ - Pre-release Version.
 

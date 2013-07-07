@@ -1,0 +1,97 @@
+#! /bin/sh
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+includedir=@includedir@
+libdir=@libdir@
+
+usage()
+{
+    cat <<EOF
+
+Usage: tp-config [OPTION]
+
+Known values for OPTION are:
+
+  --cxx       print C++ compiler command
+  --cflags    print C/C++ pre-processor and compiler flags
+  --fc        print Fortran90 compiler command
+  --fcflags   print Fortran90 pre-processor and compiler flags
+  --fclibs    print library linking information for Fortran90 program
+  --fclink    print Fortran90 program linker command
+  --libs      print library linking information for C++ program
+  --help      display this help and exit
+  --version   output version information
+
+EOF
+
+    exit $1
+}
+
+if test $# -eq 0; then
+    usage 1
+fi
+
+cflags=false
+libs=false
+
+while test $# -gt 0; do
+    case "$1" in
+    -*=*) optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+    *) optarg= ;;
+    esac
+
+    case "$1" in
+    --version)
+cat <<EOF
+
+TextParser - Text Parsing Library  Ver. @VERSION@  (@TP_REVISION@)
+
+Copyright (C) 2012-2013 Institute of Industrial Science, The University of Tokyo.
+All rights reserved.
+
+EOF
+      exit 0
+      ;;
+
+    --help)
+      usage 0
+      ;;
+
+    --cxx)
+      echo @TP_CXX@
+      ;;
+
+    --cflags)
+      echo @TP_CFLAGS@ @MPICH_CFLAGS@
+      ;;
+
+    --fc)
+      echo @TP_FC@
+      ;;
+
+    --fclink)
+      echo @TP_FC_LD@
+      ;;
+
+    --fcflags)
+      echo @TP_CFLAGS@ @MPICH_CFLAGS@
+      ;;
+
+    --fclibs)
+      echo @TP_LDFLAGS@ @TP_LIBS@ @MPICH_LDFLAGS@ @MPICH_FCLIBS@
+      ;;
+
+    --libs)
+      echo @TP_LDFLAGS@ @TP_LIBS@ @MPICH_LDFLAGS@ @MPICH_LIBS@
+      ;;
+
+    *)
+      usage
+      exit 1
+      ;;
+    esac
+    shift
+done
+
+exit 0

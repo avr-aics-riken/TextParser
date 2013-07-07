@@ -27,6 +27,7 @@
 #define TP_ERROS	std::cerr
 #define TP_ERROSH	std::cerr<<"TP:"
 
+
 #include "TextParserCommon.h"
 #ifdef __cplusplus
 #include <iostream>

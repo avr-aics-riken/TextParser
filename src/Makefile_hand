@@ -7,9 +7,9 @@
 
 # -*- mode: makefile -*-
 
-TARGET=libTextParser.a
-MPITARGET=libTextParser_mpi.a
-FTARGET=libTextParser_f90api.a
+TARGET=libTP.a
+MPITARGET=libTP_mpi.a
+FTARGET=libTP_f90api.a
 SRCS=TextParser.cpp  TextParserElement.cpp TextParserTree.cpp
 MPISRCS=TextParser.cpp  TextParserElement.cpp
 MPISRCS2=TextParserTree.cpp

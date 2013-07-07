@@ -656,4 +656,5 @@ std::string TextParserElement::GetElementAbsolutePath(TextParserElement* element
     
     return path;
 
-} 
+}
+
