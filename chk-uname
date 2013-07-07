@@ -1,18 +1,12 @@
 #!/bin/sh
 
-##############################################################################
+###################################################################
 #
-# Polylib - Polygon Management Library
+# keno@riken.jp
 #
-# Copyright (c) 2010-2011 VCAD System Research Program, RIKEN. 
-# All rights reserved.
-# 
-# Copyright (c) 2012-2013 Advanced Institute for Computational Science, RIKEN.
-# All rights reserved.
-#
-##############################################################################
+##################################################################
 
-# pl-uname : This script examines the kind of OS
+# chk-uname : This script examines the kind of OS
 
 # for Linux
 if test `uname` = "Linux" ; then

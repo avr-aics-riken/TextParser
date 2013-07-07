@@ -10,45 +10,61 @@
 RELEASE
 =======
 
+-------------------------
+Version 1.3.6  2013-07-07
+ - Merge experimental to master
+
+-------------------------
 Version 1.3.5  2013-07-03
- - Introduce --with-fapi option for configure.
+ - Exp. branch; Introduce --with-fapi option for configure.
 
+-------------------------
 Version 1.3.4  2013-07-02
- - Change order of link, place stdc++ at last for gnu compiler.
+ - Exp. branch; Change order of link, place stdc++ at last for gnu compiler.
 
+-------------------------
 Version 1.3.3  2013-06-27
- - Bug fix of configure option, correction of relation between built archives 
-   and tp-config --libs.
+ - Exp. branch; Bug fix of configure option, correction of relation between built 
+   archives and tp-config --libs.
 
+-------------------------
 Version 1.3.2  2013-06-26
- - Choose build target serial or parallel.
+ - Exp. branch; Choose build target serial or parallel.
 
+-------------------------
 Version 1.3.1  2013-06-25
- - Modify README, NEWS, ChangeLog, INSTALL files.
+ - Exp. branch; Modify README, NEWS, ChangeLog, INSTALL files.
 
+-------------------------
 Version 1.3    2013-05-07   
  - Add BSD (2-clause) license.
 
+-------------------------
 Version 1.2  2012-11-27
  - Add @range, @list for description of values.
 
+-------------------------
 Version 1.1  2012-10-09
  - Create lib/ directory at using Makefile_hand.
  - Modify the name of package at configure.
  - Correct version number.
 
+-------------------------
 Version 1.0e  2012-10-08
  - Add AUTHORS, COPYING, NEWS files.
 
+-------------------------
 Version 1.0d  2012-09-04
  - Compile test for BG/P.
 
+-------------------------
 Version 1.0  2012-06-22
  - Change build method.
  - Add instance method in addition to singleton policy.
  - Build for K-computer and FX10.
  - Change packaging.
 
+-------------------------
 Version 0.9  2012-04-27
  - Pre-release Version.
 
