@@ -44,6 +44,8 @@
 
 #ifdef __cplusplus
 
+#include "Version.h"
+
 class TextParserTree;
 
 /** 
@@ -149,7 +151,16 @@ public:
   TextParserError splitList(const std::string & value,std::vector<double>& list,
 			    TextParserSortOrder order=TP_SORT_NONE);
 
-
+public:
+  /**
+   * @brief バージョン番号の文字列を返す
+   */
+  std::string getVersionInfo()
+  {
+    std::string str(TP_VERSION_NO);
+    return str;
+  }
+  
 protected:
 
 
