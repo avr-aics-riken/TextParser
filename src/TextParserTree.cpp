@@ -795,146 +795,146 @@ TextParserError TextParserTree::TextParserErrorHandler(const TextParserError err
     }
     switch (error_code) {
     case TP_DATABASE_NOT_READY_ERROR:
-      TP_ERROSH << "Database is not ready";
+      TP_ERROS << "Database is not ready";
       break;
     case TP_DATABASE_ALREADY_SET_ERROR:
-      TP_ERROSH << "Database has been already set";
+      TP_ERROS << "Database has been already set";
       break;
     case TP_FILEOPEN_ERROR:
-      TP_ERROSH << "File open failed";
+      TP_ERROS << "File open failed";
       break;
     case TP_FILEINPUT_ERROR:
-      TP_ERROSH << "File input failed";
+      TP_ERROS << "File input failed";
       break;
     case TP_FILEOUTPUT_ERROR:
-      TP_ERROSH << "File outnput failed";
+      TP_ERROS << "File outnput failed";
       break;
     case TP_ENDOF_FILE_ERROR:
-      TP_ERROSH << "End of file";
+      TP_ERROS << "End of file";
       break;
     case TP_ILLEGAL_TOKEN_ERROR:
-      TP_ERROSH << "Illegal token";
+      TP_ERROS << "Illegal token";
       break;
     case TP_MISSING_LABEL_ERROR:
-      TP_ERROSH << "Missing label";
+      TP_ERROS << "Missing label";
       break;
     case TP_ILLEGAL_LABEL_ERROR:
-      TP_ERROSH << "Illegal label";
+      TP_ERROS << "Illegal label";
       break;
     case TP_ILLEGAL_ARRAY_LABEL_ERROR:
-      TP_ERROSH << "Illegal array type label";
+      TP_ERROS << "Illegal array type label";
       break;
     case TP_MISSING_ELEMENT_ERROR:
-      TP_ERROSH << "Missing element";
+      TP_ERROS << "Missing element";
       break;
     case TP_ILLEGAL_ELEMENT_ERROR:
-      TP_ERROSH << "Illegal element";
+      TP_ERROS << "Illegal element";
       break;
     case TP_NODE_END_ERROR:
-      TP_ERROSH << "too much Node end";
+      TP_ERROS << "too much Node end";
       break;
     case TP_NODE_END_MISSING_ERROR:
-      TP_ERROSH << "Node termination is Missing";
+      TP_ERROS << "Node termination is Missing";
       break;
     case TP_NODE_NOT_FOUND_ERROR:
-      TP_ERROSH << "The Node is not found";
+      TP_ERROS << "The Node is not found";
       break;
     case TP_LABEL_ALREADY_USED_ERROR:
-      TP_ERROSH << "Label is already used";
+      TP_ERROS << "Label is already used";
       break;
     case TP_LABEL_ALREADY_USED_PATH_ERROR:
-      TP_ERROSH << "Label is already used in path";
+      TP_ERROS << "Label is already used in path";
       break;
     case TP_ILLEGAL_CURRENT_ELEMENT_ERROR:
-      TP_ERROSH << "Illegal current element ";
+      TP_ERROS << "Illegal current element ";
       break;
     case TP_ILLEGAL_PATH_ELEMENT_ERROR:
-      TP_ERROSH << "Illegal path element ";
+      TP_ERROS << "Illegal path element ";
       break;
     case TP_MISSING_PATH_ELEMENT_ERROR:
-      TP_ERROSH << "Missing path element";
+      TP_ERROS << "Missing path element";
       break;
     case TP_ILLEGAL_LABEL_PATH_ERROR:
-      TP_ERROSH << "Illegal label path";
+      TP_ERROS << "Illegal label path";
       break;
     case TP_UNKNOWN_ELEMENT_ERROR:
-      TP_ERROSH << "Unknown element";
+      TP_ERROS << "Unknown element";
       break;
     case TP_MISSING_EQUAL_NOT_EQUAL_ERROR:
-      TP_ERROSH << "Missing both == and !=";
+      TP_ERROS << "Missing both == and !=";
       break;
     case TP_MISSING_AND_OR_ERROR:
-      TP_ERROSH << "Missing both && and ||";
+      TP_ERROS << "Missing both && and ||";
       break;
     case TP_MISSING_CONDITION_EXPRESSION_ERROR:
-      TP_ERROSH << "Missing condition expression";
+      TP_ERROS << "Missing condition expression";
       break;
     case TP_ILLEGAL_DEPENDENCE_EXPRESSION_ERROR:
-      TP_ERROSH << "Illegal dependence expression";
+      TP_ERROS << "Illegal dependence expression";
       break;
     case TP_MISSING_CLOSED_BRANCKET_ERROR:
-      TP_ERROSH << "Missing closed brancket";
+      TP_ERROS << "Missing closed brancket";
       break;
     case TP_ILLEGAL_CONDITION_EXPRESSION_ERROR:
-      TP_ERROSH << "Illegal condition expression";
+      TP_ERROS << "Illegal condition expression";
       break;
     case TP_MISSING_VALUE_ERROR:
-      TP_ERROSH << "Missing value";
+      TP_ERROS << "Missing value";
       break;
     case TP_ILLEGAL_VALUE_ERROR:
-      TP_ERROSH << "Illegal value";
+      TP_ERROS << "Illegal value";
       break;
     case TP_ILLEGAL_NUMERIC_VALUE_ERROR:
-      TP_ERROSH << "Illegal numeric value";
+      TP_ERROS << "Illegal numeric value";
       break;
     case TP_ILLEGAL_VALUE_TYPE_ERROR:
-      TP_ERROSH << "Illegal value type";
+      TP_ERROS << "Illegal value type";
       break;
     case TP_MISSING_VECTOR_END_ERROR:
-      TP_ERROSH << "Missing vector end";
+      TP_ERROS << "Missing vector end";
       break;
     case TP_VALUE_CONVERSION_ERROR:
-      TP_ERROSH << "Value conversion failed";
+      TP_ERROS << "Value conversion failed";
       break;
     case TP_MEMORY_ALLOCATION_ERROR:
-      TP_ERROSH << "Memory allocation failed";
+      TP_ERROS << "Memory allocation failed";
       break;
     case TP_MISSING_COMMENT_END_ERROR:
-      TP_ERROSH << "Missing comment end";
+      TP_ERROS << "Missing comment end";
       break;
     case TP_ID_OVER_ELEMENT_NUMBER_ERROR:
-      TP_ERROSH << "ID is over the element number";
+      TP_ERROS << "ID is over the element number";
       break;
     case TP_GET_PARAMETER_ERROR:
-      TP_ERROSH << "Get parameter failed";
+      TP_ERROS << "Get parameter failed";
       break;
     case TP_RANGE_STEP_SIGN_ERROR:
-      TP_ERROSH << "Wrong sign of step at @range";
+      TP_ERROS << "Wrong sign of step at @range";
       break;
     case  TP_ILLEGAL_RANGE_ERROR:
-      TP_ERROSH << "Illegal expression of @range";
+      TP_ERROS << "Illegal expression of @range";
       break;
     case  TP_ILLEGAL_LIST_ERROR:
-      TP_ERROSH << "Illegal expression of @range";
+      TP_ERROS << "Illegal expression of @range";
       break;
     case TP_UNSUPPORTED_ERROR:
-      TP_ERROSH << "Unsupported function";
+      TP_ERROS << "Unsupported function";
       break;
     case TP_UNDEFINED_VALUE_USED_WARNING:
-      TP_ERROSH << "Undefined value used";
+      TP_ERROS << "Undefined value used";
       break;
     case TP_UNRESOLVED_LABEL_USED_WARNING:
-      TP_ERROSH << "Unresolved label used";
+      TP_ERROS << "Unresolved label used";
       break;
     default:
-      TP_ERROSH << "Undefined error code";
+      TP_ERROS << "Undefined error code";
       break;
     }
     unsigned int current_line = _current_line;
     //unsigned int current_line = TextParserTree::getInstance()->_current_line;
-    if (sub_message.size() > 0) TP_ERROSH << " : " + sub_message;
-    if (current_line > 0) TP_ERROSH << " : line " << current_line;
-    TP_ERROSH << std::endl;
+    if (sub_message.size() > 0) TP_ERROS << " : " + sub_message;
+    if (current_line > 0) TP_ERROS << " : line " << current_line;
+    TP_ERROS << std::endl;
   }
 
 

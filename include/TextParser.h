@@ -151,17 +151,127 @@ public:
   TextParserError splitList(const std::string & value,std::vector<double>& list,
 			    TextParserSortOrder order=TP_SORT_NONE);
 
-public:
   /**
    * @brief バージョン番号の文字列を返す
    */
+public:
   std::string getVersionInfo()
   {
     std::string str(TP_VERSION_NO);
     return str;
   }
+
+  /**
+   * @brief 指定ラベルのベクトル値を取得する（整数型）
+   * @param [int] label 取得するベクトルのラベル（絶対パス）
+   * @param [out] vec   ベクトル格納配列ポインタ
+   * @param [in]  nvec  ベクトルサイズ
+   * @note ラベルに配列的表現を含む場合、必ず実indexを指定すること。
+   */
+public:
+	bool getInspectedVector(const std::string label, int *vec, const int nvec );
   
-protected:
+  /**
+   * @brief 指定ラベルのベクトル値を取得する（実数型）
+   * @param [in]  label  取得するベクトルのラベル（絶対パス）
+   * @param [out] vec    ベクトル格納配列ポインタ
+   * @param [in]  nvec   ベクトルサイズ
+   * @note ラベルに配列的表現を含む場合、必ず実indexを指定すること。
+   */
+public:
+	bool getInspectedVector(const std::string label, double *vec, const int nvec );
+  
+  /**
+   * @brief 指定ラベルのベクトル値を取得する（文字列型）
+   * @param [in]  label  取得するベクトルのラベル（絶対パス）
+   * @param [out] vec    ベクトル格納配列ポインタ
+   * @param [in]  nvec   ベクトルサイズ
+   * @note ラベルに配列的表現を含む場合、必ず実indexを指定すること。
+   */
+public:
+	bool getInspectedVector(const std::string label, std::string *vec, const int nvec );
+  
+  /**
+   * @brief 指定ラベルの変数を取得する（整数型）
+   * @param [in]  label 取得する変数のラベル（絶対パス）
+   * @param [out] ct    変数返却用
+   * @note ラベルに配列的表現を含む場合、必ず実indexを指定すること。
+   */
+public:
+	bool getInspectedValue(const std::string label, int &ct );
+  
+  /**
+   * @brief 指定ラベルの変数を取得する（double実数型）
+   * @param [in]  label 取得する変数のラベル（絶対パス）
+   * @param [out] ct    変数返却用
+   * @note ラベルに配列的表現を含む場合、必ず実indexを指定すること。
+   */
+public:
+	bool getInspectedValue(const std::string label, double &ct );
+  
+  /**
+   * @brief 指定ラベルの変数を取得する（float実数型）
+   * @param [in]  label 取得する変数のラベル（絶対パス）
+   * @param [out] ct    変数返却用
+   * @note ラベルに配列的表現を含む場合、必ず実indexを指定すること。
+   */
+public:
+	bool getInspectedValue(const std::string label, float &ct );
+  
+  /**
+   * @brief 指定ラベルの変数を取得する（文字列型）
+   * @param [in]  label 取得する変数のラベル（絶対パス）
+   * @param [out] ct    変数返却用
+   * @note ラベルに配列的表現を含む場合、必ず実indexを指定すること。
+   */
+public:
+	bool getInspectedValue(const std::string label, std::string &ct );
+	
+  /**
+   * @brief ラベルの有無をチェック
+   * @param [in] label チェックするラベル（絶対パス）
+   * @note ラベルに配列的表現を含む場合、必ず実indexを指定すること。
+   */
+public:
+	bool chkLabel(const std::string label);
+  
+  /**
+   * @brief ノードの有無をチェック
+   * @param [in] label チェックするノード（絶対パス）
+   * @note ラベルに配列的表現を含む場合、必ず実indexを指定すること。
+   */
+public:
+	bool chkNode(const std::string label);
+  
+  /**
+   * @brief ノード以下のnnode番目の文字列を取得する
+   * @param [in]  label ノードの絶対パス
+   * @param [in]  nnode 取得する文字列が現れる順番
+   * @param [out] ct    取得した文字列
+   * @note ラベルに配列的表現を含む場合、必ず実indexを指定すること。
+   */
+public:
+	bool getNodeStr(const std::string label, const int nnode, std::string &ct);
+  
+  /**
+   * @brief 指定ノード直下のラベルの数を数える
+   * @param [in] label ラベルを数えるノードの絶対パス
+   * @retval ラベルの数（エラー、もしくはない場合は-1を返す）
+   * @note ラベルに配列的表現を含む場合、必ず実indexを指定すること。
+   */
+public:
+  int countLabels(const std::string label);
+
+  /**
+   * @brief 指定ノードのラベル文字列を作成。
+   *        引数labelに配列的表現([@])を含むと一致する全てのラベル文字列を返す
+   * @param [in] label ノードの絶対パス
+   * @param [out] labels ラベル文字列のリスト
+   * @retval ラベルの数（エラーの場合は-1を返す）
+   */
+public:
+  int getArrayLabels(const std::string label, std::vector<std::string> &labels);
+
 
 
 private:
