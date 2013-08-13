@@ -11,6 +11,16 @@ REVISION HISTORY
 ================
 
 ------------------
+2013-08-13
+
+ r18 packaging [ver 1.4.0]
+
+ r17 add utility methods such as TextParser::getInspectedValue()
+
+ r16 modify README
+
+
+------------------
 2013-07-20
 
  r15 Introduce getVersionInfo() [ver 1.3.7]

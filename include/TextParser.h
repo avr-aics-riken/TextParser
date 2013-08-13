@@ -151,6 +151,7 @@ public:
   TextParserError splitList(const std::string & value,std::vector<double>& list,
 			    TextParserSortOrder order=TP_SORT_NONE);
 
+  
   /**
    * @brief バージョン番号の文字列を返す
    */
