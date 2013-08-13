@@ -2460,7 +2460,7 @@ bool TextParser::getInspectedVector(const std::string label, int *vec, const int
 }
 
 
-// ベクトル値を取得する（実数型）
+// ベクトル値を取得する（double型）
 bool TextParser::getInspectedVector(const std::string label, double *vec, const int nvec)
 {
   int ierr = TP_NO_ERROR;
@@ -2498,6 +2498,46 @@ bool TextParser::getInspectedVector(const std::string label, double *vec, const 
 
   return true;
 }
+
+// ベクトル値を取得する（float型）
+bool TextParser::getInspectedVector(const std::string label, float *vec, const int nvec)
+{
+  int ierr = TP_NO_ERROR;
+  std::string value;
+  
+  // ラベルがあるかチェック
+  if( !chkLabel(label)){
+    return false;
+  }
+  
+  // get value
+  if ( (ierr = getValue(label, value)) != TP_NO_ERROR )
+  {
+    return false;
+  }
+  
+  // get type
+  TextParserValueType type = getType(label, &ierr);
+  if( ierr != TP_NO_ERROR ) return false;
+  if( type != TP_VECTOR_NUMERIC ) return false;
+  
+  // split
+  std::vector<std::string> vec_value;
+  if( (ierr = splitVector(value, vec_value)) != TP_NO_ERROR ) return false;
+  
+  // check number of vector element
+  if( vec_value.size() != nvec ) return false;
+  
+  // string to real
+  for(int i=0; i<vec_value.size(); i++ )
+  {
+    vec[i] = convertFloat(vec_value[i], &ierr);
+    if( ierr != TP_NO_ERROR ) return false;
+  }
+  
+  return true;
+}
+
 
 // ベクトル値を取得する（文字列型）
 bool TextParser::getInspectedVector(std::string label, std::string *vec, const int nvec)
@@ -2610,7 +2650,7 @@ bool TextParser::getInspectedValue(const std::string label, float &ct )
 {
   double dval;
   bool res = getInspectedValue( label, dval );
-  if( res ) {
+  if ( res ) {
     ct = (float)dval;
   }
   return res;

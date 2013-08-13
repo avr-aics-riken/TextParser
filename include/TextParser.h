@@ -173,7 +173,7 @@ public:
 	bool getInspectedVector(const std::string label, int *vec, const int nvec );
   
   /**
-   * @brief 指定ラベルのベクトル値を取得する（実数型）
+   * @brief 指定ラベルのベクトル値を取得する（double型）
    * @param [in]  label  取得するベクトルのラベル（絶対パス）
    * @param [out] vec    ベクトル格納配列ポインタ
    * @param [in]  nvec   ベクトルサイズ
@@ -181,6 +181,18 @@ public:
    */
 public:
 	bool getInspectedVector(const std::string label, double *vec, const int nvec );
+  
+  
+  /**
+   * @brief 指定ラベルのベクトル値を取得する（float型）
+   * @param [in]  label  取得するベクトルのラベル（絶対パス）
+   * @param [out] vec    ベクトル格納配列ポインタ
+   * @param [in]  nvec   ベクトルサイズ
+   * @note ラベルに配列的表現を含む場合、必ず実indexを指定すること。
+   */
+public:
+	bool getInspectedVector(const std::string label, float *vec, const int nvec );
+  
   
   /**
    * @brief 指定ラベルのベクトル値を取得する（文字列型）

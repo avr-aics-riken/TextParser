@@ -13,6 +13,8 @@ REVISION HISTORY
 ------------------
 2013-08-13
 
+ r19 add bool getInspectedVector(const std::string label, float *vec, const int nvec )
+
  r18 packaging [ver 1.4.0]
 
  r17 add utility methods such as TextParser::getInspectedValue()
