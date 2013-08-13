@@ -26,6 +26,7 @@
 #else
 #endif
 
+#include <regex.h>
 #include <string.h>
 #include "TextParser.h"
 #include "TextParserTree.h"
@@ -259,9 +260,11 @@ void TextParser::getValue(const std::string& label,std::string& value_string,int
     } else {
       TextParserValue *value;
       ret = dataTree()->getLeafValue(label, &value);
-      value_string = value->value();
-      if (ret == TP_MISSING_PATH_ELEMENT_ERROR)
-	TextParserErrorHandler(ret, label);
+      if(ret==TP_NO_ERROR) {
+        value_string = value->value();
+      } else {
+	    TextParserErrorHandler(ret, label);
+      }
     }
     
   } catch (std::exception ex) {
@@ -1848,147 +1851,147 @@ TextParserError TextParser::TextParserErrorHandler(const TextParserError error_c
     }
     switch (error_code) {
     case TP_DATABASE_NOT_READY_ERROR:
-      TP_ERROSH << "Database is not ready";
+      TP_ERROS << "Database is not ready";
       break;
     case TP_DATABASE_ALREADY_SET_ERROR:
-      TP_ERROSH << "Database has been already set";
+      TP_ERROS << "Database has been already set";
       break;
     case TP_FILEOPEN_ERROR:
-      TP_ERROSH << "File open failed";
+      TP_ERROS << "File open failed";
       break;
     case TP_FILEINPUT_ERROR:
-      TP_ERROSH << "File input failed";
+      TP_ERROS << "File input failed";
       break;
     case TP_FILEOUTPUT_ERROR:
-      TP_ERROSH << "File outnput failed";
+      TP_ERROS << "File outnput failed";
       break;
     case TP_ENDOF_FILE_ERROR:
-      TP_ERROSH << "End of file";
+      TP_ERROS << "End of file";
       break;
     case TP_ILLEGAL_TOKEN_ERROR:
-      TP_ERROSH << "Illegal token";
+      TP_ERROS << "Illegal token";
       break;
     case TP_MISSING_LABEL_ERROR:
-      TP_ERROSH << "Missing label";
+      TP_ERROS << "Missing label";
       break;
     case TP_ILLEGAL_LABEL_ERROR:
-      TP_ERROSH << "Illegal label";
+      TP_ERROS << "Illegal label";
       break;
     case TP_ILLEGAL_ARRAY_LABEL_ERROR:
-      TP_ERROSH << "Illegal array type label";
+      TP_ERROS << "Illegal array type label";
       break;
     case TP_MISSING_ELEMENT_ERROR:
-      TP_ERROSH << "Missing element";
+      TP_ERROS << "Missing element";
       break;
     case TP_ILLEGAL_ELEMENT_ERROR:
-      TP_ERROSH << "Illegal element";
+      TP_ERROS << "Illegal element";
       break;
     case TP_NODE_END_ERROR:
-      TP_ERROSH << "too much Node end";
+      TP_ERROS << "too much Node end";
       break;
     case TP_NODE_END_MISSING_ERROR:
-      TP_ERROSH << "Node termination is Missing";
+      TP_ERROS << "Node termination is Missing";
       break;
     case TP_NODE_NOT_FOUND_ERROR:
-      TP_ERROSH << "The Node is not found";
+      TP_ERROS << "The Node is not found";
       break;
     case TP_LABEL_ALREADY_USED_ERROR:
-      TP_ERROSH << "Label is already used";
+      TP_ERROS << "Label is already used";
       break;
     case TP_LABEL_ALREADY_USED_PATH_ERROR:
-      TP_ERROSH << "Label is already used in path";
+      TP_ERROS << "Label is already used in path";
       break;
     case TP_ILLEGAL_CURRENT_ELEMENT_ERROR:
-      TP_ERROSH << "Illegal current element ";
+      TP_ERROS << "Illegal current element ";
       break;
     case TP_ILLEGAL_PATH_ELEMENT_ERROR:
-      TP_ERROSH << "Illegal path element ";
+      TP_ERROS << "Illegal path element ";
       break;
     case TP_MISSING_PATH_ELEMENT_ERROR:
-      TP_ERROSH << "Missing path element";
+      TP_ERROS << "Missing path element";
       break;
     case TP_ILLEGAL_LABEL_PATH_ERROR:
-      TP_ERROSH << "Illegal label path";
+      TP_ERROS << "Illegal label path";
       break;
     case TP_UNKNOWN_ELEMENT_ERROR:
-      TP_ERROSH << "Unknown element";
+      TP_ERROS << "Unknown element";
       break;
     case TP_MISSING_EQUAL_NOT_EQUAL_ERROR:
-      TP_ERROSH << "Missing both == and !=";
+      TP_ERROS << "Missing both == and !=";
       break;
     case TP_MISSING_AND_OR_ERROR:
-      TP_ERROSH << "Missing both && and ||";
+      TP_ERROS << "Missing both && and ||";
       break;
     case TP_MISSING_CONDITION_EXPRESSION_ERROR:
-      TP_ERROSH << "Missing condition expression";
+      TP_ERROS << "Missing condition expression";
       break;
     case TP_ILLEGAL_DEPENDENCE_EXPRESSION_ERROR:
-      TP_ERROSH << "Illegal dependence expression";
+      TP_ERROS << "Illegal dependence expression";
       break;
     case TP_MISSING_CLOSED_BRANCKET_ERROR:
-      TP_ERROSH << "Missing closed brancket";
+      TP_ERROS << "Missing closed brancket";
       break;
     case TP_ILLEGAL_CONDITION_EXPRESSION_ERROR:
-      TP_ERROSH << "Illegal condition expression";
+      TP_ERROS << "Illegal condition expression";
       break;
     case TP_MISSING_VALUE_ERROR:
-      TP_ERROSH << "Missing value";
+      TP_ERROS << "Missing value";
       break;
     case TP_ILLEGAL_VALUE_ERROR:
-      TP_ERROSH << "Illegal value";
+      TP_ERROS << "Illegal value";
       break;
     case TP_ILLEGAL_NUMERIC_VALUE_ERROR:
-      TP_ERROSH << "Illegal numeric value";
+      TP_ERROS << "Illegal numeric value";
       break;
     case TP_ILLEGAL_VALUE_TYPE_ERROR:
-      TP_ERROSH << "Illegal value type";
+      TP_ERROS << "Illegal value type";
       break;
     case TP_MISSING_VECTOR_END_ERROR:
-      TP_ERROSH << "Missing vector end";
+      TP_ERROS << "Missing vector end";
       break;
     case TP_VALUE_CONVERSION_ERROR:
-      TP_ERROSH << "Value conversion failed";
+      TP_ERROS << "Value conversion failed";
       break;
     case TP_MEMORY_ALLOCATION_ERROR:
-      TP_ERROSH << "Memory allocation failed";
+      TP_ERROS << "Memory allocation failed";
       break;
     case TP_MISSING_COMMENT_END_ERROR:
-      TP_ERROSH << "Missing comment end";
+      TP_ERROS << "Missing comment end";
       break;
     case TP_ID_OVER_ELEMENT_NUMBER_ERROR:
-      TP_ERROSH << "ID is over the element number";
+      TP_ERROS << "ID is over the element number";
       break;
     case TP_GET_PARAMETER_ERROR:
-      TP_ERROSH << "Get parameter failed";
+      TP_ERROS << "Get parameter failed";
       break;
     case TP_RANGE_STEP_SIGN_ERROR:
-      TP_ERROSH << "Wrong sign of step at @range";
+      TP_ERROS << "Wrong sign of step at @range";
       break;
     case  TP_ILLEGAL_RANGE_ERROR:
-      TP_ERROSH << "Illegal expression of @range";
+      TP_ERROS << "Illegal expression of @range";
       break;
     case  TP_ILLEGAL_LIST_ERROR:
-      TP_ERROSH << "Illegal expression of @list";
+      TP_ERROS << "Illegal expression of @list";
       break;
     case TP_UNSUPPORTED_ERROR:
-      TP_ERROSH << "Unsupported function";
+      TP_ERROS << "Unsupported function";
       break;
     case TP_UNDEFINED_VALUE_USED_WARNING:
-      TP_ERROSH << "Undefined value used";
+      TP_ERROS << "Undefined value used";
       break;
     case TP_UNRESOLVED_LABEL_USED_WARNING:
-      TP_ERROSH << "Unresolved label used";
+      TP_ERROS << "Unresolved label used";
       break;
     default:
-      TP_ERROSH << "Undefined error code";
+      TP_ERROS << "Undefined error code";
       break;
     }
     //    unsigned int current_line = (TextParserTree::get_instance())->_current_line;
     unsigned int current_line = dataTree()->current_line();
     //unsigned int current_line = TextParserTree::getInstance()->_current_line;
-    if (sub_message.size() > 0) TP_ERROSH << " : " + sub_message;
-    if (current_line > 0) TP_ERROSH << " : line " << current_line;
-    TP_ERROSH << std::endl;
+    if (sub_message.size() > 0) TP_ERROS << " : " + sub_message;
+    if (current_line > 0) TP_ERROS << " : line " << current_line;
+    TP_ERROS << std::endl;
   }
 
 
@@ -2252,17 +2255,465 @@ double TextParser::convertLimitsRealx(const std::string& value,int* ierror){
 
 
 
- // @range @list 用API
-  //@range 
-  int tp_split_range_fort_(long* ptr,char* value,double *from,double *to,double *step,
-			   int* nvalue){
-    return tp_splitRange(reinterpret_cast<void*>(*ptr),value,from,to,step);
-  }
+// @range @list 用API
+//@range 
+int tp_split_range_fort_(long* ptr,char* value,double *from,double *to,double *step, int* nvalue){
+  return tp_splitRange(reinterpret_cast<void*>(*ptr),value,from,to,step);
+}
 int tp_expand_range_fort_(long* ptr,char* value,double* expanded,int* nvalue){
   return tp_expandRange(reinterpret_cast<void*>(*ptr),value,expanded);
 }
-    // @list
+// @list
 int tp_split_list_fort_(long* ptr,char* value, double *list,int* order,int* nvalue){
   return tp_splitList(reinterpret_cast<void*>(*ptr),value,list,(*order));
+}
+
+
+//---------------------------------------------------
+// C++便利メソッド群
+//---------------------------------------------------
+// ラベルの有無をチェック
+bool TextParser::chkLabel(const std::string label)
+{
+  int ierror;
+  std::string value;
+  
+  // ラベルがあるかチェック
+  std::vector<std::string> labels;
+  ierror=getAllLabels(labels);
+  if (ierror != 0)
+  {
+    TP_ERROSH << __func__ << " getAllLabels(" << label << ") failed." << std::endl;
+    return false;
+  }
+  
+  int flag=0;
+  for (int i = 0; i < labels.size(); i++)
+  {
+	if( !strcasecmp(label.c_str(), labels[i].c_str()) )
+    {
+      flag=1;
+      break;
+    }
+  }
+  
+  if (flag==0)
+  {
+    TP_ERROSH << __func__ << " label:" << label << " is not available." << std::endl;
+    return false;
+  }
+  return true;
+}
+
+// ノードの有無をチェック
+bool TextParser::chkNode(const std::string label)
+{
+  int ierror;
+  std::string node;
+  std::vector<std::string> labels;
+  int len=label.length();
+  
+  // Nodeがあるかチェック
+  ierror = getAllLabels(labels);
+  if (ierror != 0)
+  {
+    TP_ERROSH << __func__ << " getAllLabels(" << label << ") failed." << std::endl;
+    return false;
+  }
+  
+  int flag=0;
+  for (int i = 0; i < labels.size(); i++) {
+	  node = labels[i].substr(0,len);
+    if ( !strcasecmp(node.c_str(), label.c_str()) )
+    {
+      flag=1;
+      break;
+    }
+  }
+  
+  if (flag==0)
+  {
+    TP_ERROSH << __func__ << " label:" << label << " is not available." << std::endl;
+    return false;
+  }
+  return true;
+}
+
+// ノード以下のラベルの数を数える
+int TextParser::countLabels(const std::string label)
+{
+  int ierror;
+  std::string node,str,chkstr="";
+  std::vector<std::string> labels;
+  int len=label.length();
+  int flag=0;
+  int inode=0;
+  int next=0;
+  
+  // Nodeがあるかチェック
+  ierror=getAllLabels(labels);
+  if (ierror != 0){
+    return -1;
+  }
+  
+  for (int i = 0; i < labels.size(); i++) {
+    node=labels[i].substr(0,len);
+ 
+    if( !strcasecmp(node.c_str(), label.c_str()) ){
+      str=labels[i].substr(len+1);
+      next=str.find("/");
+      if(next==0) inode++;
+      else{
+        if(chkstr!=str.substr(0,next)){
+          chkstr=str.substr(0,next);
+          inode++;
+        }
+      }
+    }
+  }
+  return inode;
+}
+
+// ノード以下のnnode番目の文字列を取得する
+bool TextParser::getNodeStr(const std::string label, const int nnode, std::string &ct)
+{
+  int ierror;
+  int len=label.length();
+  int flag=0;
+  int inode=0;
+  int next=0;
+  
+  std::string node;
+  std::string str;
+  std::string chkstr="";
+  std::vector<std::string> labels;
+
+  // Nodeがあるかチェック
+  ierror = getAllLabels(labels);
+  if (ierror != 0)
+  {
+    return false;
+  }
+  
+  for (int i = 0; i < labels.size(); i++) {
+    node = labels[i].substr(0, len);
+    if ( !strcasecmp(node.c_str(), label.c_str()) )
+    {
+      str = labels[i].substr(len+1);
+      next = str.find("/");
+      if ( next == 0 )
+      {
+        inode++;
+      }
+      else
+      {
+        if ( chkstr != str.substr(0, next) )
+        {
+          chkstr = str.substr(0, next);
+          inode++;
+        }
+      }
+      if ( inode == nnode )
+      {
+        ct = chkstr;
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+// ベクトル値を取得する（整数型）
+bool TextParser::getInspectedVector(const std::string label, int *vec, const int nvec)
+{
+  int ierr = TP_NO_ERROR;
+  std::string value;
+
+  // ラベルがあるかチェック
+  if( !chkLabel(label)){
+	  return false;
+  }
+
+  // get value
+  if( (ierr = getValue(label, value)) != TP_NO_ERROR ) return false;
+
+  // get type
+  TextParserValueType type = getType(label, &ierr);
+  if( ierr != TP_NO_ERROR ) return false;
+  if( type != TP_VECTOR_NUMERIC ) return false;
+
+  // split
+  std::vector<std::string> vec_value;
+  if( (ierr = splitVector(value, vec_value)) != TP_NO_ERROR ) return false;
+
+  // check number of vector element
+  if( vec_value.size() != nvec ) return false;
+
+  // string to real
+  for(int i=0; i<vec_value.size(); i++ )
+  {
+    vec[i] = convertInt(vec_value[i], &ierr);
+    if( ierr != TP_NO_ERROR ) return false;
+  }
+
+  return true;
+}
+
+
+// ベクトル値を取得する（実数型）
+bool TextParser::getInspectedVector(const std::string label, double *vec, const int nvec)
+{
+  int ierr = TP_NO_ERROR;
+  std::string value;
+
+  // ラベルがあるかチェック
+  if( !chkLabel(label)){
+    return false;
+  }
+
+  // get value
+  if ( (ierr = getValue(label, value)) != TP_NO_ERROR )
+  {
+    return false;
+  }
+
+  // get type
+  TextParserValueType type = getType(label, &ierr);
+  if( ierr != TP_NO_ERROR ) return false;
+  if( type != TP_VECTOR_NUMERIC ) return false;
+
+  // split
+  std::vector<std::string> vec_value;
+  if( (ierr = splitVector(value, vec_value)) != TP_NO_ERROR ) return false;
+
+  // check number of vector element
+  if( vec_value.size() != nvec ) return false;
+
+  // string to real
+  for(int i=0; i<vec_value.size(); i++ )
+  {
+    vec[i] = convertDouble(vec_value[i], &ierr);
+    if( ierr != TP_NO_ERROR ) return false;
+  }
+
+  return true;
+}
+
+// ベクトル値を取得する（文字列型）
+bool TextParser::getInspectedVector(std::string label, std::string *vec, const int nvec)
+{
+  int ierr = TP_NO_ERROR;
+  std::string value;
+
+  // ラベルがあるかチェック
+  if( !chkLabel(label)){
+	  return false;
+  }
+
+  // get value
+  if( (ierr = getValue(label, value)) != TP_NO_ERROR ) return false;
+
+  // get type
+  TextParserValueType type = getType(label, &ierr);
+  if( ierr != TP_NO_ERROR ) return false;
+  if( type != TP_VECTOR_NUMERIC ) return false;
+
+  // split
+  std::vector<std::string> vec_value;
+  if( (ierr = splitVector(value, vec_value)) != TP_NO_ERROR ) return false;
+
+  // check number of vector element
+  if( vec_value.size() != nvec ) return false;
+
+  // string to string
+  for(int i=0;i<vec_value.size();i++ )
+  {
+    vec[i] = vec_value[i];
+  }
+
+  return true;
+}
+
+// 変数を取得する（整数型）
+bool TextParser::getInspectedValue(const std::string label, int &ct )
+{
+  int ierror;
+  std::string value;
+  
+  // ラベルがあるかチェック
+  if( !chkLabel(label)){
+	  return false;
+  }
+
+  //値の取得
+  ierror=getValue(label,value);//labelは絶対パスを想定
+  if (ierror != TP_NO_ERROR){
+    return false;
+  }
+
+  //型の取得
+  TextParserValueType type = getType(label, &ierror);
+  if (ierror != TP_NO_ERROR){
+    return false;
+  }
+  if( type != TP_NUMERIC_VALUE ){
+    return false;
+  }
+
+  // string to int
+  int val = convertInt(value, &ierror);
+  if (ierror != TP_NO_ERROR){
+    return false;
+  }
+  ct=val;
+  return true;
+}
+
+// 変数を取得する（double実数型）
+bool TextParser::getInspectedValue(const std::string label, double &ct )
+{
+  int ierror;
+  std::string value;
+  std::string node;
+
+  // ラベルがあるかチェック
+  if( !chkLabel(label)){
+	  return false;
+  }
+
+  //値の取得
+  ierror=getValue(label,value);//labelは絶対パスを想定
+  if (ierror != TP_NO_ERROR){
+	return false;
+  }
+
+  //型の取得
+  TextParserValueType type = getType(label, &ierror);
+  if (ierror != TP_NO_ERROR){
+	return false;
+  }
+  if( type != TP_NUMERIC_VALUE ){
+	return false;
+  }
+
+  // string to real
+  double val = convertDouble(value, &ierror);
+  if (ierror != TP_NO_ERROR){
+	return false;
+  }
+  ct=val;
+  return true;
+}
+
+// 変数を取得する（float実数型）
+bool TextParser::getInspectedValue(const std::string label, float &ct )
+{
+  double dval;
+  bool res = getInspectedValue( label, dval );
+  if( res ) {
+    ct = (float)dval;
+  }
+  return res;
+}
+
+// 変数を取得する（文字列型）
+bool TextParser::getInspectedValue(const std::string label, std::string &ct )
+{
+  int ierror;
+  std::string value;
+  
+  // ラベルがあるかチェック
+  if ( !chkLabel(label) )
+  {
+    return false;
+  }
+  
+  //値の取得
+  ierror = getValue(label, value); //labelは絶対パスを想定
+  
+  if (ierror != TP_NO_ERROR)
+  {
+    return false;
+  }
+  
+  //型の取得
+  TextParserValueType type = getType(label, &ierror);
+  if (ierror != TP_NO_ERROR)
+  {
+    return false;
+  }
+  
+  if( type != TP_STRING_VALUE )
+  {
+    return false;
+  }
+  ct=value;
+  return true;
+}
+
+// 指定ノードのラベル文字列を作成
+int TextParser::getArrayLabels(const std::string label, std::vector<std::string> &labels)
+{
+  int ierror;
+  std::vector<std::string> all_labels;
+  int count=0;
+
+  // labelを正規表現文字列に
+  std::string regex_label = label;
+  // /,[,]をエスケープ
+  size_t pos=0;
+  while( (pos=regex_label.find('/', pos))!=std::string::npos ) {
+	regex_label.replace( pos, 1, "\\/" );
+    pos+=2;
+  }
+  pos=0;
+  while( (pos=regex_label.find('[', pos))!=std::string::npos ) {
+	regex_label.replace( pos, 1, "\\[" );
+    pos+=2;
+  }
+  pos=0;
+  while( (pos=regex_label.find(']', pos))!=std::string::npos ) {
+	regex_label.replace( pos, 1, "\\]" );
+    pos+=2;
+  }
+  // @を正規表現に変換
+  while( (pos=regex_label.find('@'))!=std::string::npos ) {
+	// [[:digit:]]+ に置換
+	regex_label.replace( pos, 1, "[[:digit:]]+" );
+  }
+  // 正規表現コンパイル
+  regex_t preg;
+  if(regcomp( &preg, regex_label.c_str(), REG_EXTENDED|REG_ICASE ) != 0) {
+    return -1;
+  };
+
+  ierror=getAllLabels(all_labels);
+  if (ierror != 0){
+    regfree(&preg);
+    return -1;
+  }
+  
+  size_t nmatch = 1;
+  regmatch_t pmatch[nmatch];
+  for (int i = 0; i < all_labels.size(); i++) {
+    // 正規表現で一致したラベルのみ
+    if( regexec( &preg, all_labels[i].c_str(), nmatch, pmatch, 0 ) == 0 ) {
+      std::string matched = all_labels[i].substr( pmatch[0].rm_so, pmatch[0].rm_eo );
+      // 重複した一致結果は追加しない
+      bool found = false;
+      for( int j=0; j<labels.size(); j++ ) {
+        if( labels[j].compare(matched)==0 ) {
+          found = true;
+          break;
+        }
+      }
+      if( !found ) {
+        labels.push_back( matched );
+        count++;
+      }
+    }
+  }
+  regfree(&preg);
+  return count;
 }
 
