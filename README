@@ -7,5 +7,5 @@
  */
 
 
-Text Parser library enable us to handle YAML like simple text parameter instead of heavy XML parsing library.
+Text Parser library enables us to handle YAML like simple parameter structure instead of a heavy XML parsing library.
 
