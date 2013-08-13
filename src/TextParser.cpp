@@ -2691,6 +2691,19 @@ bool TextParser::getInspectedValue(const std::string label, std::string &ct )
   return true;
 }
 
+
+// ラベルリストを作成する
+// @note ラベルはパラメータファイルの出現順(2)
+bool TextParser::getLabelVector(const std::string root, std::vector<std::string>& nodes)
+{
+  if ( changeNode(root) ) return false; // 0 - no error
+  
+  getNodes(nodes, 2);
+  
+  return true;
+}
+
+
 // 指定ノードのラベル文字列を作成
 int TextParser::getArrayLabels(const std::string label, std::vector<std::string> &labels)
 {

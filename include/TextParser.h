@@ -239,6 +239,16 @@ public:
    */
 public:
 	bool getInspectedValue(const std::string label, std::string &ct );
+  
+  
+  /**
+   * @brief ラベルリストを作成し，重複をチェックする
+   * @param [in] root  テストするパラメータディレクトリ
+   * @param [in] nodes ラベルvector
+   */
+public:
+  bool getLabelVector(const std::string root, std::vector<std::string>& nodes);
+  
 	
   /**
    * @brief ラベルの有無をチェック

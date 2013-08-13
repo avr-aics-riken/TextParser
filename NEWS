@@ -11,6 +11,11 @@ RELEASE
 =======
 
 -------------------------
+Version 1.4.1  2013-08-14
+
+ - add getLavelVector() and getInspectedVector(float)
+
+-------------------------
 Version 1.4.0  2013-08-13
 
  - Introduce wrapper functions of C++ methods
