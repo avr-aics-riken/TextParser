@@ -2273,6 +2273,7 @@ int tp_split_list_fort_(long* ptr,char* value, double *list,int* order,int* nval
 // C++便利メソッド群
 //---------------------------------------------------
 // ラベルの有無をチェック
+// @note メッセージは抑制
 bool TextParser::chkLabel(const std::string label)
 {
   int ierror;
@@ -2283,7 +2284,7 @@ bool TextParser::chkLabel(const std::string label)
   ierror=getAllLabels(labels);
   if (ierror != 0)
   {
-    TP_ERROSH << __func__ << " getAllLabels(" << label << ") failed." << std::endl;
+    //TP_ERROSH << __func__ << " getAllLabels(" << label << ") failed." << std::endl;
     return false;
   }
   
@@ -2299,13 +2300,14 @@ bool TextParser::chkLabel(const std::string label)
   
   if (flag==0)
   {
-    TP_ERROSH << __func__ << " label:" << label << " is not available." << std::endl;
+    //TP_ERROSH << __func__ << " label:" << label << " is not available." << std::endl;
     return false;
   }
   return true;
 }
 
 // ノードの有無をチェック
+// @note メッセージは抑制
 bool TextParser::chkNode(const std::string label)
 {
   int ierror;
@@ -2317,7 +2319,7 @@ bool TextParser::chkNode(const std::string label)
   ierror = getAllLabels(labels);
   if (ierror != 0)
   {
-    TP_ERROSH << __func__ << " getAllLabels(" << label << ") failed." << std::endl;
+    //TP_ERROSH << __func__ << " getAllLabels(" << label << ") failed." << std::endl;
     return false;
   }
   
@@ -2333,7 +2335,7 @@ bool TextParser::chkNode(const std::string label)
   
   if (flag==0)
   {
-    TP_ERROSH << __func__ << " label:" << label << " is not available." << std::endl;
+    //TP_ERROSH << __func__ << " label:" << label << " is not available." << std::endl;
     return false;
   }
   return true;

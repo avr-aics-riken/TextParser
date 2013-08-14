@@ -14,8 +14,8 @@
 #ifndef _TEXTPARSER_VERSION_H_
 #define _TEXTPARSER_VERSION_H_
 
-#define TP_VERSION_NO  "1.4.1"
-#define TP_REVISION    "20130814_0000"
+#define TP_VERSION_NO  "1.4.2"
+#define TP_REVISION    "20130814_1630"
 
 #endif /* _TEXTPARSER_VERSION_H_ */
 

@@ -11,6 +11,11 @@ RELEASE
 =======
 
 -------------------------
+Version 1.4.2  2013-08-14
+
+ - suppress error message in chkLabel(), chkNode()
+
+-------------------------
 Version 1.4.1  2013-08-14
 
  - add getLavelVector() and getInspectedVector(float)

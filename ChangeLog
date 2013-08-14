@@ -11,6 +11,12 @@ REVISION HISTORY
 ================
 
 ------------------
+2013-08-14
+
+ r22 suppress error message in chkLabel(), chkNode() [ver 1.4.2]
+
+
+------------------
 2013-08-13
 
  r21 packaging [ver 1.4.1]
