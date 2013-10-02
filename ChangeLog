@@ -11,6 +11,12 @@ REVISION HISTORY
 ================
 
 ------------------
+2013-10-02
+
+ r23 modify for intel mpi [ver 1.4.3]
+  - include mpi.h before stdio.h to suppress error message #error "SEEK_SET is #defined but must not be for the C++ binding of MPI"
+ 
+------------------
 2013-08-14
 
  r22 suppress error message in chkLabel(), chkNode() [ver 1.4.2]

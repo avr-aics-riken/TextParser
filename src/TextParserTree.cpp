@@ -10,18 +10,18 @@
  * TextParserTree クラスが実装されています。
  *
  */
-#ifdef HAVE_CONFIG_H
-#include "../config.h"
-#endif //HAVE_CONFIG_H
 
-
-#ifdef ENABLE_MPI 
+#ifdef ENABLE_MPI
 #ifdef BUILD_MPI
 #include "mpi.h"
 // nothig to do ...
 #endif
 #else
 #endif
+
+#ifdef HAVE_CONFIG_H
+#include "../config.h"
+#endif //HAVE_CONFIG_H
 
 #include "TextParserTree.h"
 #include "TextParserElement.h"

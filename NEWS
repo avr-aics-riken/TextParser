@@ -11,6 +11,11 @@ RELEASE
 =======
 
 -------------------------
+Version 1.4.3  2013-10-02
+
+ - modify for intel mpi
+ 
+-------------------------
 Version 1.4.2  2013-08-14
 
  - suppress error message in chkLabel(), chkNode()

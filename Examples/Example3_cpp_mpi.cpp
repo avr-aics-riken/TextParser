@@ -9,15 +9,16 @@
 /** @file Example3_cpp.cpp
  * サンプルプログラム
  */
+#ifdef ENABLE_MPI
+#include "mpi.h"
+#endif // ENABLE_MPI
 
 #include <iostream>
 #include <string>
 #include <vector>
 #include "TextParser.h"
 #include "../config.h"
-#ifdef ENABLE_MPI
-#include "mpi.h"
-#endif // ENABLE_MPI
+
 
 int scan_all_parameters(std::string filename)
 {
