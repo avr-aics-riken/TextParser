@@ -2747,7 +2747,7 @@ int TextParser::getArrayLabels(const std::string label, std::vector<std::string>
     return -1;
   }
   
-  size_t nmatch = 1;
+  const int nmatch = 1;
   regmatch_t pmatch[nmatch];
   for (int i = 0; i < all_labels.size(); i++) {
     // 正規表現で一致したラベルのみ

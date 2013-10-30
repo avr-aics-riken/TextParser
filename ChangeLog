@@ -11,6 +11,13 @@ REVISION HISTORY
 ================
 
 ------------------
+2013-10-30
+
+ r24 correct syntax [ver 1.4.4]
+  - TextParset.cpp, L.2751 size_t nmatch=1 >> const int nmatch=1
+  - update chk-uname, add Marvericks
+
+------------------
 2013-10-02
 
  r23 modify for intel mpi [ver 1.4.3]

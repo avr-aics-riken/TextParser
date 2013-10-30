@@ -11,6 +11,11 @@ RELEASE
 =======
 
 -------------------------
+Version 1.4.4  2013-10-30
+
+ - update chk-uname, add Marvericks
+ 
+-------------------------
 Version 1.4.3  2013-10-02
 
  - modify for intel mpi

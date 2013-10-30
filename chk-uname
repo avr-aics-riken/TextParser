@@ -29,17 +29,9 @@ if test `uname` = "Darwin" ; then
       echo Lion
     elif test `uname -r | cut -b 2` = "2" ; then
       echo Mountain_Lion
+    elif test `uname -r | cut -b 2` = "3" ; then
+      echo Mavericks
     fi
-  elif test `uname -r | cut -b 1` = "9" ; then
-    echo Leopard
-  elif test `uname -r | cut -b 1` = "8" ; then
-    if test `uname -p` = "i386" ; then
-      echo Tiger_Intel
-    else
-      echo Tiger_PPC
-    fi
-  elif test `uname -r | cut -b 1` = "7" ; then
-    echo Panther
   else
     echo OS_UNKOWN
     exit 1

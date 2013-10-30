@@ -11,7 +11,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([TextParser], [1.4.3], [keno@iis.u-tokyo.ac.jp], [TextParser])
+AC_INIT([TextParser], [1.4.4], [keno@iis.u-tokyo.ac.jp], [TextParser])
 AM_INIT_AUTOMAKE()
 AC_CONFIG_SRCDIR([src/TextParser.cpp])
 AC_CONFIG_HEADERS([config.h])
@@ -20,7 +20,7 @@ AC_CONFIG_HEADERS([config.h])
 #
 # revision No.
 #
-TP_REVISION="20131002_1400"
+TP_REVISION="20131030_0930"
 AC_SUBST(TP_REVISION)
 
 
@@ -137,16 +137,14 @@ elif test "$enable_mpi" = "mpich" ; then
   MPICH_LIBS="-lmpich"
   MPICH_FCLIBS="$MPICH_LIBS"" -lfmpich"
   case "$TGT_DEVICE" in
-  "Lion"|"Snow_Leopard"|"Leopard"|"Tiger_Intel"|"Tiger_PPC"|"Panther"|"Mountain_Lion")
-#    MPICH_LIBS="$MPICH_LIBS"" -lpmpich"
+  "Lion"|"Snow_Leopard"|"Leopard"|"Mountain_Lion"|"Marvericks")
     ;;
   esac
 elif test "$enable_mpi" = "ompi" ; then
   MPICH_LIBS="-lmpi"
   MPICH_FCLIBS="$MPICH_LIBS"" -lmpi_f77 -lmpi_f90"
   case "$TGT_DEVICE" in
-  "Lion"|"Snow_Leopard"|"Leopard"|"Tiger_Intel"|"Tiger_PPC"|"Panther"|"Mountain_Lion")
-#    MPICH_LIBS="$MPICH_LIBS"" -lmpi_cxx"
+  "Lion"|"Snow_Leopard"|"Leopard"|"Mountain_Lion"|"Marvericks")
     ;;
   esac
 fi
@@ -212,7 +210,6 @@ if test x"${enable_fapi}" = x"yes" ; then
     TP_FC_LD="$CXX"" --linkfortran"
   else
     TP_LIBS="$TP_LIBS"
-# TP_LIBS="$TP_LIBS"" -lstdc++"
   fi
   AC_SUBST(TP_FC_LD)
 fi
