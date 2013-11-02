@@ -11,7 +11,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([TextParser], [1.4.4], [keno@iis.u-tokyo.ac.jp], [TextParser])
+AC_INIT([TextParser], [1.4.5], [keno@iis.u-tokyo.ac.jp], [TextParser])
 AM_INIT_AUTOMAKE()
 AC_CONFIG_SRCDIR([src/TextParser.cpp])
 AC_CONFIG_HEADERS([config.h])
@@ -20,16 +20,16 @@ AC_CONFIG_HEADERS([config.h])
 #
 # revision No.
 #
-TP_REVISION="20131030_0930"
+TP_REVISION="20131102_1030"
 AC_SUBST(TP_REVISION)
 
 
 #
-# platform
+# FORTRAN
 #
-TGT_DEVICE="$($SHELL ./chk-uname)"
-AC_SUBST(TGT_DEVICE)
 
+FC=$F90
+FCFLAGS=$F90FLAGS
 
 
 #
@@ -97,25 +97,14 @@ AC_SUBST(MPICH_FCLIBS)
 
 if test "$enable_mpi" = "none" ; then
 
-# MPICH
-  AC_ARG_WITH(mpich, [AC_HELP_STRING([--with-mpich=dir],[Specify MPICH install directory])], , with_mpich=none)
-  if test "$with_mpich" != "none" ; then
-    MPICH_DIR=$with_mpich;
+# OpenMPI // ompが指定されていれば変数をセット
+  AC_ARG_WITH(ompi, [AC_HELP_STRING([--with-ompi=dir],[Specify OpenMPI install directory])], , with_ompi=none)
+
+  if test "$with_ompi" != "none" ; then
+    MPICH_DIR=$with_ompi;
     MPICH_CFLAGS=-I$MPICH_DIR/include
     MPICH_LDFLAGS=-L$MPICH_DIR/lib
-    enable_mpi="mpich"
-  fi
-
-# OpenMPI // mpichが指定されておらず，かつ，ompが指定されていれば変数をセット
-  if test "$with_mpich" = "none" ; then
-    AC_ARG_WITH(ompi, [AC_HELP_STRING([--with-ompi=dir],[Specify OpenMPI install directory])], , with_ompi=none)
-
-    if test "$with_ompi" != "none" ; then
-      MPICH_DIR=$with_ompi;
-      MPICH_CFLAGS=-I$MPICH_DIR/include
-      MPICH_LDFLAGS=-L$MPICH_DIR/lib
-      enable_mpi="ompi"
-    fi
+    enable_mpi="ompi"
   fi
 
 fi
@@ -133,28 +122,17 @@ if test "$with_comp" = "FJ" ; then
     MPICH_FCLIBS="$MPICH_LIBS"" -lmpi_f77 -lmpi_f90"
     ;;
   esac
-elif test "$enable_mpi" = "mpich" ; then
-  MPICH_LIBS="-lmpich"
-  MPICH_FCLIBS="$MPICH_LIBS"" -lfmpich"
-  case "$TGT_DEVICE" in
-  "Lion"|"Snow_Leopard"|"Leopard"|"Mountain_Lion"|"Marvericks")
-    ;;
-  esac
 elif test "$enable_mpi" = "ompi" ; then
   MPICH_LIBS="-lmpi"
   MPICH_FCLIBS="$MPICH_LIBS"" -lmpi_f77 -lmpi_f90"
-  case "$TGT_DEVICE" in
-  "Lion"|"Snow_Leopard"|"Leopard"|"Mountain_Lion"|"Marvericks")
-    ;;
-  esac
 fi
 
 
 # warning. if a wrapper compiler is used, "enable_mpi" is empty, but parallel.
 #
 if test "$enable_mpi" = "none" ; then
-  echo "  Warning: Neither MPICH nor OpenMPI library is not specified."
-  echo "           If compilation error occurs about MPI, specify --with-mpich or --with-ompi option."
+  echo "  Warning: OpenMPI library is not specified."
+  echo "           If compilation error occurs about MPI, specify --with-ompi option."
 fi
 
 
@@ -208,8 +186,6 @@ if test x"${enable_fapi}" = x"yes" ; then
   TP_FC_LD="$FC"
   if test "$with_comp" = "FJ"; then
     TP_FC_LD="$CXX"" --linkfortran"
-  else
-    TP_LIBS="$TP_LIBS"
   fi
   AC_SUBST(TP_FC_LD)
 fi

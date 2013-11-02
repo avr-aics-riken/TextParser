@@ -13,7 +13,7 @@ SUBDIRS = @MAKE_SUB_DIRS@
 bin_SCRIPTS    = tp-config
 CLEANFILES     = $(bin_SCRIPTS)
 EXTRA_DIST     = tp-config.in LICENSE Makefile_hand \
-                 chk-uname Examples Doxyfile Makefile_doxygen
+                 Examples Doxyfile Makefile_doxygen
 dist_data_DATA = AUTHORS COPYING ChangeLog README LICENSE
 
 clean-local:

@@ -11,6 +11,13 @@ REVISION HISTORY
 ================
 
 ------------------
+2013-11-02
+
+ r25 cleanup configure.ac [ver 1.4.5]
+  - expire MPICH version and target detection
+  - change Fortran compiler from FC to F90
+
+------------------
 2013-10-30
 
  r24 correct syntax [ver 1.4.4]
