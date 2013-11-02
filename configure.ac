@@ -20,7 +20,7 @@ AC_CONFIG_HEADERS([config.h])
 #
 # revision No.
 #
-TP_REVISION="20131102_1030"
+TP_REVISION="20131102_1430"
 AC_SUBST(TP_REVISION)
 
 
@@ -128,11 +128,13 @@ elif test "$enable_mpi" = "ompi" ; then
 fi
 
 
-# warning. if a wrapper compiler is used, "enable_mpi" is empty, but parallel.
+# warning
 #
-if test "$enable_mpi" = "none" ; then
-  echo "  Warning: OpenMPI library is not specified."
-  echo "           If compilation error occurs about MPI, specify --with-ompi option."
+if test "$enable_mpi" != "wrappermpi" ; then
+  if test "$with_ompi" = "none" ; then
+    echo "  Warning: OpenMPI library is not specified."
+    echo "           If compilation error occurs about MPI, specify --with-ompi option."
+  fi
 fi
 
 
