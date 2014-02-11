@@ -1,7 +1,7 @@
 /*
  * TextParser - Text Parsing Library
  *
- * Copyright (C) 2012-2013 Institute of Industrial Science, The University of Tokyo.
+ * Copyright (C) 2012-2014 Institute of Industrial Science, The University of Tokyo.
  * All rights reserved.
  *
  */
@@ -9,6 +9,11 @@
 
 RELEASE
 =======
+
+-------------------------
+Version 1.4.6  2014-02-11
+
+ - NERSC Hopper
 
 -------------------------
 Version 1.4.5  2013-11-02

@@ -1,7 +1,7 @@
 /*
  * TextParser - Text Parsing Library
  *
- * Copyright (C) 2012-2013 Institute of Industrial Science, The University of Tokyo.
+ * Copyright (C) 2012-2014 Institute of Industrial Science, The University of Tokyo.
  * All rights reserved.
  *
  */
@@ -39,7 +39,7 @@ configure options
     /usr/local/TextParser. Built library will be installed at $(PREFIX)/lib and header
     files are placed at $(PREFIX)/include.
 
- --with-comp=(INTEL|FJ)
+ --with-comp=(INTEL|FJ|GNU)
     If Fujitsu compiler is used, specify FJ. If omit, Intel or GNU compiler can be used.
     This option is mandatory when to build Fortran API.
 
@@ -84,7 +84,7 @@ Here is some examples;
 
 ## OpenMPI with wrapper compiler, assume that mpicxx is a wrapper compiler for OpenMPI.
 
-  $ ./configure CXX=mpicxx CXXFLAGS=-O3
+  $ ./configure --prefix=/usr/local/FFV/TextParser CXX=mpicxx CXXFLAGS=-O3
 
 
 ## K-computer

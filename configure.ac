@@ -2,7 +2,7 @@
 #
 # TextParser - Text Parsing Library
 #
-# Copyright (C) 2012-2013 Institute of Industrial Science, The University of Tokyo.
+# Copyright (C) 2012-2014 Institute of Industrial Science, The University of Tokyo.
 # All rights reserved.
 #
 ###################################################################################
@@ -10,8 +10,8 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.69])
-AC_INIT([TextParser], [1.4.5], [keno@iis.u-tokyo.ac.jp], [TextParser])
+AC_PREREQ([2.57])
+AC_INIT([TextParser], [1.4.6], [keno@iis.u-tokyo.ac.jp], [TextParser])
 AM_INIT_AUTOMAKE()
 AC_CONFIG_SRCDIR([src/TextParser.cpp])
 AC_CONFIG_HEADERS([config.h])
@@ -20,7 +20,7 @@ AC_CONFIG_HEADERS([config.h])
 #
 # revision No.
 #
-TP_REVISION="20131102_1430"
+TP_REVISION="20140211_2100"
 AC_SUBST(TP_REVISION)
 
 
@@ -35,7 +35,7 @@ FCFLAGS=$F90FLAGS
 #
 # compiler
 #
-AC_ARG_WITH(comp, [AC_HELP_STRING([--with-comp=(INTEL|FJ)],[Specify Compiler type])], , with_comp=none)
+AC_ARG_WITH(comp, [AC_HELP_STRING([--with-comp=(INTEL|FJ|GNU)],[Specify Compiler type])], , with_comp=none)
 
 
 
@@ -75,6 +75,7 @@ case "$TP_CXX" in
   mpiCC)    enable_mpi="wrappermpi" ;;
   mpic++)   enable_mpi="wrappermpi" ;;
   mpiFCCpx) enable_mpi="wrappermpi" ;;
+  CC)       enable_mpi="wrappermpi" ;;
 esac
 
 
@@ -95,12 +96,12 @@ AC_SUBST(MPICH_FCLIBS)
 # if wrapper compiler is specified, skip this part
 #
 
-if test "$enable_mpi" = "none" ; then
+if test x"$enable_mpi" = x"none" ; then
 
 # OpenMPI // ompが指定されていれば変数をセット
   AC_ARG_WITH(ompi, [AC_HELP_STRING([--with-ompi=dir],[Specify OpenMPI install directory])], , with_ompi=none)
 
-  if test "$with_ompi" != "none" ; then
+  if test x"$with_ompi" != x"none" ; then
     MPICH_DIR=$with_ompi;
     MPICH_CFLAGS=-I$MPICH_DIR/include
     MPICH_LDFLAGS=-L$MPICH_DIR/lib
@@ -115,14 +116,14 @@ fi
 # MPI Library for fortran
 #
 
-if test "$with_comp" = "FJ" ; then
+if test x"$with_comp" = x"FJ" ; then
   MPICH_LIBS=""
   case "$host" in
   sparc*)
     MPICH_FCLIBS="$MPICH_LIBS"" -lmpi_f77 -lmpi_f90"
     ;;
   esac
-elif test "$enable_mpi" = "ompi" ; then
+elif test x"$enable_mpi" = x"ompi" ; then
   MPICH_LIBS="-lmpi"
   MPICH_FCLIBS="$MPICH_LIBS"" -lmpi_f77 -lmpi_f90"
 fi
@@ -130,8 +131,8 @@ fi
 
 # warning
 #
-if test "$enable_mpi" != "wrappermpi" ; then
-  if test "$with_ompi" = "none" ; then
+if test x"$enable_mpi" != x"wrappermpi" ; then
+  if test x"$with_ompi" = x"none" ; then
     echo "  Warning: OpenMPI library is not specified."
     echo "           If compilation error occurs about MPI, specify --with-ompi option."
   fi
@@ -143,7 +144,7 @@ fi
 # default prefix setting
 #
 AC_PREFIX_DEFAULT([/usr/local/TextParser])
-if test "$prefix" = "NONE" ; then
+if test x"$prefix" = x"NONE" ; then
   TP_INST_DIR=/usr/local/TextParser
 else
   TP_INST_DIR="$prefix"
@@ -163,7 +164,7 @@ fi
 #
 
 
-if test "$enable_mpi" = "none" ; then
+if test x"$enable_mpi" = x"none" ; then
   TP_LIBS="-lTP"
 else
   TP_LIBS="-lMPITP"
