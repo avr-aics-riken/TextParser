@@ -15,7 +15,7 @@ if SERIALTARGET
 else
   lib_LIBRARIES = libMPITP.a
   libMPITP_a_SOURCES  = TextParser.cpp TextParserElement.cpp TextParserTree.cpp
-  libMPITP_a_CXXFLAGS = @MPICH_CFLAGS@ -I$(top_builddir)/include
+  libMPITP_a_CXXFLAGS = @MPICH_CFLAGS@ -I$(top_builddir)/include  -DENABLE_MPI -DBUILD_MPI
 endif
 
 if TP_FAPI

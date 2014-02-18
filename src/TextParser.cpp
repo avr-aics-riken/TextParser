@@ -4,7 +4,7 @@
  * Copyright (C) 2012-2014 Institute of Industrial Science, The University of Tokyo.
  * All rights reserved.
  *
- *
+ */
 
 /** @file TextParser.cpp
  * ここには TextParser クラスと
@@ -25,8 +25,14 @@
 #endif //HAVE_CONFIG_H
 
 
-#include <regex.h>
 #include <string.h>
+
+#ifdef USE_CPP11
+#include <regex>
+#else
+#include <regex.h>
+#endif
+
 #include "TextParser.h"
 #include "TextParserTree.h"
 #include "TextParserElement.h"
@@ -2735,24 +2741,37 @@ int TextParser::getArrayLabels(const std::string label, std::vector<std::string>
 	// [[:digit:]]+ に置換
 	regex_label.replace( pos, 1, "[[:digit:]]+" );
   }
+
+#ifdef USE_CPP11
+  std::regex rx( regex_label.c_str(), std::regex_constants::icase);
+#else
   // 正規表現コンパイル
   regex_t preg;
   if(regcomp( &preg, regex_label.c_str(), REG_EXTENDED|REG_ICASE ) != 0) {
     return -1;
   };
+#endif
 
   ierror=getAllLabels(all_labels);
   if (ierror != 0){
+#ifndef USE_CPP11
     regfree(&preg);
+#endif
     return -1;
   }
   
-  const int nmatch = 1;
-  regmatch_t pmatch[nmatch];
   for (int i = 0; i < all_labels.size(); i++) {
     // 正規表現で一致したラベルのみ
+#ifdef USE_CPP11
+    std::cmatch match;
+    if( std::regex_search( all_labels[i].c_str(), match, rx ) == true ) {
+      std::string matched = match.str();
+#else
+    const int nmatch = 1;
+    regmatch_t pmatch[nmatch];
     if( regexec( &preg, all_labels[i].c_str(), nmatch, pmatch, 0 ) == 0 ) {
       std::string matched = all_labels[i].substr( pmatch[0].rm_so, pmatch[0].rm_eo );
+#endif
       // 重複した一致結果は追加しない
       bool found = false;
       for( int j=0; j<labels.size(); j++ ) {
@@ -2767,7 +2786,9 @@ int TextParser::getArrayLabels(const std::string label, std::vector<std::string>
       }
     }
   }
+#ifndef USE_CPP11
   regfree(&preg);
+#endif
   return count;
 }
 
