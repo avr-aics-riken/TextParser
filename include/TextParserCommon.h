@@ -14,7 +14,7 @@
 #ifndef __TEXTPARSER_COMMON_H__
 #define __TEXTPARSER_COMMON_H__
 
-#define	TP_DEBUG	1
+//#define	TP_DEBUG	1
 #define TP_INDENT_STRING    "    "
 
 /** エレメントのタイプ
