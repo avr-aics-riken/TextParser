@@ -27,7 +27,9 @@
 
 #include <string.h>
 
-#ifdef USE_CPP11
+#if defined(_WIN32) || defined(_WIN64)
+#define strcasecmp _stricmp
+#define USE_CPP11
 #include <regex>
 #else
 #include <regex.h>
