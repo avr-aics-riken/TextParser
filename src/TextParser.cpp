@@ -2565,7 +2565,7 @@ bool TextParser::getInspectedVector(std::string label, std::string *vec, const i
   // get type
   TextParserValueType type = getType(label, &ierr);
   if( ierr != TP_NO_ERROR ) return false;
-  if( type != TP_VECTOR_NUMERIC ) return false;
+  if( type != TP_VECTOR_STRING ) return false;
 
   // split
   std::vector<std::string> vec_value;

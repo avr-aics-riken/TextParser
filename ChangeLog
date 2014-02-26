@@ -11,6 +11,12 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-02-26
+
+ r29 bugfix [ver 1.4.8]
+  - bool TextParser::getInspectedVector(std::string label, std::string *vec, const int nvec)
+
+------------------
 2014-02-21
 
  r28 regular expression for windows [ver 1.4.7]

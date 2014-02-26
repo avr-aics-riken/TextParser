@@ -10,6 +10,10 @@
 RELEASE
 =======
 
+------------------
+ Version 1.4.8 2014-02-26
+  - bugfix bool TextParser::getInspectedVector(std::string label, std::string *vec, const int nvec)
+
 -------------------------
 Version 1.4.7  2014-02-21
  - regular expression for windows 
