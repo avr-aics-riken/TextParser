@@ -92,7 +92,7 @@ DIST_COMMON = INSTALL NEWS README AUTHORS ChangeLog \
 	$(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
 	$(srcdir)/config.h.in $(srcdir)/tp-config.in \
-	$(top_srcdir)/include/Version.h.in $(dist_data_DATA) COPYING \
+	$(top_srcdir)/include/tpVersion.h.in $(dist_data_DATA) COPYING \
 	compile depcomp install-sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -102,7 +102,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = tp-config include/Version.h
+CONFIG_CLEAN_FILES = tp-config include/tpVersion.h
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -407,7 +407,7 @@ distclean-hdr:
 	-rm -f config.h stamp-h1
 tp-config: $(top_builddir)/config.status $(srcdir)/tp-config.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
-include/Version.h: $(top_builddir)/config.status $(top_srcdir)/include/Version.h.in
+include/tpVersion.h: $(top_builddir)/config.status $(top_srcdir)/include/tpVersion.h.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 install-binSCRIPTS: $(bin_SCRIPTS)
 	@$(NORMAL_INSTALL)

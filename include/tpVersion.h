@@ -7,15 +7,15 @@
  */
 
 /**
- * @file   Version.h
+ * @file   tpVersion.h
  * TextParserバージョン情報のヘッダーファイル
  */
 
 #ifndef _TEXTPARSER_VERSION_H_
 #define _TEXTPARSER_VERSION_H_
 
-#define TP_VERSION_NO  "@PACKAGE_VERSION@"
-#define TP_REVISION    "@TP_REVISION@"
+#define TP_VERSION_NO  "1.4.9"
+#define TP_REVISION    "20140301_1140"
 
 #endif /* _TEXTPARSER_VERSION_H_ */
 

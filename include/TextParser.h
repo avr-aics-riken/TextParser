@@ -44,7 +44,7 @@
 
 #ifdef __cplusplus
 
-#include "Version.h"
+#include "tpVersion.h"
 
 class TextParserTree;
 

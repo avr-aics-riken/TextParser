@@ -30,6 +30,6 @@ nobase_include_HEADERS = \
   $(top_builddir)/include/TextParserElement.h \
   $(top_builddir)/include/TextParserTree.h \
   $(top_builddir)/include/TextParser.inc \
-  $(top_builddir)/include/Version.h
+  $(top_builddir)/include/tpVersion.h
 
 EXTRA_DIST = Makefile_hand
