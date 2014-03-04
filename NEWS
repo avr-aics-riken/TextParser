@@ -10,6 +10,10 @@
 RELEASE
 =======
 
+-------------
+Version 1.5.0   2014-03-04
+ - change output format for tp-config --version
+ 
 ------------------
  Version 1.4.9 2014-03-01
   - change filename Version.h to tpVersion.h

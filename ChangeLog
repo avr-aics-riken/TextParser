@@ -10,30 +10,31 @@
 REVISION HISTORY
 ================
 
+  
+------------------
+2014-03-04
+ r31 version format [ver 1.5.0]
+  - change output format for tp-config --version
+  
 ------------------
 2014-03-01
  r30 change filename Version.h to avoid conflict with other files [ver 1.4.9]
 
-
 ------------------
 2014-02-26
-
  r29 bugfix [ver 1.4.8]
   - bool TextParser::getInspectedVector(std::string label, std::string *vec, const int nvec)
 
 ------------------
 2014-02-21
-
  r28 regular expression for windows [ver 1.4.7]
 
 ------------------
 2014-02-11
-
  r27 add CC compiler wrapper script in configure.ac for NERSC Hopper [ver 1.4.6]
 
 ------------------
 2013-11-02
-
  r26 update configure.ac
 
  r25 cleanup configure.ac [ver 1.4.5]
@@ -42,26 +43,21 @@ REVISION HISTORY
 
 ------------------
 2013-10-30
-
  r24 correct syntax [ver 1.4.4]
   - TextParset.cpp, L.2751 size_t nmatch=1 >> const int nmatch=1
   - update chk-uname, add Marvericks
 
 ------------------
 2013-10-02
-
  r23 modify for intel mpi [ver 1.4.3]
   - include mpi.h before stdio.h to suppress error message #error "SEEK_SET is #defined but must not be for the C++ binding of MPI"
  
 ------------------
 2013-08-14
-
  r22 suppress error message in chkLabel(), chkNode() [ver 1.4.2]
-
 
 ------------------
 2013-08-13
-
  r21 packaging [ver 1.4.1]
 
  r20 add bool getLabelVector(const string root, vector<string>& nodes)
@@ -74,17 +70,13 @@ REVISION HISTORY
 
  r16 modify README
 
-
 ------------------
 2013-07-20
-
  r15 Introduce getVersionInfo() [ver 1.3.7]
   - add Version.h.in
 
-
 ----------------
 2013-07-07
-
  r14 reflect master's update to r13 by hand
   - hand merge
   - update style of ChangeLog and NEWS
@@ -93,31 +85,26 @@ REVISION HISTORY
 
 ----------------
 2013-07-03
-
  r13 exp.branch, add --enable-fapi option
 
 ----------------
 2013-07-02
-
  r12 exp.branch, change order of link lib., place stdc++ at last
 
 ----------------
 2013-06-27
-
  r11 update INSTALL
 
  r10 exp. branch; bug fix of configure
 
 ----------------
 2013-06-26
-
  r9 exp. branch, update NES/ChangeLog
 
  r8 exp. branch, select serial/mpi target
 
 ----------------
 2013-06-25
-
  r7 start experimental branch & 1.3.1
 
  r6 ver 1.3
