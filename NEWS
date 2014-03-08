@@ -11,6 +11,10 @@ RELEASE
 =======
 
 -------------
+Version 1.5.1   2014-03-08
+ - change library name from MPITP to TPmpi
+
+-------------
 Version 1.5.0   2014-03-04
  - change output format for tp-config --version
  

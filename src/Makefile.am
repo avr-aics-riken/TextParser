@@ -13,9 +13,9 @@ if SERIALTARGET
   libTP_a_SOURCES  = TextParser.cpp TextParserElement.cpp TextParserTree.cpp
   libTP_a_CXXFLAGS = -I$(top_builddir)/include
 else
-  lib_LIBRARIES = libMPITP.a
-  libMPITP_a_SOURCES  = TextParser.cpp TextParserElement.cpp TextParserTree.cpp
-  libMPITP_a_CXXFLAGS = @MPICH_CFLAGS@ -I$(top_builddir)/include  -DENABLE_MPI -DBUILD_MPI
+  lib_LIBRARIES = libTPmpi.a
+  libTPmpi_a_SOURCES  = TextParser.cpp TextParserElement.cpp TextParserTree.cpp
+  libTPmpi_a_CXXFLAGS = @MPICH_CFLAGS@ -I$(top_builddir)/include  -DENABLE_MPI -DBUILD_MPI
 endif
 
 if TP_FAPI
