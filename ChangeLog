@@ -11,6 +11,10 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-05-28
+ r33 remove include header config.h in TextParserElement.cpp
+
+------------------
 2014-03-08
  r32 libMPITP.a >> libTPmpi.a [ver 1.5.1]
 

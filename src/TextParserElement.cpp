@@ -25,10 +25,6 @@
 #include "TextParserCommon.h"
 #include "TextParserElement.h"
 
-#ifndef WIN32
-#include "../config.h"
-#endif
-
 //#include "TextParser.h"
 //#include "TextParserTree.h"
 
