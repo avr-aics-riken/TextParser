@@ -1,4 +1,14 @@
-﻿#include <Python.h>
+﻿/*
+ * TextParser - Text Parsing Library
+ *
+ * Copyright (C) 2012-2014 Institute of Industrial Science, The University of Tokyo.
+ * All rights reserved.
+ *
+ * Copyright (c) 2014 Advanced Institute for Computational Science, RIKEN.
+ * All rights reserved.
+ */
+
+#include <Python.h>
 #include <string>
 #include "TextParser.h"
 #include "TextParser_python_api.h"

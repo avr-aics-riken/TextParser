@@ -1,14 +1,26 @@
-                                    Python interface for TextParser
-                                                                                                     2014/05/31
+###################################################################################
+#
+# TextParser - Text Parsing Library
+#
+# Copyright (C) 2012-2014 Institute of Industrial Science, The University of Tokyo.
+# All rights reserved.
+#
+# Copyright (c) 2014 Advanced Institute for Computational Science, RIKEN.
+# All rights reserved.
+#
+###################################################################################
+#
+
+ Python interface
 
 
 
 1. 動作環境
-  Python 2.7のLinuxおよびcygwin環境で動作確認をしています。
+  Python 2.7のLinux, cygwin, mac OSX環境で動作確認をしています。
 
   windowsのネイティブ環境ではTextParser本体のビルドに失敗したため、
   ラッパールーチンの作者の環境では動作させることができませんでしたが、
-  OS固有の機能には依存していないので、 TextParaerとpython2が動く環境であれば
+  OS固有の機能には依存していないので、TextParaerとpython2が動く環境であれば
   Linuxに限らず動作するはずです。
 
 

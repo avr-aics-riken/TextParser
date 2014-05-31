@@ -1,3 +1,13 @@
+/*
+ * TextParser - Text Parsing Library
+ *
+ * Copyright (C) 2012-2014 Institute of Industrial Science, The University of Tokyo.
+ * All rights reserved.
+ *
+ * Copyright (c) 2014 Advanced Institute for Computational Science, RIKEN.
+ * All rights reserved.
+ */
+
 #ifndef PYTP_H
 #define PYTP_H
 #include <Python.h>

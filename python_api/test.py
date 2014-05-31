@@ -1,5 +1,19 @@
 #!/usr/bin/python2
 # -*- coding: utf-8 -*-
+
+###################################################################################
+#
+# TextParser - Text Parsing Library
+#
+# Copyright (C) 2012-2014 Institute of Industrial Science, The University of Tokyo.
+# All rights reserved.
+#
+# Copyright (c) 2014 Advanced Institute for Computational Science, RIKEN.
+# All rights reserved.
+#
+###################################################################################
+#
+
 import TextParser as tp
 instance=tp.createInstance()
 

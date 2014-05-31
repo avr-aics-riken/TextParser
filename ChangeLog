@@ -4,11 +4,19 @@
  * Copyright (C) 2012-2014 Institute of Industrial Science, The University of Tokyo.
  * All rights reserved.
  *
+ * Copyright (c) 2014 Advanced Institute for Computational Science, RIKEN.
+ * All rights reserved.
  */
 
 
 REVISION HISTORY
 ================
+
+------------------
+2014-05-31
+ r34 add python api
+  - /python_api
+  - add RIKEN's copyright
 
 ------------------
 2014-05-28

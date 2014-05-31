@@ -4,6 +4,8 @@
  * Copyright (C) 2012-2014 Institute of Industrial Science, The University of Tokyo.
  * All rights reserved.
  *
+ * Copyright (c) 2014 Advanced Institute for Computational Science, RIKEN.
+ * All rights reserved.
  */
 
 /**
@@ -14,8 +16,8 @@
 #ifndef _TEXTPARSER_VERSION_H_
 #define _TEXTPARSER_VERSION_H_
 
-#define TP_VERSION_NO  "1.5.2"
-#define TP_REVISION    "20140528_2330"
+#define TP_VERSION_NO  "1.5.3"
+#define TP_REVISION    "20140531_1100"
 
 #endif /* _TEXTPARSER_VERSION_H_ */
 
