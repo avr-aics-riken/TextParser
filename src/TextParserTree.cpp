@@ -5072,7 +5072,7 @@ TextParserError TextParserTree::getElement(const std::string& label, const TextP
     //   return TP_MISSING_PATH_ELEMENT_ERROR;
     // }
 
-    if (element==NULL && *element == 0) {
+    if (element==NULL || *element == 0) {
           //TP_DBGOSH << "getElement 9" << label <<std::endl;
       return TP_MISSING_PATH_ELEMENT_ERROR;
     }

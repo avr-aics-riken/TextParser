@@ -305,9 +305,11 @@ TextParserError TextParser::getValue(const std::string& label,std::string& value
     } else {
       TextParserValue *tmpvalue;
       ret = dataTree()->getLeafValue(label, &tmpvalue);
-      value_string = tmpvalue->value();
-      if (ret == TP_MISSING_PATH_ELEMENT_ERROR)
-	TextParserErrorHandler(ret, label);
+      if(ret==TP_NO_ERROR) {
+        value_string = tmpvalue->value();
+      } else {
+	    TextParserErrorHandler(ret, label);
+      }
     }
     
   } catch (std::exception ex) {

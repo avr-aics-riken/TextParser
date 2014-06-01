@@ -11,6 +11,10 @@
 
 REVISION HISTORY
 ================
+------------------
+2014-09-24
+ r38 bug fix
+  - fixed bug in TextParser::getValue and TextParserTree::getElement
 
 ------------------
 2014-06-26
