@@ -92,16 +92,25 @@ Here is some examples;
 
 ## K-computer
 
+# Serial
+  $ ./configure --prefix=$1 \
+                --host=sparc64-unknown-linux-gnu \
+                CXX=FCCpx \
+                CXXFLAGS="-Kfast"
+
+# MPI
   $ ./configure --prefix=$1 \
                 --host=sparc64-unknown-linux-gnu \
                 CXX=mpiFCCpx \
                 CXXFLAGS="-Kfast"
 
-## K-computer with fortran API
+
+## K-computer with fortran API, MPI
 
   $ ./configure --prefix=$1 \
                 --host=sparc64-unknown-linux-gnu \
                 --with-comp=FJ \
+                --enable-fapi
                 CXX=mpiFCCpx \
                 CXXFLAGS="-Kfast" \
                 F90=mpifrtpx \

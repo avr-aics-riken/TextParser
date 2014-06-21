@@ -12,16 +12,14 @@
 RELEASE
 =======
 
--------------
+Version 1.5.5   2014-06-21
+
 Version 1.5.4   2014-06-14
 
--------------
 Version 1.5.3   2014-05-31
 
--------------
 Version 1.5.2   2014-05-28
 
--------------
 Version 1.5.1   2014-03-08
  - change library name from MPITP to TPmpi
 

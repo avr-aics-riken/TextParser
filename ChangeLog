@@ -13,6 +13,12 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-06-21
+ r36 serial build
+  - confirm serial build and add description to INSTALL
+  - update user guide
+
+------------------
 2014-06-14
  r35 update user guide
 
