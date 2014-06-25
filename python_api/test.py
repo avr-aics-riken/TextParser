@@ -38,11 +38,23 @@ print tp.currentNode(instance)
 print "test for getNodes()"
 print tp.getNodes(instance)
 
+print "test for getNodes() with option parameter 1"
+print tp.getNodes(instance, 1)
+
+print "test for getNodes() with option parameter 2"
+print tp.getNodes(instance, 2)
+
 print "test for changeNode()"
 print tp.changeNode(instance, 'config')
 
 print "test for getLabels()"
 print tp.getLabels(instance)
+
+print "test for getLabels() with option parameter 1"
+print tp.getLabels(instance, 1)
+
+print "test for getLabels() with option parameter 2"
+print tp.getLabels(instance, 2)
 
 print "test for createLeaf()"
 print tp.createLeaf(instance, 'foo', '"bar"')
