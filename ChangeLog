@@ -13,6 +13,11 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-06-26
+ r37 python api bug fix
+  - add a user guide of English version
+
+------------------
 2014-06-21
  r36 serial build
   - confirm serial build and add description to INSTALL

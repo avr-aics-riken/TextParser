@@ -14,4 +14,5 @@
 doc_includedir = $(prefix)/doc
 doc_include_HEADERS = \
     $(top_builddir)/doc/program_description.pdf \
-    $(top_builddir)/doc/textparser_ug_jp.pdf
+    $(top_builddir)/doc/textparser_ug_jp.pdf \
+    $(top_builddir)/doc/textparser_ug_en.pdf
