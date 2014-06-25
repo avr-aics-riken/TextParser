@@ -183,14 +183,15 @@ static PyObject* TextParser_currentNode(PyObject* self, PyObject* args)
 static PyObject* TextParser_getNodes(PyObject* self, PyObject* args)
 {
     PyObject* handle;
-    if(!PyArg_ParseTuple(args, "O", &handle))
+    int oswitch=0;
+    if(!PyArg_ParseTuple(args, "O|i", &handle, &oswitch))
     {
         return NULL;
     }
     TextParser*              tp = static_cast<TextParser*>(PyCObject_AsVoidPtr(handle));
 
     std::vector<std::string> labels;
-    int                      ret       = tp->getNodes(labels);
+    int                      ret       = tp->getNodes(labels, oswitch);
     PyObject*                py_labels = PyList_New(labels.size());
     int                      i         = 0;
     for(std::vector<std::string>::iterator it = labels.begin(); it != labels.end(); ++it)
@@ -203,14 +204,15 @@ static PyObject* TextParser_getNodes(PyObject* self, PyObject* args)
 static PyObject* TextParser_getLabels(PyObject* self, PyObject* args)
 {
     PyObject* handle;
-    if(!PyArg_ParseTuple(args, "O", &handle))
+    int oswitch=0;
+    if(!PyArg_ParseTuple(args, "O|i", &handle, &oswitch))
     {
         return NULL;
     }
     TextParser*              tp = static_cast<TextParser*>(PyCObject_AsVoidPtr(handle));
 
     std::vector<std::string> labels;
-    int                      ret       = tp->getLabels(labels);
+    int                      ret       = tp->getLabels(labels, oswitch);
     PyObject*                py_labels = PyList_New(labels.size());
     int                      i         = 0;
     for(std::vector<std::string>::iterator it = labels.begin(); it != labels.end(); ++it)
