@@ -235,7 +235,7 @@ AC_CHECK_HEADERS([stdlib.h string.h])
 #
 # Checks for typedefs, structures, and compiler characteristics.
 #
-AC_CHECK_HEADER_STDBOOL
+AC_HEADER_STDBOOL
 AC_C_INLINE
 AC_TYPE_SIZE_T
 
