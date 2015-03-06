@@ -62,7 +62,7 @@ AM_CONDITIONAL([TP_FAPI], [test x"${enable_fapi}" = x"yes"])
 
 
 #
-# MPI setting. wrappers like mpicxx, mpicc, mpiCC, mpic++, mpiFCCpx are taking 
+# MPI setting. wrappers like mpicxx, mpicc, mpiCC, mpiicpc, mpiicc, mpic++, mpiFCCpx are taking 
 # into consideration, if not add in case.
 #
 
@@ -75,6 +75,8 @@ AC_SUBST(TP_CXX)
 case "$TP_CXX" in
   mpicxx)   enable_mpi="wrappermpi" ;;
   mpicc)    enable_mpi="wrappermpi" ;;
+  mpiicc)   enable_mpi="wrappermpi" ;;
+  mpiicpc)  enable_mpi="wrappermpi" ;;
   mpiCC)    enable_mpi="wrappermpi" ;;
   mpic++)   enable_mpi="wrappermpi" ;;
   mpiFCCpx) enable_mpi="wrappermpi" ;;
