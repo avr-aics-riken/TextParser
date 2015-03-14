@@ -1,10 +1,10 @@
 /*
  * TextParser - Text Parsing Library
  *
- * Copyright (C) 2012-2014 Institute of Industrial Science, The University of Tokyo.
+ * Copyright (C) 2012-2015 Institute of Industrial Science, The University of Tokyo.
  * All rights reserved.
  *
- * Copyright (c) 2014 Advanced Institute for Computational Science, RIKEN.
+ * Copyright (c) 2014-2015 Advanced Institute for Computational Science, RIKEN.
  * All rights reserved.
  */
 
@@ -16,8 +16,8 @@
 #ifndef _TEXTPARSER_VERSION_H_
 #define _TEXTPARSER_VERSION_H_
 
-#define TP_VERSION_NO  "1.5.7"
-#define TP_REVISION    "20140924_2300"
+#define TP_VERSION_NO  "1.5.8"
+#define TP_REVISION    "20150314_1600"
 
 #endif /* _TEXTPARSER_VERSION_H_ */
 

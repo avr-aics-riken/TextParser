@@ -2,10 +2,10 @@
 #
 # TextParser - Text Parsing Library
 #
-# Copyright (C) 2012-2014 Institute of Industrial Science, The University of Tokyo.
+# Copyright (C) 2012-2015 Institute of Industrial Science, The University of Tokyo.
 # All rights reserved.
 #
-# Copyright (c) 2014 Advanced Institute for Computational Science, RIKEN.
+# Copyright (c) 2014-2015 Advanced Institute for Computational Science, RIKEN.
 # All rights reserved.
 #
 ###################################################################################
@@ -14,7 +14,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.57])
-AC_INIT([TextParser], [1.5.7], [keno@iis.u-tokyo.ac.jp], [TextParser])
+AC_INIT([TextParser], [1.5.8], [keno@iis.u-tokyo.ac.jp], [TextParser])
 AM_INIT_AUTOMAKE()
 AC_CONFIG_SRCDIR([src/TextParser.cpp])
 AC_CONFIG_HEADERS([config.h])
@@ -23,7 +23,7 @@ AC_CONFIG_HEADERS([config.h])
 #
 # revision No.
 #
-TP_REVISION="20140924_2300"
+TP_REVISION="20150314_1600"
 AC_SUBST(TP_REVISION)
 
 
