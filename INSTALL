@@ -24,7 +24,8 @@ HOW TO BUILD
 (1) by configure
 
 $ export FFV_HOME=/hogehoge
-$ ./configure [options]
+$ cd BUILD_DIR
+$ ../configure [options]
 $ make
 $ sudo make install or # make install 
 
@@ -80,29 +81,29 @@ Here is some examples;
 
 ## Serial version / INTEL compiler
 
-  $ ./configure CXX=icpc CXXFLAGS=-O3
+ $ ../configure CXX=icpc CXXFLAGS=-O3
 
 
 ## Serial version with fortran API, but omit --with-comp
-  $ ./configure CXX=icpc CXXFLAGS=-O3 --enable-fapi F90=ifort F90FLAGS=-O3
+ $ ../configure CXX=icpc CXXFLAGS=-O3 --enable-fapi F90=ifort F90FLAGS=-O3
 
 
 
 ## OpenMPI with wrapper compiler, assume that mpicxx is a wrapper compiler for OpenMPI.
 
-  $ ./configure --prefix=${FFV_HOME}/TextParser CXX=mpicxx CXXFLAGS=-O3
+ $ ../configure --prefix=${FFV_HOME}/TextParser CXX=mpicxx CXXFLAGS=-O3
 
 
 ## K-computer
 
 # Serial
-  $ ./configure --prefix=${FFV_HOME}/TextParser \
+ $ ../configure --prefix=${FFV_HOME}/TextParser \
                 --host=sparc64-unknown-linux-gnu \
                 CXX=FCCpx \
                 CXXFLAGS="-Kfast"
 
 # MPI
-  $ ./configure --prefix=${FFV_HOME}/TextParser \
+ $ ../configure --prefix=${FFV_HOME}/TextParser \
                 --host=sparc64-unknown-linux-gnu \
                 CXX=mpiFCCpx \
                 CXXFLAGS="-Kfast"
@@ -110,7 +111,7 @@ Here is some examples;
 
 ## K-computer with fortran API, MPI
 
-  $ ./configure --prefix=${FFV_HOME}/TextParser \
+ $ ../configure --prefix=${FFV_HOME}/TextParser \
                 --host=sparc64-unknown-linux-gnu \
                 --with-comp=FJ \
                 --enable-fapi

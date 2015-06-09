@@ -13,17 +13,58 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
+
+
 AC_PREREQ([2.57])
-AC_INIT([TextParser], [1.5.8], [keno@iis.u-tokyo.ac.jp], [TextParser])
-AM_INIT_AUTOMAKE()
+
+AC_INIT([TextParser], [1.6.0], [keno@iis.u-tokyo.ac.jp], [TextParser])
+
+echo "----------------------------------------"
+echo "Running TextParser Configure Script"
+echo "----------------------------------------"
+
 AC_CONFIG_SRCDIR([src/TextParser.cpp])
+
+
+#
+# Specify directory for auxillary build tools (e.g., install-sh, config.sub, config.guess) and M4 files.
+#
+
+AC_CONFIG_AUX_DIR(config)
+
+
+#
+# To prevent the source codes from breaking, we suppress to do configure in the source directory.
+#
+
+if test -e configure.ac ; then
+echo "Please run configure from a separate build directory. It is not allowd to run configure in the source directory."
+echo "Pleaes try ..."
+echo " "
+echo "$ cd BUILD_DIR"
+echo "$ ../configure [options]"
+exit
+fi
+
+
+#
+# Configure should create config.h from config.h.in
+#
+
 AC_CONFIG_HEADERS([config.h])
+
+
+#
+# Use automake
+#
+
+AM_INIT_AUTOMAKE()
 
 
 #
 # revision No.
 #
-TP_REVISION="20150314_1600"
+TP_REVISION="20150609_1400"
 AC_SUBST(TP_REVISION)
 
 

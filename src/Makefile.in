@@ -182,7 +182,7 @@ am__v_at_ = $(am__v_at_@AM_DEFAULT_V@)
 am__v_at_0 = @
 am__v_at_1 = 
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
-depcomp = $(SHELL) $(top_srcdir)/depcomp
+depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 am__mv = mv -f
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -256,7 +256,7 @@ am__define_uniq_tagged_files = \
   done | $(am__uniquify_input)`
 ETAGS = etags
 CTAGS = ctags
-am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/depcomp
+am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/config/depcomp
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
@@ -373,18 +373,18 @@ top_srcdir = @top_srcdir@
 @SERIALTARGET_FALSE@lib_LIBRARIES = libTPmpi.a $(am__append_1)
 @SERIALTARGET_TRUE@lib_LIBRARIES = libTP.a $(am__append_1)
 @SERIALTARGET_TRUE@libTP_a_SOURCES = TextParser.cpp TextParserElement.cpp TextParserTree.cpp
-@SERIALTARGET_TRUE@libTP_a_CXXFLAGS = -I$(top_builddir)/include
+@SERIALTARGET_TRUE@libTP_a_CXXFLAGS = -I$(top_srcdir)/include
 @SERIALTARGET_FALSE@libTPmpi_a_SOURCES = TextParser.cpp TextParserElement.cpp TextParserTree.cpp
-@SERIALTARGET_FALSE@libTPmpi_a_CXXFLAGS = @MPICH_CFLAGS@ -I$(top_builddir)/include  -DENABLE_MPI -DBUILD_MPI
+@SERIALTARGET_FALSE@libTPmpi_a_CXXFLAGS = @MPICH_CFLAGS@ -I$(top_srcdir)/include  -DENABLE_MPI -DBUILD_MPI
 @TP_FAPI_TRUE@libTP_fapi_a_SOURCES = TextParser_fapi.f90
-@TP_FAPI_TRUE@libTP_fapi_a_CXXFLAGS = @MPICH_CFLAGS@ -I$(top_builddir)/include
+@TP_FAPI_TRUE@libTP_fapi_a_CXXFLAGS = @MPICH_CFLAGS@ -I$(top_srcdir)/include
 nobase_include_HEADERS = \
-  $(top_builddir)/include/TextParser.h \
-  $(top_builddir)/include/TextParserCommon.h \
-  $(top_builddir)/include/TextParserElement.h \
-  $(top_builddir)/include/TextParserTree.h \
-  $(top_builddir)/include/TextParser.inc \
-  $(top_builddir)/include/tpVersion.h
+  $(top_srcdir)/include/TextParser.h \
+  $(top_srcdir)/include/TextParserCommon.h \
+  $(top_srcdir)/include/TextParserElement.h \
+  $(top_srcdir)/include/TextParserTree.h \
+  $(top_srcdir)/include/TextParser.inc \
+  $(top_srcdir)/include/tpVersion.h
 
 EXTRA_DIST = Makefile_hand
 all: all-am

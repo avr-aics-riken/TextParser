@@ -12,8 +12,14 @@
 REVISION HISTORY
 ================
 
+--------------------------
+2015-06-09
+r40 introduce BUILD_DIR to keep source directory clean
+- Change to run configure
+- Change configure.ac
+
 ------------------
-2014-09-24
+2015-03-14
 r39 update year
  - add mpiicc, mpiicpc
 
