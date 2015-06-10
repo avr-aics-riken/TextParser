@@ -17,7 +17,7 @@
 
 AC_PREREQ([2.57])
 
-AC_INIT([TextParser], [1.6.0], [keno@iis.u-tokyo.ac.jp], [TextParser])
+AC_INIT([TextParser], [1.6.1], [keno@iis.u-tokyo.ac.jp], [TextParser])
 
 echo "----------------------------------------"
 echo "Running TextParser Configure Script"
@@ -64,7 +64,7 @@ AM_INIT_AUTOMAKE()
 #
 # revision No.
 #
-TP_REVISION="20150609_1400"
+TP_REVISION="20150610_2200"
 AC_SUBST(TP_REVISION)
 
 
@@ -298,3 +298,6 @@ AC_OUTPUT
 
 chmod +x ./tp-config
 
+echo "---------------------------------------------"
+echo "Finished Running TextParser Configure Script"
+echo "---------------------------------------------"
