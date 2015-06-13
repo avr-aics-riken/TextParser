@@ -114,7 +114,7 @@ Here is some examples;
  $ ../configure --prefix=${FFV_HOME}/TextParser \
                 --host=sparc64-unknown-linux-gnu \
                 --with-comp=FJ \
-                --enable-fapi
+                --enable-fapi \
                 CXX=mpiFCCpx \
                 CXXFLAGS="-Kfast" \
                 F90=mpifrtpx \

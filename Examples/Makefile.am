@@ -43,12 +43,12 @@ Example3_f90_LDADD=  -L../lib -lTP -lTP_f90api -lstdc++
 Example4_f90_LDADD=  -L../lib -lTP -lTP_f90api -lstdc++
 Example5_f90_LDADD=  -L../lib -lTP -lTP_f90api -lstdc++
 Example7_f90_LDADD=  -L../lib -lTP -lTP_f90api -lstdc++
-Example1_f90.o:../include/TextParser.inc ../lib/libTP.la ../lib/libTP_f90api.la
-Example2_f90.o:../include/TextParser.inc ../lib/libTP.la ../lib/libTP_f90api.la
-Example3_f90.o:../include/TextParser.inc ../lib/libTP.la ../lib/libTP_f90api.la
-Example4_f90.o:../include/TextParser.inc ../lib/libTP.la ../lib/libTP_f90api.la
-Example5_f90.o:../include/TextParser.inc ../lib/libTP.la ../lib/libTP_f90api.la
-Example7_f90.o:../include/TextParser.inc ../lib/libTP.la ../lib/libTP_f90api.la
+Example1_f90.o:$(top_srcdir)/include/TextParser.inc ../lib/libTP.la ../lib/libTP_f90api.la
+Example2_f90.o:$(top_srcdir)/include/TextParser.inc ../lib/libTP.la ../lib/libTP_f90api.la
+Example3_f90.o:$(top_srcdir)/include/TextParser.inc ../lib/libTP.la ../lib/libTP_f90api.la
+Example4_f90.o:$(top_srcdir)/include/TextParser.inc ../lib/libTP.la ../lib/libTP_f90api.la
+Example5_f90.o:$(top_srcdir)/include/TextParser.inc ../lib/libTP.la ../lib/libTP_f90api.la
+Example7_f90.o:$(top_srcdir)/include/TextParser.inc ../lib/libTP.la ../lib/libTP_f90api.la
 else
 FORTRANPROGRAMS=
 endif
@@ -68,9 +68,9 @@ DISTCLEANFILES=*~
 #CLEANFILES=Output*.txt nodq/Output*.txt
 
 LDADD=-L../lib -lTP -lstdc++
-CXXFLAGS=-I../include
-CFLAGS=-I../include
-FCFLAGS=-I../include
+CXXFLAGS=-I$(srcdir)/include
+CFLAGS=-I$(srcdir)/include
+FCFLAGS=-I$(srcdir)/include
 
 Example1_cpp_SOURCES=Example1_cpp.cpp
 Example1_c_SOURCES=Example1_c.c
@@ -95,22 +95,22 @@ Example7_c_SOURCES=Example7_c.c
 #Example3_cpp_mpi_newAPI_LDADD= -L../lib -lTP -lTP_mpi -lstdc++
 
 
-Example1_cpp.o:../include/TextParser.h ../lib/libTP.la
-Example2_cpp.o:../include/TextParser.h ../lib/libTP.la
-Example3_cpp.o:../include/TextParser.h ../lib/libTP.la
-Example4_cpp.o:../include/TextParser.h ../lib/libTP.la
-Example5_cpp.o:../include/TextParser.h ../lib/libTP.la
+Example1_cpp.o:$(top_srcdir)/include/TextParser.h ../lib/libTP.la
+Example2_cpp.o:$(top_srcdir)/include/TextParser.h ../lib/libTP.la
+Example3_cpp.o:$(top_srcdir)/include/TextParser.h ../lib/libTP.la
+Example4_cpp.o:$(top_srcdir)/include/TextParser.h ../lib/libTP.la
+Example5_cpp.o:$(top_srcdir)/include/TextParser.h ../lib/libTP.la
 
-Example7_cpp.o:../include/TextParser.h ../lib/libTP.la
-Example8_cpp.o:../include/TextParser.h ../lib/libTP.la
+Example7_cpp.o:$(top_srcdir)/include/TextParser.h ../lib/libTP.la
+Example8_cpp.o:$(top_srcdir)/include/TextParser.h ../lib/libTP.la
 
 
-Example1_c.o:../include/TextParser.h ../lib/libTP.la
-Example2_c.o:../include/TextParser.h ../lib/libTP.la
-Example3_c.o:../include/TextParser.h ../lib/libTP.la
-Example4_c.o:../include/TextParser.h ../lib/libTP.la
-Example5_c.o:../include/TextParser.h ../lib/libTP.la
+Example1_c.o:$(top_srcdir)/include/TextParser.h ../lib/libTP.la
+Example2_c.o:$(top_srcdir)/include/TextParser.h ../lib/libTP.la
+Example3_c.o:$(top_srcdir)/include/TextParser.h ../lib/libTP.la
+Example4_c.o:$(top_srcdir)/include/TextParser.h ../lib/libTP.la
+Example5_c.o:$(top_srcdir)/include/TextParser.h ../lib/libTP.la
 
-Example7_c.o:../include/TextParser.h ../lib/libTP.la
+Example7_c.o:$(top_srcdir)/include/TextParser.h ../lib/libTP.la
 
 .PHONY:

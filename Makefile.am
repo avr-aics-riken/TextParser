@@ -28,3 +28,12 @@ distclean-local: clean-local
 	rm -f ./bin/*
 	rm -f ./lib/*
 
+show-info:
+	@echo "srcdir= '$(srcdir)'"
+	@echo "abs_srcdir= '$(abs_srcdir)'"
+	@echo "top_srcdir= '$(top_srcdir)'"
+	@echo "abs_top_srcdir= '$(abs_top_srcdir)'"
+	@echo "builddir= '$(builddir)'"
+	@echo "abs_builddir= '$(abs_builddir)'"
+	@echo "top_builddir= '$(top_builddir)'"
+	@echo "abs_top_builddir= '$(abs_top_builddir)'"
