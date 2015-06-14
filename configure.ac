@@ -17,7 +17,7 @@
 
 AC_PREREQ([2.57])
 
-AC_INIT([TextParser], [1.6.2], [keno@iis.u-tokyo.ac.jp], [TextParser])
+AC_INIT([TextParser], [1.6.3], [keno@iis.u-tokyo.ac.jp], [TextParser])
 
 echo "----------------------------------------"
 echo "Running TextParser Configure Script"
@@ -64,7 +64,7 @@ AM_INIT_AUTOMAKE()
 #
 # revision No.
 #
-TP_REVISION="20150613_1800"
+TP_REVISION="20150614_1430"
 AC_SUBST(TP_REVISION)
 
 

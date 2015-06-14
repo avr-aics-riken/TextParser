@@ -106,8 +106,8 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
-DIST_COMMON = $(srcdir)/Makefile.am $(include_HEADERS) \
-	$(am__DIST_COMMON)
+DIST_COMMON = $(srcdir)/Makefile.am $(am__TP_include_HEADERS_DIST) \
+	$(am__TPmpi_include_HEADERS_DIST) $(am__DIST_COMMON)
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
@@ -139,7 +139,8 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"
+am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(TP_includedir)" \
+	"$(DESTDIR)$(TPmpi_includedir)"
 LIBRARIES = $(lib_LIBRARIES)
 AR = ar
 ARFLAGS = cru
@@ -236,7 +237,19 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
-HEADERS = $(include_HEADERS)
+am__TP_include_HEADERS_DIST = $(top_srcdir)/include/TextParser.h \
+	$(top_srcdir)/include/TextParserCommon.h \
+	$(top_srcdir)/include/TextParserElement.h \
+	$(top_srcdir)/include/TextParserTree.h \
+	$(top_srcdir)/include/TextParser.inc \
+	$(top_srcdir)/include/tpVersion.h
+am__TPmpi_include_HEADERS_DIST = $(top_srcdir)/include/TextParser.h \
+	$(top_srcdir)/include/TextParserCommon.h \
+	$(top_srcdir)/include/TextParserElement.h \
+	$(top_srcdir)/include/TextParserTree.h \
+	$(top_srcdir)/include/TextParser.inc \
+	$(top_srcdir)/include/tpVersion.h
+HEADERS = $(TP_include_HEADERS) $(TPmpi_include_HEADERS)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -370,22 +383,33 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+AUTOMAKE_OPTIONS = subdir-objects
 @SERIALTARGET_FALSE@lib_LIBRARIES = libTPmpi.a $(am__append_1)
 @SERIALTARGET_TRUE@lib_LIBRARIES = libTP.a $(am__append_1)
 @SERIALTARGET_TRUE@libTP_a_SOURCES = TextParser.cpp TextParserElement.cpp TextParserTree.cpp
 @SERIALTARGET_TRUE@libTP_a_CXXFLAGS = -I$(srcdir)/include
+@SERIALTARGET_TRUE@TP_includedir = $(includedir)
+@SERIALTARGET_TRUE@TP_include_HEADERS = \
+@SERIALTARGET_TRUE@    $(top_srcdir)/include/TextParser.h \
+@SERIALTARGET_TRUE@    $(top_srcdir)/include/TextParserCommon.h \
+@SERIALTARGET_TRUE@    $(top_srcdir)/include/TextParserElement.h \
+@SERIALTARGET_TRUE@    $(top_srcdir)/include/TextParserTree.h \
+@SERIALTARGET_TRUE@    $(top_srcdir)/include/TextParser.inc \
+@SERIALTARGET_TRUE@    $(top_srcdir)/include/tpVersion.h
+
 @SERIALTARGET_FALSE@libTPmpi_a_SOURCES = TextParser.cpp TextParserElement.cpp TextParserTree.cpp
-@SERIALTARGET_FALSE@libTPmpi_a_CXXFLAGS = @MPICH_CFLAGS@ -I$(srcdir)/include  -DENABLE_MPI -DBUILD_MPI
+@SERIALTARGET_FALSE@libTPmpi_a_CXXFLAGS = @MPICH_CFLAGS@ -I$(top_srcdir)/include  -DENABLE_MPI -DBUILD_MPI
+@SERIALTARGET_FALSE@TPmpi_includedir = $(includedir)
+@SERIALTARGET_FALSE@TPmpi_include_HEADERS = \
+@SERIALTARGET_FALSE@    $(top_srcdir)/include/TextParser.h \
+@SERIALTARGET_FALSE@    $(top_srcdir)/include/TextParserCommon.h \
+@SERIALTARGET_FALSE@    $(top_srcdir)/include/TextParserElement.h \
+@SERIALTARGET_FALSE@    $(top_srcdir)/include/TextParserTree.h \
+@SERIALTARGET_FALSE@    $(top_srcdir)/include/TextParser.inc \
+@SERIALTARGET_FALSE@    $(top_srcdir)/include/tpVersion.h
+
 @TP_FAPI_TRUE@libTP_fapi_a_SOURCES = TextParser_fapi.f90
 @TP_FAPI_TRUE@libTP_fapi_a_CXXFLAGS = @MPICH_CFLAGS@ -I$(srcdir)/include
-include_HEADERS = \
-  $(top_srcdir)/include/TextParser.h \
-  $(top_srcdir)/include/TextParserCommon.h \
-  $(top_srcdir)/include/TextParserElement.h \
-  $(top_srcdir)/include/TextParserTree.h \
-  $(top_srcdir)/include/TextParser.inc \
-  $(top_srcdir)/include/tpVersion.h
-
 EXTRA_DIST = Makefile_hand
 all: all-am
 
@@ -481,15 +505,17 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libTPmpi_a-TextParserTree.Po@am__quote@
 
 .cpp.o:
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCXX_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ $<
 
 .cpp.obj:
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCXX_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
@@ -583,27 +609,48 @@ libTPmpi_a-TextParserTree.obj: TextParserTree.cpp
 
 .f90.obj:
 	$(AM_V_FC)$(FCCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
-install-includeHEADERS: $(include_HEADERS)
+install-TP_includeHEADERS: $(TP_include_HEADERS)
 	@$(NORMAL_INSTALL)
-	@list='$(include_HEADERS)'; test -n "$(includedir)" || list=; \
+	@list='$(TP_include_HEADERS)'; test -n "$(TP_includedir)" || list=; \
 	if test -n "$$list"; then \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(includedir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(includedir)" || exit 1; \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(TP_includedir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(TP_includedir)" || exit 1; \
 	fi; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; \
 	done | $(am__base_list) | \
 	while read files; do \
-	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(includedir)'"; \
-	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(includedir)" || exit $$?; \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(TP_includedir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(TP_includedir)" || exit $$?; \
 	done
 
-uninstall-includeHEADERS:
+uninstall-TP_includeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(include_HEADERS)'; test -n "$(includedir)" || list=; \
+	@list='$(TP_include_HEADERS)'; test -n "$(TP_includedir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	dir='$(DESTDIR)$(includedir)'; $(am__uninstall_files_from_dir)
+	dir='$(DESTDIR)$(TP_includedir)'; $(am__uninstall_files_from_dir)
+install-TPmpi_includeHEADERS: $(TPmpi_include_HEADERS)
+	@$(NORMAL_INSTALL)
+	@list='$(TPmpi_include_HEADERS)'; test -n "$(TPmpi_includedir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(TPmpi_includedir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(TPmpi_includedir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(TPmpi_includedir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(TPmpi_includedir)" || exit $$?; \
+	done
+
+uninstall-TPmpi_includeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(TPmpi_include_HEADERS)'; test -n "$(TPmpi_includedir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(TPmpi_includedir)'; $(am__uninstall_files_from_dir)
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -691,7 +738,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(LIBRARIES) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(TP_includedir)" "$(DESTDIR)$(TPmpi_includedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -746,7 +793,8 @@ info: info-am
 
 info-am:
 
-install-data-am: install-includeHEADERS
+install-data-am: install-TP_includeHEADERS \
+	install-TPmpi_includeHEADERS
 
 install-dvi: install-dvi-am
 
@@ -791,23 +839,26 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-includeHEADERS uninstall-libLIBRARIES
+uninstall-am: uninstall-TP_includeHEADERS \
+	uninstall-TPmpi_includeHEADERS uninstall-libLIBRARIES
 
 .MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS TAGS all all-am check check-am clean clean-generic \
 	clean-libLIBRARIES cscopelist-am ctags ctags-am distclean \
 	distclean-compile distclean-generic distclean-tags distdir dvi \
-	dvi-am html html-am info info-am install install-am \
-	install-data install-data-am install-dvi install-dvi-am \
-	install-exec install-exec-am install-html install-html-am \
-	install-includeHEADERS install-info install-info-am \
+	dvi-am html html-am info info-am install \
+	install-TP_includeHEADERS install-TPmpi_includeHEADERS \
+	install-am install-data install-data-am install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
+	install-html-am install-info install-info-am \
 	install-libLIBRARIES install-man install-pdf install-pdf-am \
 	install-ps install-ps-am install-strip installcheck \
 	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic pdf pdf-am ps ps-am tags tags-am uninstall \
-	uninstall-am uninstall-includeHEADERS uninstall-libLIBRARIES
+	uninstall-TP_includeHEADERS uninstall-TPmpi_includeHEADERS \
+	uninstall-am uninstall-libLIBRARIES
 
 .PRECIOUS: Makefile
 
