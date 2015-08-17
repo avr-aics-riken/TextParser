@@ -387,7 +387,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 @SERIALTARGET_FALSE@lib_LIBRARIES = libTPmpi.a $(am__append_1)
 @SERIALTARGET_TRUE@lib_LIBRARIES = libTP.a $(am__append_1)
 @SERIALTARGET_TRUE@libTP_a_SOURCES = TextParser.cpp TextParserElement.cpp TextParserTree.cpp
-@SERIALTARGET_TRUE@libTP_a_CXXFLAGS = -I$(srcdir)/include
+@SERIALTARGET_TRUE@libTP_a_CXXFLAGS = -I$(top_srcdir)/include
 @SERIALTARGET_TRUE@TP_includedir = $(includedir)
 @SERIALTARGET_TRUE@TP_include_HEADERS = \
 @SERIALTARGET_TRUE@    $(top_srcdir)/include/TextParser.h \

@@ -16,7 +16,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 if SERIALTARGET
   lib_LIBRARIES = libTP.a
   libTP_a_SOURCES  = TextParser.cpp TextParserElement.cpp TextParserTree.cpp
-  libTP_a_CXXFLAGS = -I$(srcdir)/include
+  libTP_a_CXXFLAGS = -I$(top_srcdir)/include
   TP_includedir = $(includedir)
   TP_include_HEADERS = \
     $(top_srcdir)/include/TextParser.h \

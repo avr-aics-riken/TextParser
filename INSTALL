@@ -81,7 +81,7 @@ Here is some examples;
 
 ## Serial version / INTEL compiler
 
- $ ../configure CXX=icpc CXXFLAGS=-O3
+ $ ../configure --with-comp=INTEL CXX=icpc CXXFLAGS=-O3
 
 
 ## Serial version with fortran API, but omit --with-comp
@@ -91,7 +91,7 @@ Here is some examples;
 
 ## OpenMPI with wrapper compiler, assume that mpicxx is a wrapper compiler for OpenMPI.
 
- $ ../configure --prefix=${FFV_HOME}/TextParser CXX=mpicxx CXXFLAGS=-O3
+ $ ../configure --prefix=${FFV_HOME}/TextParser --with-comp=INTEL CXX=mpicxx CXXFLAGS=-O3
 
 
 ## K-computer

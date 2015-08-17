@@ -17,7 +17,7 @@
 
 AC_PREREQ([2.57])
 
-AC_INIT([TextParser], [1.6.3], [keno@iis.u-tokyo.ac.jp], [TextParser])
+AC_INIT([TextParser], [1.6.4], [keno@{riken,iis.u-tokyo.ac}.jp], [TextParser])
 
 echo "----------------------------------------"
 echo "Running TextParser Configure Script"
