@@ -17,7 +17,7 @@
 
 AC_PREREQ([2.57])
 
-AC_INIT([TextParser], [1.6.4], [keno@{riken,iis.u-tokyo.ac}.jp], [TextParser])
+AC_INIT([TextParser], [1.6.5], [keno@{riken,iis.u-tokyo.ac}.jp], [TextParser])
 
 echo "----------------------------------------"
 echo "Running TextParser Configure Script"
@@ -64,7 +64,7 @@ AM_INIT_AUTOMAKE()
 #
 # revision No.
 #
-TP_REVISION="20150614_1430"
+TP_REVISION="20151128_1200"
 AC_SUBST(TP_REVISION)
 
 
@@ -81,6 +81,9 @@ FCFLAGS=$F90FLAGS
 #
 AC_ARG_WITH(comp, [AC_HELP_STRING([--with-comp=(INTEL|FJ|GNU)],[Specify Compiler type])], , with_comp=none)
 
+if test x"$with_ompi" = x"none" ; then
+  AC_MSG_ERROR("ERROR: Kind of compiler is not specified!")
+fi
 
 
 #

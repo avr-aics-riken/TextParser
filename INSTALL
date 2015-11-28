@@ -27,7 +27,7 @@ $ export FFV_HOME=/hogehoge
 $ cd BUILD_DIR
 $ ../configure [options]
 $ make
-$ sudo make install or # make install 
+$ sudo make install
 
 
 configure options
@@ -77,48 +77,63 @@ configure options
 
 
 
-Here is some examples;
+2) Configure Examples
 
-## Serial version / INTEL compiler
+# INTEL compiler
 
- $ ../configure --with-comp=INTEL CXX=icpc CXXFLAGS=-O3
+## Serial
 
+### C/C++ only
+$ ../configure --with-comp=INTEL CXX=icpc CXXFLAGS=-O3
 
-## Serial version with fortran API, but omit --with-comp
- $ ../configure CXX=icpc CXXFLAGS=-O3 --enable-fapi F90=ifort F90FLAGS=-O3
-
-
-
-## OpenMPI with wrapper compiler, assume that mpicxx is a wrapper compiler for OpenMPI.
-
- $ ../configure --prefix=${FFV_HOME}/TextParser --with-comp=INTEL CXX=mpicxx CXXFLAGS=-O3
+### with fortran API
+$ ../configure --with-comp=INTEL CXX=icpc CXXFLAGS=-O3 --enable-fapi F90=ifort F90FLAGS=-O3
 
 
-## K-computer
-
-# Serial
- $ ../configure --prefix=${FFV_HOME}/TextParser \
-                --host=sparc64-unknown-linux-gnu \
-                CXX=FCCpx \
-                CXXFLAGS="-Kfast"
-
-# MPI
- $ ../configure --prefix=${FFV_HOME}/TextParser \
-                --host=sparc64-unknown-linux-gnu \
-                CXX=mpiFCCpx \
-                CXXFLAGS="-Kfast"
+## OpenMPI by a wrapper compiler
+$ ../configure --prefix=${FFV_HOME}/TextParser --with-comp=INTEL CXX=mpicxx CXXFLAGS=-O3
 
 
-## K-computer with fortran API, MPI
 
- $ ../configure --prefix=${FFV_HOME}/TextParser \
-                --host=sparc64-unknown-linux-gnu \
-                --with-comp=FJ \
-                --enable-fapi \
-                CXX=mpiFCCpx \
-                CXXFLAGS="-Kfast" \
-                F90=mpifrtpx \
-                F90FLAGS=-Kfast
+# GNU compiler
+
+## Serial
+$ ../configure --with-comp=GNU CXX=g++ CXXFLAGS=-O3
+
+
+## OpenMPI by a wrapper compiler
+$ ../configure --prefix=${FFV_HOME}/TextParser --with-comp=GNU CXX=mpicxx CXXFLAGS=-O3
+
+
+
+# FUJITSU compiler / FX, K computer on login nodes
+
+## Serial
+$ ../configure --prefix=${FFV_HOME}/TextParser \
+               --host=sparc64-unknown-linux-gnu \
+               --with-comp=FJ \
+               CXX=FCCpx \
+               CXXFLAGS="-Kfast"
+
+## MPI
+
+### C/C++ only
+$ ../configure --prefix=${FFV_HOME}/TextParser \
+               --host=sparc64-unknown-linux-gnu \
+               --with-comp=FJ \
+               CXX=mpiFCCpx \
+               CXXFLAGS="-Kfast"
+
+
+### with fortran API
+$ ../configure --prefix=${FFV_HOME}/TextParser \
+               --host=sparc64-unknown-linux-gnu \
+               --with-comp=FJ \
+               --enable-fapi \
+               CXX=mpiFCCpx \
+               CXXFLAGS="-Kfast" \
+               F90=mpifrtpx \
+               F90FLAGS=-Kfast
 
 /*
 Both of shared(*.so) and static(*.a) libraries are build and installed.
