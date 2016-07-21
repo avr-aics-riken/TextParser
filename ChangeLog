@@ -13,6 +13,10 @@ REVISION HISTORY
 ================
 
 --------------------------
+2016-07-06
+add cmake
+
+--------------------------
 2015-11-28
 r45 --with-comp becomes essential
 - change configure.ac, INSTALL, and NEWS
