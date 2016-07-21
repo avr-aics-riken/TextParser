@@ -144,7 +144,35 @@ If a shared library is used, LD_LIBRARY_PATH or setting of ldconfig must be requ
 
 
 
-(2) by Makefile_hand
+(2) with cmake for windows(Visual Studio)
+
+- convert sources(*.h,*.cpp,*.cxx) to utf-8 bom(byte of marker) files
+  for visual studio
+
+    on linux/unix :
+      $ ./bom_add.sh
+
+    on windows :
+      please, use tool ( ZiiDetector etc. )
+
+- use cmake-gui.exe
+
+    (setting parameters example)
+      Name                        Value
+     -------------------------------------------------
+      CMAKE_CONFIGURATION_TYPES   Release
+      CMAKE_INSTALL_PREFIX        C:/FFV_HOME
+      TP_CXX                      CC
+      enable_fapi                 off
+      with_msmpi                  C:/Program Files (x86)/Microsoft SDKs/MPI
+
+      ** install directory is C:¥FFV_HOME¥TextParser
+
+- build with Visual Studio
+
+
+
+(3) by Makefile_hand
 
 $ make -f Makefile_hand
 

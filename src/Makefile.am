@@ -16,28 +16,33 @@ AUTOMAKE_OPTIONS = subdir-objects
 if SERIALTARGET
   lib_LIBRARIES = libTP.a
   libTP_a_SOURCES  = TextParser.cpp TextParserElement.cpp TextParserTree.cpp
-  libTP_a_CXXFLAGS = -I$(top_srcdir)/include
+  libTP_a_CXXFLAGS = -I../include -I$(top_srcdir)/include
+  # tpVersion.h.in -> BUILD_DIR/include/tpVersion.h -> install
   TP_includedir = $(includedir)
   TP_include_HEADERS = \
-    $(top_srcdir)/include/TextParser.h \
-    $(top_srcdir)/include/TextParserCommon.h \
-    $(top_srcdir)/include/TextParserElement.h \
-    $(top_srcdir)/include/TextParserTree.h \
-    $(top_srcdir)/include/TextParser.inc \
-    $(top_srcdir)/include/tpVersion.h
+    ../include/tpVersion.h
+#    $(top_srcdir)/include/tpVersion.h
+
 else
   lib_LIBRARIES = libTPmpi.a
   libTPmpi_a_SOURCES  = TextParser.cpp TextParserElement.cpp TextParserTree.cpp
-  libTPmpi_a_CXXFLAGS = @MPICH_CFLAGS@ -I$(top_srcdir)/include  -DENABLE_MPI -DBUILD_MPI
+  libTPmpi_a_CXXFLAGS = @MPICH_CFLAGS@ -I../include -I$(top_srcdir)/include  -DENABLE_MPI -DBUILD_MPI
+  # tpVersion.h.in -> BUILD_DIR/include/tpVersion.h -> install
   TPmpi_includedir = $(includedir)
   TPmpi_include_HEADERS = \
-    $(top_srcdir)/include/TextParser.h \
-    $(top_srcdir)/include/TextParserCommon.h \
-    $(top_srcdir)/include/TextParserElement.h \
-    $(top_srcdir)/include/TextParserTree.h \
-    $(top_srcdir)/include/TextParser.inc \
-    $(top_srcdir)/include/tpVersion.h
+    ../include/tpVersion.h
+#    $(top_srcdir)/include/tpVersion.h
+
 endif
+
+# SRC_DIR/include/* -> install
+nobase_include_HEADERS = \
+    ../include/TextParser.h \
+    ../include/TextParserCommon.h \
+    ../include/TextParserElement.h \
+    ../include/TextParserTree.h \
+    ../include/TextParser.inc
+
 
 if TP_FAPI
   lib_LIBRARIES += libTP_fapi.a
