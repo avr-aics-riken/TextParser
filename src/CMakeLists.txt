@@ -1,42 +1,67 @@
-﻿# install file
-IF(SERIALTARGET)
-	ADD_LIBRARY(TP TextParser.cpp TextParserElement.cpp
-TextParserTree.cpp)
-	SET(libTP_a_CXXFLAGS ${PROJECT_SOURCE_DIR}/include)
-	
-    include_directories("${PROJECT_BINARY_DIR}/include")
-	INCLUDE_DIRECTORIES(${libTP_a_CXXFLAGS})
-	INSTALL(TARGETS TP DESTINATION ${TP}/lib)
+###################################################################################
+#
+# TextParser - Text Parsing Library
+#
+# Copyright (C) 2012-2015 Institute of Industrial Science, The University of Tokyo.
+# All rights reserved.
+#
+# Copyright (c) 2014-2016 Advanced Institute for Computational Science, RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology, Kyushu University.
+# All rights reserved.
+#
+#
+###################################################################################
 
-ELSE(SERIALTARGET)
-	ADD_LIBRARY(TPmpi TextParser.cpp TextParserElement.cpp TextParserTree.cpp)
-	SET(libTPmpi_a_CXXFLAGS ${PROJECT_SOURCE_DIR}/include ${MPICH_CFLAGS})
 
-	INCLUDE_DIRECTORIES(${libTPmpi_a_CXXFLAGS})
-	
-	ADD_DEFINITIONS(-DENABLE_MPI)
-	ADD_DEFINITIONS(-DBUILD_MPI)
+set(tp_files
+       TextParser.cpp
+			 TextParserElement.cpp
+			 TextParserTree.cpp)
 
-	INSTALL(TARGETS TPmpi DESTINATION ${TP}/lib)
+if(SERIALTARGET)
+	add_library(TP STATIC ${tp_files})
 
-	SET(libTPmpi_a_CXXFLAGS "${libTPmpi_a_CXXFLAGS} -DENABLE_MPI
--DBUILD_MPI")
+  # tpVersion.hをサーチするために先に書く
+  include_directories(${PROJECT_BINARY_DIR}/include ${PROJECT_SOURCE_DIR}/include)
 
-ENDIF(SERIALTARGET)
+	install(TARGETS TP DESTINATION lib)
 
-IF(TP_FAPI)
-	ADD_LIBRARY(TP_fapi SHARED TextParser_fapi.f90)
-	SET(libTP_fapi_a_CXXFLAGS "${libTP_fapi_a_CXXFLAGS} ${PROJECT_SOURCE_DIR}/include ${MPICH_CFLAGS}")
-	INCLUDE_DIRECTORIES(${libTP_fapi_a_CXXFLAGS})
-	INSTALL(FILES libTP_fapi.a DESTINATION ${TP}/lib)
-ENDIF(TP_FAPI)
+else(SERIALTARGET)
+	add_library(TPmpi STATIC ${tp_files})
+  include_directories(${PROJECT_BINARY_DIR}/include)
+	include_directories(${PROJECT_SOURCE_DIR}/include ${MPI_DIR}/include)
 
-SET(EXTRA_DIST "${EXTRA_DIST} Makefile_hand")
+	add_definitions(-DENABLE_MPI)
+	add_definitions(-DBUILD_MPI)
 
-INSTALL(FILES ../include/TextParser.h ../include/TextParserCommon.h
-              ../include/TextParserElement.h ../include/TextParserTree.h
-              ../include/TextParser.inc 
-              ${PROJECT_BINARY_DIR}/include/tpVersion.h 
-        DESTINATION ${TP}/include )
+	install(TARGETS TPmpi DESTINATION lib)
+
+endif(SERIALTARGET)
+
+set(EXTRA_DIST "${EXTRA_DIST} Makefile_hand")
+
+install(FILES ${PROJECT_SOURCE_DIR}/include/TextParser.h
+              ${PROJECT_SOURCE_DIR}/include/TextParserCommon.h
+              ${PROJECT_SOURCE_DIR}/include/TextParserElement.h
+							${PROJECT_SOURCE_DIR}/include/TextParserTree.h
+
+              ${PROJECT_BINARY_DIR}/include/tpVersion.h
+        DESTINATION include )
+
+if(USE_FAPI)
+  add_library(TP_fapi STATIC TextParser_fapi.f90)
+
+  if(SERIALTARGET)
+    include_directories(${PROJECT_SOURCE_DIR}/include)
+  else()
+    include_directories(${PROJECT_SOURCE_DIR}/include ${MPI_DIR}/include)
+  endif()
+
+  set_target_properties (TP_fapi PROPERTIES LINKER_LANGUAGE CXX)
+  install (TARGETS TP_fapi DESTINATION lib)
+  install (FILES ${PROJECT_SOURCE_DIR}/include/TextParser.inc DESTINATION include)
+endif(USE_FAPI)
 
 ###

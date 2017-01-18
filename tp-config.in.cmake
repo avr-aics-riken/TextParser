@@ -1,9 +1,9 @@
-﻿#! /bin/sh
+#!/bin/bash
 
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-includedir=@includedir@
-libdir=@libdir@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=@CMAKE_INSTALL_PREFIX@
+includedir=@CMAKE_INSTALL_PREFIX@/include
+libdir=@CMAKE_INSTALL_PREFIX@/lib
 
 usage()
 {
@@ -45,9 +45,15 @@ while test $# -gt 0; do
     --version)
 cat <<EOF
 
-TextParser : Text Parser Library  Version : @VERSION@ : @TP_REVISION@
+TextParser : Text Parser Library  Version : @PACKAGE_VERSION@ : @LIB_REVISION@
 
 Copyright (C) 2012-2015 Institute of Industrial Science, The University of Tokyo.
+All rights reserved.
+
+Copyright (c) 2014-2016 Advanced Institute for Computational Science, RIKEN.
+All rights reserved.
+
+Copyright (c) 2016-2017 Research Institute for Information Technology, Kyushu University.
 All rights reserved.
 
 EOF
@@ -59,31 +65,31 @@ EOF
       ;;
 
     --cxx)
-      echo @TP_CXX@
+      echo @CMAKE_CXX_COMPILER@
       ;;
 
     --cflags)
-      echo -I@TP_DIR@/include
+      echo -I@CMAKE_INSTALL_PREFIX@/include
       ;;
 
     --fc)
-      echo @TP_FC@
+      echo @LIB_FC@
       ;;
 
     --fclink)
-      echo @TP_FC_LD@
+      echo @LIB_FC_LD@
       ;;
 
     --fcflags)
-      echo -I@TP_DIR@/include
+      echo -I@CMAKE_INSTALL_PREFIX@/include
       ;;
 
     --fclibs)
-      echo -L@TP_DIR@/lib -l@TP_LIB@
+      echo -L@CMAKE_INSTALL_PREFIX@/lib -l@LIB_NAME@
       ;;
 
     --libs)
-      echo -L@TP_DIR@/lib -l@TP_LIB@
+      echo -L@CMAKE_INSTALL_PREFIX@/lib -l@LIB_NAME@
       ;;
 
     *)

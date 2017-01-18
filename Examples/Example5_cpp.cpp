@@ -4,12 +4,16 @@
  * Copyright (C) 2012-2015 Institute of Industrial Science, The University of Tokyo.
  * All rights reserved.
  *
- * Copyright (c) 2014-2015 Advanced Institute for Computational Science, RIKEN.
+ * Copyright (c) 2014-2016 Advanced Institute for Computational Science, RIKEN.
  * All rights reserved.
+ *
+ * Copyright (c) 2016-2017 Research Institute for Information Technology, Kyushu University.
+ * All rights reserved.
+ *
  */
 
 /** @file Example5_cpp.cpp
- * サンプルプログラム
+ *  @retval 0-success / 1-fail
  */
 
 #include <iostream>
@@ -20,14 +24,12 @@
 int get_node_parameters(std::string filename, std::string label)
 {
     int ierror;
-    //    TextParser* tp=TextParser::get_instance();
-         TextParser* tp=TextParser::get_instance_singleton();
-	 // TextParser* tp=new TextParser;
+    TextParser* tp=TextParser::get_instance_singleton();
 
      //     std::cout << "label start:" << label<< std::endl;
     ierror=tp->changeNode(label);
     if (ierror != 0) {
-        std::cout <<  "ERROR in TextParser::changeDirector: " << filename 
+        std::cout <<  "ERROR in TextParser::changeDirectory: " << filename
 	        << " ERROR CODE "<< ierror << std::endl;
         return ierror;
     }
@@ -35,7 +37,7 @@ int get_node_parameters(std::string filename, std::string label)
     ierror = tp->currentNode(label);
     //     std::cout << "label2:" << label<< std::endl;
     if (ierror != 0) {
-        std::cout <<  "ERROR in TextParser::currentNode: " << filename 
+        std::cout <<  "ERROR in TextParser::currentNode: " << filename
 	        << " ERROR CODE "<< ierror << std::endl;
         return ierror;
     }
@@ -47,7 +49,7 @@ int get_node_parameters(std::string filename, std::string label)
     ierror = tp->getNodes(dir_labels,1);
     //        ierror = tp->getNodes(dir_labels,2);
     if (ierror != 0) {
-        std::cout <<  "ERROR in TextParser::getNodes: " << filename 
+        std::cout <<  "ERROR in TextParser::getNodes: " << filename
 	        << " ERROR CODE "<< ierror << std::endl;
         return ierror;
     }
@@ -63,7 +65,7 @@ int get_node_parameters(std::string filename, std::string label)
     int oswitch=2;
     ierror = tp->getLabels(parm_labels,oswitch);
     if (ierror != 0) {
-        std::cout <<  "ERROR in TextParser::getLabels: " << filename 
+        std::cout <<  "ERROR in TextParser::getLabels: " << filename
 	        << " ERROR CODE "<< ierror << std::endl;
         return ierror;
     }
@@ -73,7 +75,7 @@ int get_node_parameters(std::string filename, std::string label)
         std::string value;
 	ierror = tp->getValue(parm_labels[i],value);
         if (ierror!=0){
-        std::cout <<  "ERROR in TextParser::getValue file: " << filename 
+        std::cout <<  "ERROR in TextParser::getValue file: " << filename
 		    << " ERROR CODE "<< ierror << std::endl;
             return ierror;
         }
@@ -81,7 +83,7 @@ int get_node_parameters(std::string filename, std::string label)
 
         TextParserValueType type = tp->getType(parm_labels[i], &ierror);
         if (ierror != 0){
-            std::cout <<  "ERROR in TextParser::getType file: " << filename 
+            std::cout <<  "ERROR in TextParser::getType file: " << filename
 		        << " ERROR CODE "<< ierror << std::endl;
             return ierror;
         }
@@ -98,7 +100,7 @@ int get_node_parameters(std::string filename, std::string label)
       ierror=tp->changeNode("..");
       //      std::cout << "labelb:" << label<< std::endl;
         if (ierror != 0) {
-            std::cout <<  "ERROR in TextParser::changeNode: " << filename 
+            std::cout <<  "ERROR in TextParser::changeNode: " << filename
 		      << " ERROR CODE "<< ierror << "hoge"<<std::endl;
             return ierror;
         }
@@ -113,16 +115,16 @@ int move_and_get_parameters(std::string filename)
     int ierror;
     //    TextParser* tp=TextParser::get_instance();
     TextParser* tp=TextParser::get_instance_singleton();
-    
+
     // ファイルの読み込み
     std::cout << "filename: " << filename << std::endl;
     ierror=tp->read(filename);
     if (ierror != 0) {
-        std::cout <<  "ERROR in TextParser ReadParameters file: " << filename 
+        std::cout <<  "ERROR in TextParser ReadParameters file: " << filename
 	        << " ERROR CODE "<< ierror << std::endl;
         return ierror;
     }
-  
+
     std::string label = "/";
 
     get_node_parameters(filename, label);
@@ -130,7 +132,7 @@ int move_and_get_parameters(std::string filename)
     // パラメータの削除
     // ierror=tp->remove();
     // if (ierror != 0) {
-    //     std::cout <<  "ERROR in TextParser::Remove file: " << filename 
+    //     std::cout <<  "ERROR in TextParser::Remove file: " << filename
     // 	        << " ERROR CODE "<< ierror << std::endl;
     // }
     std::cout << std::endl;
@@ -151,11 +153,13 @@ int main(int argc, char* argv[])
     //    filename = "./tpp_examples/correct_basic_1.txt";
 
     filename = "./tpp_examples/correct_label_4.txt";
-    move_and_get_parameters(filename);
+    if( move_and_get_parameters(filename) ) return 1;
+
     TextParser* tp = TextParser::get_instance_singleton();
     std::string label;
     int ierror=tp->currentNode(label);
     std::cout << "label:" << label<< std::endl;
+    if ( ierror != 0 ) return 1;
 
     label="/foo/qux/baz";
     std::string value="10";
@@ -170,14 +174,22 @@ int main(int argc, char* argv[])
     value="\"filename\"";
     std::cout<< label << " "<< value<<std::endl;
     TextParserError error = tp->createLeaf(label,value);
-    if(error!=TP_NO_ERROR) std::cout<< "error1"<<std::endl;
+
+    if(error!=TP_NO_ERROR) {
+      std::cout<< "error1"<<std::endl;
+      return 1;
+    }
+
     std::string value2;
     label="/foo/cdf";
     std::cout<< label <<std::endl;
     error = tp->getValue(label,value2);
     std::cout<< label <<std::endl;
-    if(error!=TP_NO_ERROR) std::cout<< "error2"<<std::endl;
-    std::cout<< value2 <<std::endl;
+    if(error!=TP_NO_ERROR) {
+      std::cout<< "error2"<<std::endl;
+      std::cout<< value2 <<std::endl;
+      return 1;
+    }
 
     tp->write("tmp.tpp");
     tp->remove();
@@ -195,4 +207,3 @@ int main(int argc, char* argv[])
 
     return 0;
 }
-

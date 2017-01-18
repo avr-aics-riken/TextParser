@@ -4,8 +4,12 @@
  * Copyright (C) 2012-2015 Institute of Industrial Science, The University of Tokyo.
  * All rights reserved.
  *
- * Copyright (c) 2014-2015 Advanced Institute for Computational Science, RIKEN.
+ * Copyright (c) 2014-2016 Advanced Institute for Computational Science, RIKEN.
  * All rights reserved.
+ *
+ * Copyright (c) 2016-2017 Research Institute for Information Technology, Kyushu University.
+ * All rights reserved.
+ *
  */
 
 /** @file TextParser.cpp
@@ -42,19 +46,19 @@
 #include "TextParserElement.h"
 
 
-/** 
+/**
  * tree の status をよびだします。
  *
- * 
- * 
+ *
+ *
  */
 
 void TextParser::status(){dataTree()->status();}
-/** 
+/**
  * プロセス内唯一の TextParser インスタンスを返します。
  *
  * @return TextParser インスタンスのアドレス
- * 
+ *
  */
 
 //TextParser* TextParser::get_instance(){
@@ -66,7 +70,7 @@ TextParser* TextParser::get_instance_singleton(){
   return &instance;
 }
 
-/** 
+/**
  * デフォルトコンストラクタで、
  * パラメータのデータ構造 TextParserTree へのインスタンスを取得します。
  *
@@ -78,7 +82,7 @@ TextParser::TextParser(){
   //  TP_DBGOSH << __FUNCTION__ << " dataTree()=" <<dataTree() << std::endl;
 }
 
-/**  
+/**
  * デストラクタ. TextParserTreeのインスタンスを破棄します。
  *
  */
@@ -93,14 +97,14 @@ TextParser::~TextParser(){
  *  その結果をtree構造データとして格納します。
  *
  * @param[in] file 入力するパラメータファイル名
- * 
- * @return エラーコード 
+ *
+ * @return エラーコード
  */
 
 TextParserError TextParser::read(const std::string& file){
-#ifdef MYDEBUG  
+#ifdef MYDEBUG
     TP_DBGOSH << "TextParser reading file " << file << std::endl;
-#endif // MYDEBUG    
+#endif // MYDEBUG
   TextParserError ret = TP_NO_ERROR;
 
   try {
@@ -108,9 +112,9 @@ TextParserError TextParser::read(const std::string& file){
   } catch (std::exception ex) {
     ret = TextParserErrorHandler(TP_FILEINPUT_ERROR, file);
   }
-#ifdef MYDEBUG  
+#ifdef MYDEBUG
   TP_DBGOSH << "TextParser end reading file "<<file << std::endl;
-#endif // MYDEBUG    
+#endif // MYDEBUG
    return ret;
 }
 
@@ -140,7 +144,7 @@ TextParserError TextParser::read_local(const std::string& file){
  *  展開し確定した値を書き出します。
  *
  * @param[in] filename 出力するパラメータファイル名
- * @return エラーコード 
+ * @return エラーコード
  *
  */
 
@@ -150,7 +154,7 @@ TextParserError TextParser::write(const std::string &file,int order)
 
     try {
       dataTree()->writeParameters(file,order);
-      
+
     } catch (std::exception ex) {
       ret = TextParserErrorHandler(TP_FILEOUTPUT_ERROR, file);
     }
@@ -168,12 +172,12 @@ TextParserError TextParser::getAllLabels(std::vector<std::string>& labels)
   //    std::vector<std::string> labels;
   //    MgppError ret = MGPP_NO_ERROR;
   TextParserError ret = TP_NO_ERROR;
-  
+
     try {
       if (!dataTree()->isReady()) {
 	ret = TextParserErrorHandler(TP_DATABASE_NOT_READY_ERROR, "");
       } else {
-	std::map<unsigned int, std::string>::iterator 
+	std::map<unsigned int, std::string>::iterator
 	  il = dataTree()->_leaf_paths.begin();
 	while (il != dataTree()->_leaf_paths.end()) {
 	  labels.push_back(il->second);
@@ -193,7 +197,7 @@ TextParserError TextParser::getAllLabels(std::vector<std::string>& labels)
 
 
 /** リーフのラベルが示す値のタイプを返す関数
- * 
+ *
  *　@param[in] label リーフのラベル
  *  @param[out] error エラーコード
  *  @return labelが指す値のタイプ 型はTextParserValueType
@@ -240,9 +244,9 @@ TextParserValueType TextParser::getType(const std::string& label, int *error)
     } catch (std::exception ex) {
       ret = TextParserErrorHandler(TP_GET_PARAMETER_ERROR, "");
     }
-    
+
     *error = ret;
-    
+
     return returner;
 }
 
@@ -254,7 +258,7 @@ TextParserValueType TextParser::getType(const std::string& label, int *error)
  * @param[in] label リーフのラベルパス
  * @param[out] value_string リーフの値
  * @param[out] ierror エラーコード
- * 
+ *
  *
  */
 
@@ -262,7 +266,7 @@ void TextParser::getValue(const std::string& label,std::string& value_string,int
 {
   //  std::string value_string;
   TextParserError ret = TP_NO_ERROR;
-  
+
   try {
     if (!dataTree()->isReady()) {
       ret = TextParserErrorHandler(TP_DATABASE_NOT_READY_ERROR, "");
@@ -275,14 +279,14 @@ void TextParser::getValue(const std::string& label,std::string& value_string,int
 	    TextParserErrorHandler(ret, label);
       }
     }
-    
+
   } catch (std::exception ex) {
     ret = TextParserErrorHandler(TP_GET_PARAMETER_ERROR, "");
   }
 
   //  return ret;
     *ierror = ret;
-    
+
   //  return value_string;
 }
 
@@ -298,7 +302,7 @@ TextParserError TextParser::getValue(const std::string& label,std::string& value
 {
   //  std::string value_string;
   TextParserError ret = TP_NO_ERROR;
-  
+
   try {
     if (!dataTree()->isReady()) {
       ret = TextParserErrorHandler(TP_DATABASE_NOT_READY_ERROR, "");
@@ -311,13 +315,13 @@ TextParserError TextParser::getValue(const std::string& label,std::string& value
 	    TextParserErrorHandler(ret, label);
       }
     }
-    
+
   } catch (std::exception ex) {
     ret = TextParserErrorHandler(TP_GET_PARAMETER_ERROR, "");
   }
 
   return ret;
-    
+
 
 }
 
@@ -367,11 +371,11 @@ TextParserError TextParser::currentNode(std::string& returner)
  */
 
 TextParserError TextParser::getNodes(std::vector<std::string>& node_list,int oswitch){
-  
+
   TextParserError ret = TP_NO_ERROR;
-  
+
   try {
-    
+
     if (!dataTree()->isReady()) {
       ret = TextParserErrorHandler(TP_DATABASE_NOT_READY_ERROR, "");
     } else {
@@ -380,7 +384,7 @@ TextParserError TextParser::getNodes(std::vector<std::string>& node_list,int osw
   } catch (std::exception ex) {
     ret = TextParserErrorHandler(TP_GET_PARAMETER_ERROR, "");
   }
-  
+
   if(oswitch!=0){
     std::vector< std::string> output;
   dataTree()->nodeSort(node_list,output,oswitch);
@@ -422,7 +426,7 @@ char TextParser::convertChar(const std::string& value, int *error)
     } catch (std::exception ex) {
         *error = TextParserErrorHandler(TP_MEMORY_ALLOCATION_ERROR, value);
     }
-  
+
     return returner;
 }
 
@@ -435,7 +439,7 @@ char TextParser::convertChar(const std::string& value, int *error)
 short TextParser::convertShort(const std::string& value, int *error)
 {
     *error = 0;
-    
+
 
     short returner;
     try {
@@ -454,7 +458,7 @@ short TextParser::convertShort(const std::string& value, int *error)
     } catch (std::exception ex) {
         *error = TextParserErrorHandler(TP_MEMORY_ALLOCATION_ERROR, value);
     }
-  
+
     return returner;
 }
 
@@ -487,7 +491,7 @@ int TextParser::convertInt(const std::string& value, int *error)
     } catch (std::exception ex) {
         *error = TextParserErrorHandler(TP_MEMORY_ALLOCATION_ERROR, value);
     }
-  
+
     return returner;
 }
 
@@ -517,7 +521,7 @@ long TextParser::convertLong(const std::string& value, int *error)
     } catch (std::exception ex) {
         *error = TextParserErrorHandler(TP_MEMORY_ALLOCATION_ERROR, value);
     }
-  
+
     return returner;
 }
 
@@ -551,7 +555,7 @@ long long TextParser::convertLongLong(const std::string& value, int *error)
     } catch (std::exception ex) {
         *error = TextParserErrorHandler(TP_MEMORY_ALLOCATION_ERROR, value);
     }
-  
+
     return returner;
 }
 
@@ -585,7 +589,7 @@ float TextParser::convertFloat(const std::string& value, int *error)
     } catch (std::exception ex) {
         *error = TextParserErrorHandler(TP_MEMORY_ALLOCATION_ERROR, value);
     }
-  
+
     return returner;
 }
 
@@ -614,13 +618,13 @@ double TextParser::convertDouble(const std::string& value, int *error)
     } catch (std::exception ex) {
         *error = TextParserErrorHandler(TP_MEMORY_ALLOCATION_ERROR, value);
     }
-  
+
     return returner;
 }
 /** リーフのストリングをboolに変換
  *
- * true : "true"(大文字小文字は関係無し)  
- * false : "false"（大文字小文字は関係無し）  
+ * true : "true"(大文字小文字は関係無し)
+ * false : "false"（大文字小文字は関係無し）
  * 上記を満たさない文字列の場合は、falseを返す。
  *
  * @param[in] value リーフの値（文字列).
@@ -633,7 +637,7 @@ bool TextParser::convertBool(const std::string& value, int *error)
     bool returner=false;
 #ifdef MYDEBUG3
     TP_DBGOSH << "ConvertBool" << " value |" << value << "|"<<std::endl;
-#endif 
+#endif
     std::string tstring="true";
     if(TextParserStringCompare(value,tstring)){
       returner=true;
@@ -696,7 +700,7 @@ TextParserError TextParser::remove()
     } catch (std::exception ex) {
         ret = TextParserErrorHandler(TP_REMOVE_ELEMENT_ERROR, "");
     }
-    
+
     return ret;
 }
 /** ノードの移動
@@ -734,7 +738,7 @@ TextParserError TextParser::getLabels(std::vector<std::string>& labels,int oswit
 {
   //    std::vector<std::string> labels;
     TextParserError ret = TP_NO_ERROR;
-  
+
     try {
         //! インスタンスの取得
         if (!dataTree()->isReady()) {
@@ -754,7 +758,7 @@ TextParserError TextParser::getLabels(std::vector<std::string>& labels,int oswit
     }
     return ret;
     //    *error = ret;
-    
+
     //    return labels;
 }
 
@@ -780,7 +784,7 @@ TextParserError TextParser::updateValue(const std::string& label,const std::stri
  * @return エラーコード
  */
 
-TextParserError TextParser::deleteLeaf(const std::string& label){ 
+TextParserError TextParser::deleteLeaf(const std::string& label){
   TextParserError error=TP_NO_ERROR;
   error = dataTree()->deleteLeaf(label);
   return error;
@@ -808,7 +812,7 @@ TextParserError TextParser::createLeaf(const std::string& label,const std::strin
 /////-------------------------------------------------------
 /////-------------------------------------------------------
 
- // global functions for C API 
+ // global functions for C API
 
 /**
  *  TextParser シングルトンインスタンスへのポインタを取得します。
@@ -817,7 +821,7 @@ TextParserError TextParser::createLeaf(const std::string& label,const std::strin
 
 TP_HANDLE tp_getInstanceSingleton(){
   return static_cast<void*>( TextParser::get_instance_singleton());
-} 
+}
 /**
  * TextParser インスタンスを生成してそのポインタを取得します。
  * @return TextParser オブジェクトへのポインタ
@@ -846,7 +850,7 @@ int tp_deleteInstance(TP_HANDLE tp_hand){
 
 
  /** 入力ファイルを読み込み、各パラメータをtree構造のデータとして格納する。C用API
-  * 
+  *
   * @param[in] tp_hand TextParser オブジェクトハンドル
   * @param[in] cfile 入力ファイル名
   * @return エラーコード、TextParserErrorによる。intで取得。
@@ -862,7 +866,7 @@ int tp_read(TP_HANDLE tp_hand,char* cfile){
 
  /** 入力ファイルを読み込み、各パラメータをtree構造のデータとして格納する。C用API
   *  すべてのランクで指定されたファイルを読み込む。
-  * 
+  *
   * @param[in] tp_hand TextParser オブジェクトハンドル
   * @param[in] cfile 入力ファイル名
   * @return エラーコード、TextParserErrorによる。intで取得。
@@ -876,7 +880,7 @@ int tp_read_local(TP_HANDLE tp_hand,char* cfile){
 }
 
  /** ファイルにデータ構造を格納する。C用API
-  * 
+  *
   * @param[in] tp_hand TextParser オブジェクトハンドル
   * @param[in] cfile 出力ファイル名
   * @return エラーコード、TextParserErrorによる。intで取得。
@@ -890,7 +894,7 @@ int tp_write(TP_HANDLE tp_hand,char* cfile){
 }
 
  /** ファイルにデータ構造を破棄する。C用API
-  * 
+  *
   * @param[in] tp_hand TextParser オブジェクトハンドル
   * @return エラーコード、TextParserErrorによる。intで取得。
   */
@@ -956,7 +960,7 @@ int tp_getLabel(TP_HANDLE tp_hand,int ilabel,char* label){
   *
   * @param[in] tp_hand TextParser オブジェクトハンドル
   * @param[in] label typeを取得するラベル
-  * @param[out] value 値 
+  * @param[out] value 値
   * @return エラーコード、TextParserErrorによる。intで取得。
   */
 
@@ -992,9 +996,9 @@ int tp_getType(TP_HANDLE tp_hand,char* label,int* type){
 
 int typeToInt(TextParserValueType type){
   int ret=-1;
-  
+
   switch(type){
-    
+
   TP_UNDEFFINED_VALUE:
     ret = 0; break;  //!< 不定
   TP_NUMERIC_VALUE:
@@ -1031,7 +1035,7 @@ char tp_convertChar(TP_HANDLE tp_hand,char* value,int *error){
 
   int int_recieve=tp_ptr->convertInt(svalue,error);
   char returner = int_recieve;
-  //  TP_DBGOSH << __FUNCTION__ << svalue  << " int "<< int_recieve<< " char "<< (int)returner <<std::endl; 
+  //  TP_DBGOSH << __FUNCTION__ << svalue  << " int "<< int_recieve<< " char "<< (int)returner <<std::endl;
   return returner;
 
 }
@@ -1126,7 +1130,7 @@ double tp_convertDouble(TP_HANDLE tp_hand,char* value,int *error){
 
 /** パラメータの値を文字列から bool型をint 型の形式で変換します。C用API.
  *
- * true --> 1 
+ * true --> 1
  * false --> 0
  *
  * @param[in] tp_hand TextParser オブジェクトハンドル
@@ -1147,7 +1151,7 @@ int tp_convertBool(TP_HANDLE tp_hand, char* value,int *error){
  *
  * @param[in] tp_hand TextParser オブジェクトハンドル
  * @param[in] vector_value ベクトル型の値（文字列）
- * @param[out] nvec 要素数 
+ * @param[out] nvec 要素数
  * @return エラーコード、TextParserErrorによる。intで取得。
  *
  */
@@ -1257,7 +1261,7 @@ int tp_getNumberOfCLeaves(TP_HANDLE tp_hand,int* nleaves){
 }
 
  /** カレントノードにあるインデックスで指定したノードのラベルを取得します。C用API
-  * 
+  *
   * @param[in] tp_hand TextParser オブジェクトハンドル
   * @param[in] inode ノードのインデックス
   * @param[out] node ノードのラベル
@@ -1274,7 +1278,7 @@ int tp_getIthNode(TP_HANDLE tp_hand,int inode,char* node){
   return error;
 }
  /** カレントノードにあるインデックスで指定したノードのラベルを取得します。C用API
-  * 
+  *
   * @param[in] tp_hand TextParser オブジェクトハンドル
   * @param[in] inode ノードのインデックス
   * @param[out] node ノードのラベル
@@ -1294,7 +1298,7 @@ int tp_getIthNodeOrder(TP_HANDLE tp_hand,int inode,char* node,int order){
 }
 
  /** カレントノードにあるインデックスで指定したリーフを取得します。C用API
-  * 
+  *
   * @param[in] tp_hand TextParser オブジェクトハンドル
   * @param[in] ileaf リーフのインデックス
   * @param[out] leaf リーフのラベル
@@ -1311,7 +1315,7 @@ int tp_getIthLeaf(TP_HANDLE tp_hand,int ileaf,char* leaf){
 }
 
  /** カレントノードにあるインデックスで指定したリーフを取得します。C用API
-  * 
+  *
   * @param[in] tp_hand TextParser オブジェクトハンドル
   * @param[in] ileaf リーフのインデックス
   * @param[out] leaf リーフのラベル
@@ -1443,7 +1447,7 @@ int tp_get_instance_singleton_fort_(long* ptr){
   *ptr = reinterpret_cast<long>(TextParser::get_instance_singleton());
   int error=TP_NO_ERROR;
   return error;
-} 
+}
 /** TextParser インスタンスを生成してそのポインタを取得します。  Fortran 用API
  *
  * @param[out] ptr
@@ -1499,7 +1503,7 @@ int tp_read_local_fort_(long* ptr,char* file,int* length){
 /** パラメータをファイルに書き出す.　Fortran用API
  *
  * @param[in] file ファイル名
- * @param[in] length ファイル名の長さ 
+ * @param[in] length ファイル名の長さ
  * @return エラーコード、TextParserErrorによる。intで取得。
  */
 int tp_write_fort_(long* ptr,char* file,int* length){
@@ -1602,9 +1606,9 @@ int tp_get_type_fort_(long* ptr,char* label,int* type,int* label_length){
  */
 
 char tp_convert_char_fort_(long* ptr,char* value,int *error,int* value_length){
-  
+
   return tp_convertChar(reinterpret_cast<void*>(*ptr),value,error);
-  
+
 }
 
 /** パラメータの値を文字列から short 型へ変換します。fortran 用API.
@@ -1631,8 +1635,8 @@ short tp_convert_short_fort_(long* ptr,char* value,
 int tp_convert_int_fort_(long* ptr,char* value,
 			 int *error,int* value_length){
   return tp_convertInt(reinterpret_cast<void*>(*ptr),value,error);
-  
-} 
+
+}
 
 /** パラメータの値を文字列から long 型へ変換します。fortran 用API.
  *
@@ -1645,7 +1649,7 @@ int tp_convert_int_fort_(long* ptr,char* value,
 long tp_convert_long_fort_(long* ptr,char* value,
 			  int *error,int* value_length){
   return tp_convertLong(reinterpret_cast<void*>(*ptr),value,error);
-} 
+}
 
 /** パラメータの値を文字列から long long 型へ変換します。fortran 用API.
  *
@@ -1700,14 +1704,14 @@ int tp_convert_logical_fort_(long* ptr,char* value,
 /** ベクトル型の値の要素数を取得する。Fortrean用API.
  *
  * @param[in] vector_value ベクトル型の値（文字列）
- * @param[out] nvec 要素数 
+ * @param[out] nvec 要素数
  * @param[in] vector_length 文字列長
  * @return エラーコード、TextParserErrorによる。intで取得。
  *
  */
 int tp_get_number_of_elements_fort_(long* ptr,char* vector_value,unsigned int* nvec,int* vector_length){
   return tp_getNumberOfElements(reinterpret_cast<void*>(*ptr),vector_value,nvec);
-} 
+}
 
 
 /** 指定したindexのベクトル型の値の要素を取得する. Fortran用API.
@@ -1735,14 +1739,14 @@ int tp_get_ith_element_fort_(long* ptr,char* vector_value,
   for(i=0;i<strlen(tmp_velem);++i){
     velem[i]=tmp_velem[i];
   }
-  
+
 
   return error;
 
 }
 
 
-  // 
+  //
   //カレントノードの取得、ノードの移動 fortran　用 API
 
 
@@ -1838,7 +1842,7 @@ int tp_create_leaf_fort_(long* ptr,char* label,char*value,
 
 
 
-// moved to TextParser class. 30th-July-2012 
+// moved to TextParser class. 30th-July-2012
 /** エラーメッセージを表示する
  *
  * @param[in] error_code エラーコード
@@ -1848,10 +1852,10 @@ int tp_create_leaf_fort_(long* ptr,char* label,char*value,
  */
 TextParserError TextParser::TextParserErrorHandler(const TextParserError error_code, const std::string& sub_message)
 {
-#ifdef MYDEBUG    
+#ifdef MYDEBUG
   TP_DBGOSH<< "TextParserErrorHandler() start"<<std::endl;
   TP_DBGOSH<< "error_code " <<error_code <<" submessage " <<sub_message<< std::endl;
-#endif // MYDEBUG    
+#endif // MYDEBUG
 
 
   if (error_code > TP_NO_ERROR) {
@@ -2006,16 +2010,16 @@ TextParserError TextParser::TextParserErrorHandler(const TextParserError error_c
   }
 
 
-#ifdef MYDEBUG    
+#ifdef MYDEBUG
   TP_DBGOSH<< "TextParserErrorHandler() end"<<std::endl;
-#endif // MYDEBUG    
+#endif // MYDEBUG
 
   return error_code;
 }
 
-// @range 
+// @range
 /** 範囲指定 @range で指定された値を取得します。
- *  
+ *
  *　@param[in] value 値の文字列(@range 型)
  *　@param[out] from 範囲の始点
  *　@param[out] to 　範囲の終点
@@ -2033,25 +2037,25 @@ TextParserError TextParser::splitRange(const std::string & value,
 
     TextParserError ret = TP_NO_ERROR;
     std::string vcopy = value;
- 
+
     int pos = vcopy.find("@range");
     if(pos==std::string::npos) {
-      ret = TextParserErrorHandler(TP_ILLEGAL_VALUE_TYPE_ERROR, vcopy);      
+      ret = TextParserErrorHandler(TP_ILLEGAL_VALUE_TYPE_ERROR, vcopy);
       return ret;
-    } 
+    }
 
     pos = vcopy.find("(");
     if(pos==std::string::npos) {
-      ret = TextParserErrorHandler(TP_ILLEGAL_VALUE_TYPE_ERROR, vcopy);      
+      ret = TextParserErrorHandler(TP_ILLEGAL_VALUE_TYPE_ERROR, vcopy);
       return ret;
-    } 
+    }
 
     vcopy=vcopy.substr(pos);
     //    TP_DBGOSH << __func__ << " pos " << pos << " vcopy " <<vcopy << std::endl;
     std::vector<std::string> string_content;
     ret = splitVector(vcopy,string_content);
     int ierror;
-   
+
     if(string_content.size()==2||string_content.size()==3){
       *from=convertDouble(string_content[0],&ierror);
       if(ierror != 0) ret = (TextParserError) ierror;
@@ -2091,7 +2095,7 @@ TextParserError TextParser::expandRange(const std::string & value,
 
   double element=from;
   double sign = 1.0;
-  if(from > to) { 
+  if(from > to) {
     if(step<0){
       sign = -1;
     } else {
@@ -2121,7 +2125,7 @@ TextParserError TextParser::expandRange(const std::string & value,
 
   return TP_NO_ERROR;
 }
-  
+
 /** 範囲指定 @list で指定された値を展開します。
  *
  *　@param[in] value 値の文字列(@list 型)
@@ -2135,18 +2139,18 @@ TextParserError TextParser::splitList(const std::string & value,std::vector<doub
 				      TextParserSortOrder order){
     TextParserError ret = TP_NO_ERROR;
     std::string vcopy = value;
- 
+
     int pos = vcopy.find("@list");
     if(pos==std::string::npos) {
-      ret = TextParserErrorHandler(TP_ILLEGAL_VALUE_TYPE_ERROR, vcopy);      
+      ret = TextParserErrorHandler(TP_ILLEGAL_VALUE_TYPE_ERROR, vcopy);
       return ret;
-    } 
+    }
 
     pos = vcopy.find("(");
     if(pos==std::string::npos) {
-      ret = TextParserErrorHandler(TP_ILLEGAL_VALUE_TYPE_ERROR, vcopy);      
+      ret = TextParserErrorHandler(TP_ILLEGAL_VALUE_TYPE_ERROR, vcopy);
       return ret;
-    } 
+    }
 
     vcopy=vcopy.substr(pos);
     //    TP_DBGOSH << __func__ << " pos " << pos << " vcopy " <<vcopy << std::endl;
@@ -2166,10 +2170,10 @@ TextParserError TextParser::splitList(const std::string & value,std::vector<doub
     switch(order){
 
     case TP_SORT_ASCENDING:
-      std::sort(list.begin(),list.end()); 
+      std::sort(list.begin(),list.end());
       break;
     case TP_SORT_DESCENDING:
-      std::sort(list.begin(),list.end(),std::greater<double>()); 
+      std::sort(list.begin(),list.end(),std::greater<double>());
       break;
     case TP_SORT_NONE:
       break;
@@ -2188,7 +2192,7 @@ TextParserError TextParser::splitList(const std::string & value,std::vector<doub
  *
  */
 
- 
+
 long long TextParser::convertLimitsIntx(const std::string& value,int* ierror){
 
   long long returner;
@@ -2236,7 +2240,7 @@ long long TextParser::convertLimitsIntx(const std::string& value,int* ierror){
  *
  */
 
- 
+
 double TextParser::convertLimitsRealx(const std::string& value,int* ierror){
 
   double returner;
@@ -2267,7 +2271,7 @@ double TextParser::convertLimitsRealx(const std::string& value,int* ierror){
 
 
 // @range @list 用API
-//@range 
+//@range
 int tp_split_range_fort_(long* ptr,char* value,double *from,double *to,double *step, int* nvalue){
   return tp_splitRange(reinterpret_cast<void*>(*ptr),value,from,to,step);
 }
@@ -2289,7 +2293,7 @@ bool TextParser::chkLabel(const std::string label)
 {
   int ierror;
   std::string value;
-  
+
   // ラベルがあるかチェック
   std::vector<std::string> labels;
   ierror=getAllLabels(labels);
@@ -2298,7 +2302,7 @@ bool TextParser::chkLabel(const std::string label)
     //TP_ERROSH << __func__ << " getAllLabels(" << label << ") failed." << std::endl;
     return false;
   }
-  
+
   int flag=0;
   for (int i = 0; i < labels.size(); i++)
   {
@@ -2308,7 +2312,7 @@ bool TextParser::chkLabel(const std::string label)
       break;
     }
   }
-  
+
   if (flag==0)
   {
     //TP_ERROSH << __func__ << " label:" << label << " is not available." << std::endl;
@@ -2325,7 +2329,7 @@ bool TextParser::chkNode(const std::string label)
   std::string node;
   std::vector<std::string> labels;
   int len=label.length();
-  
+
   // Nodeがあるかチェック
   ierror = getAllLabels(labels);
   if (ierror != 0)
@@ -2333,7 +2337,7 @@ bool TextParser::chkNode(const std::string label)
     //TP_ERROSH << __func__ << " getAllLabels(" << label << ") failed." << std::endl;
     return false;
   }
-  
+
   int flag=0;
   for (int i = 0; i < labels.size(); i++) {
 	  node = labels[i].substr(0,len);
@@ -2343,7 +2347,7 @@ bool TextParser::chkNode(const std::string label)
       break;
     }
   }
-  
+
   if (flag==0)
   {
     //TP_ERROSH << __func__ << " label:" << label << " is not available." << std::endl;
@@ -2362,16 +2366,16 @@ int TextParser::countLabels(const std::string label)
   int flag=0;
   int inode=0;
   int next=0;
-  
+
   // Nodeがあるかチェック
   ierror=getAllLabels(labels);
   if (ierror != 0){
     return -1;
   }
-  
+
   for (int i = 0; i < labels.size(); i++) {
     node=labels[i].substr(0,len);
- 
+
     if( !strcasecmp(node.c_str(), label.c_str()) ){
       str=labels[i].substr(len+1);
       next=str.find("/");
@@ -2395,7 +2399,7 @@ bool TextParser::getNodeStr(const std::string label, const int nnode, std::strin
   int flag=0;
   int inode=0;
   int next=0;
-  
+
   std::string node;
   std::string str;
   std::string chkstr="";
@@ -2407,7 +2411,7 @@ bool TextParser::getNodeStr(const std::string label, const int nnode, std::strin
   {
     return false;
   }
-  
+
   for (int i = 0; i < labels.size(); i++) {
     node = labels[i].substr(0, len);
     if ( !strcasecmp(node.c_str(), label.c_str()) )
@@ -2517,37 +2521,37 @@ bool TextParser::getInspectedVector(const std::string label, float *vec, const i
 {
   int ierr = TP_NO_ERROR;
   std::string value;
-  
+
   // ラベルがあるかチェック
   if( !chkLabel(label)){
     return false;
   }
-  
+
   // get value
   if ( (ierr = getValue(label, value)) != TP_NO_ERROR )
   {
     return false;
   }
-  
+
   // get type
   TextParserValueType type = getType(label, &ierr);
   if( ierr != TP_NO_ERROR ) return false;
   if( type != TP_VECTOR_NUMERIC ) return false;
-  
+
   // split
   std::vector<std::string> vec_value;
   if( (ierr = splitVector(value, vec_value)) != TP_NO_ERROR ) return false;
-  
+
   // check number of vector element
   if( vec_value.size() != nvec ) return false;
-  
+
   // string to real
   for(int i=0; i<vec_value.size(); i++ )
   {
     vec[i] = convertFloat(vec_value[i], &ierr);
     if( ierr != TP_NO_ERROR ) return false;
   }
-  
+
   return true;
 }
 
@@ -2592,7 +2596,7 @@ bool TextParser::getInspectedValue(const std::string label, int &ct )
 {
   int ierror;
   std::string value;
-  
+
   // ラベルがあるかチェック
   if( !chkLabel(label)){
 	  return false;
@@ -2674,28 +2678,28 @@ bool TextParser::getInspectedValue(const std::string label, std::string &ct )
 {
   int ierror;
   std::string value;
-  
+
   // ラベルがあるかチェック
   if ( !chkLabel(label) )
   {
     return false;
   }
-  
+
   //値の取得
   ierror = getValue(label, value); //labelは絶対パスを想定
-  
+
   if (ierror != TP_NO_ERROR)
   {
     return false;
   }
-  
+
   //型の取得
   TextParserValueType type = getType(label, &ierror);
   if (ierror != TP_NO_ERROR)
   {
     return false;
   }
-  
+
   if( type != TP_STRING_VALUE )
   {
     return false;
@@ -2710,9 +2714,9 @@ bool TextParser::getInspectedValue(const std::string label, std::string &ct )
 bool TextParser::getLabelVector(const std::string root, std::vector<std::string>& nodes)
 {
   if ( changeNode(root) ) return false; // 0 - no error
-  
+
   getNodes(nodes, 2);
-  
+
   return true;
 }
 
@@ -2765,7 +2769,7 @@ int TextParser::getArrayLabels(const std::string label, std::vector<std::string>
 #endif
     return -1;
   }
-  
+
   for (int i = 0; i < all_labels.size(); i++) {
     // 正規表現で一致したラベルのみ
 #ifdef USE_CPP11
@@ -2797,4 +2801,3 @@ int TextParser::getArrayLabels(const std::string label, std::vector<std::string>
 #endif
   return count;
 }
-

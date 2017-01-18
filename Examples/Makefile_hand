@@ -4,7 +4,10 @@
 # Copyright (C) 2012-2015 Institute of Industrial Science, The University of Tokyo.
 # All rights reserved.
 #
-# Copyright (c) 2014-2015 Advanced Institute for Computational Science, RIKEN.
+# Copyright (c) 2014-2016 Advanced Institute for Computational Science, RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology, Kyushu University.
 # All rights reserved.
 #
 
@@ -16,7 +19,7 @@
 CXXFLAGS+=-I../include
 CXXLDFLAGS+=-L../src -lTP
 CCFLAGS+=-I../include
-CCLDFLAGS+=-L../src -lTP -lstdc++ 
+CCLDFLAGS+=-L../src -lTP -lstdc++
 FCFLAGS+=-I../include
 FCLDFLAGS+=-L../src -lTP_f90api -lTP -lstdc++
 CXXLINKER=$(CXX)
@@ -58,7 +61,7 @@ Example3_cpp.o \
 Example4_cpp.o \
 Example5_cpp.o \
 Example6_cpp.o \
-Example7_cpp.o 
+Example7_cpp.o
 CXXTARGET=$(CXXOBJS:.o=)
 
 COBJS=Example1_c.o \
@@ -77,8 +80,8 @@ Example5_f90.o \
 Example7_f90.o
 FTARGET=$(FOBJS:.o=)
 
-#all: $(CXXTARGET) $(CTARGET)  $(FTARGET) 
-all: $(CXXTARGET) $(CTARGET) 
+#all: $(CXXTARGET) $(CTARGET)  $(FTARGET)
+all: $(CXXTARGET) $(CTARGET)
 
 
 Example1_cpp:Example1_cpp.o
@@ -102,7 +105,7 @@ Example1_c:Example1_c.o
 Example2_c:Example2_c.o
 	$(CCLINKER) -o $@ $^ $(CCLDFLAGS)
 Example3_c:Example3_c.o
-	$(CCLINKER) -o $@ $^ $(CCLDFLAGS) 
+	$(CCLINKER) -o $@ $^ $(CCLDFLAGS)
 Example4_c:Example4_c.o
 	$(CCLINKER) -o $@ $^ $(CCLDFLAGS)
 Example5_c:Example5_c.o
@@ -126,7 +129,7 @@ Example7_f90:Example7_f90.o
 
 mpi:Example3_cpp_mpi
 
-f90api: $(FTARGET) 
+f90api: $(FTARGET)
 
 Example3_cpp_mpi:Example3_cpp_mpi.cpp
 	$(MPICXX) -DENABLE_MPI -o $@ $^  -I ../include -L../src -lTP_mpi -lstdc++

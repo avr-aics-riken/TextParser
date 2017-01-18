@@ -5,7 +5,10 @@
 # Copyright (C) 2012-2015 Institute of Industrial Science, The University of Tokyo.
 # All rights reserved.
 #
-# Copyright (c) 2014-2015 Advanced Institute for Computational Science, RIKEN.
+# Copyright (c) 2014-2016 Advanced Institute for Computational Science, RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology, Kyushu University.
 # All rights reserved.
 #
 ###################################################################################
@@ -18,15 +21,13 @@
 1. 動作環境
   Python 2.7のLinux, cygwin, mac OSX環境で動作確認をしています。
 
-  windowsのネイティブ環境ではTextParser本体のビルドに失敗したため、
-  ラッパールーチンの作者の環境では動作させることができませんでしたが、
-  OS固有の機能には依存していないので、TextParaerとpython2が動く環境であれば
-  Linuxに限らず動作するはずです。
+  windowsのネイティブ環境では未確認。
+  TextParaerとpython2が動く環境であればLinuxに限らず動作するはず。
 
 
 2. ビルド方法
-  以下のコマンドを実行してください
-  
+  以下のコマンドを実行。
+
     > python setup.py install --prefix={PATH_TO_INSTALL}
 
   python2系列がpython2という名前でインストールされている環境では
@@ -44,7 +45,7 @@
     ・getInspectedVector()
   また、 C版のinstance生成/削除, シングルトン版instance取得関数 に相当するメソッドも
   対応しています。
-  
+
 
 5. エラーコードについて
   TextParserの内部でエラーが発生した場合は、ライブラリ内でエラーメッセージを出力するので

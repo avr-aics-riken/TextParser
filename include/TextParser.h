@@ -5,8 +5,12 @@
  * Copyright (C) 2012-2015 Institute of Industrial Science, The University of Tokyo.
  * All rights reserved.
  *
- * Copyright (c) 2014-2015 Advanced Institute for Computational Science, RIKEN.
+ * Copyright (c) 2014-2016 Advanced Institute for Computational Science, RIKEN.
  * All rights reserved.
+ *
+ * Copyright (c) 2016-2017 Research Institute for Information Technology, Kyushu University.
+ * All rights reserved.
+ *
  */
 
 /** @file TextParser.h
@@ -50,7 +54,7 @@
 
 class TextParserTree;
 
-/** 
+/**
  * @class TextParser TextParser.h
  * @brief TextParserライブラリのAPIクラス TextParser が定義されています.
  * パラメータのファイルからの読み込み、
@@ -72,7 +76,7 @@ public:
 public:
   TextParserError read(const std::string& file); //!< file からパラメータを読み込みます。MPI利用時は、rank数=0 のプロセスでのみファイル内容を読み込み、各ノードに分配後、各ノードでパラメータの解析を行います。
 public:
-  TextParserError read_local(const std::string& file); //!< MPI利用時に各ノードがそれぞれのファイルからパラメータを読み込みます。 MPIを利用しない場合は、エラーを返します。  
+  TextParserError read_local(const std::string& file); //!< MPI利用時に各ノードがそれぞれのファイルからパラメータを読み込みます。 MPIを利用しない場合は、エラーを返します。
 public:
   TextParserError write(const std::string& file,int order=0); //!< file にパラメータのデータ構造全体を書き込みます。
 public:
@@ -83,7 +87,7 @@ public:
 public:
   TextParserError getAllLabels(std::vector<std::string>& labels);//!< 格納されているパラメータへの(リーフへの)全てのラベルを取得します。
 public:
-  TextParserValueType getType(const std::string& label, int *error);//!<ラベルで示されるパラメータの値のタイプを返します。（TextParserError参照） 
+  TextParserValueType getType(const std::string& label, int *error);//!<ラベルで示されるパラメータの値のタイプを返します。（TextParserError参照）
 public:
   TextParserError getValue(const std::string& label,std::string& value);//!< ラベルで示されるパラメータの値を取得します。
 public:
@@ -105,21 +109,21 @@ public:
 
   //convertion funcitons for value string you obtained.
 public:
-  char convertChar(const std::string& value, int *error); //!< パラメータの値を文字列から char 型へ変換します。 
+  char convertChar(const std::string& value, int *error); //!< パラメータの値を文字列から char 型へ変換します。
 public:
-  short convertShort(const std::string& value, int *error);//!< パラメータの値を文字列から short 型へ変換します。 
+  short convertShort(const std::string& value, int *error);//!< パラメータの値を文字列から short 型へ変換します。
 public:
-  int convertInt(const std::string& value, int *error); //!< パラメータの値を文字列から int 型へ変換します。 
+  int convertInt(const std::string& value, int *error); //!< パラメータの値を文字列から int 型へ変換します。
 public:
-  long convertLong(const std::string& value, int *error); //!< パラメータの値を文字列から long 型へ変換します。 
+  long convertLong(const std::string& value, int *error); //!< パラメータの値を文字列から long 型へ変換します。
 public:
-  long long convertLongLong(const std::string& value, int *error);//!< パラメータの値を文字列から long long 型へ変換します。 
+  long long convertLongLong(const std::string& value, int *error);//!< パラメータの値を文字列から long long 型へ変換します。
 public:
-  float convertFloat(const std::string& value, int *error);//!< パラメータの値を文字列から float 型へ変換します。 
+  float convertFloat(const std::string& value, int *error);//!< パラメータの値を文字列から float 型へ変換します。
 public:
-  double convertDouble(const std::string& value, int *error);//!< パラメータの値を文字列から double 型へ変換します。 
+  double convertDouble(const std::string& value, int *error);//!< パラメータの値を文字列から double 型へ変換します。
 public:
-  bool convertBool(const std::string& value, int *error);//!< パラメータの値を文字列から bool 型へ変換します。 
+  bool convertBool(const std::string& value, int *error);//!< パラメータの値を文字列から bool 型へ変換します。
 public:
   TextParserError splitVector(const std::string& vector_value,
 			      std::vector<std::string>& velem );//!<ベクトル値を分割する。
@@ -139,7 +143,7 @@ public:
 public:
   TextParserError createLeaf(const std::string& label,const std::string& value); //!< パラメータリーフ追加
 
-  // @range 
+  // @range
 public:
   TextParserError splitRange(const std::string & value,
 			     double *from,double *to,double *step);
@@ -147,20 +151,20 @@ public:
 public:
   TextParserError expandRange(const std::string & value,
 			      std::vector<double>& expanded);
-  
+
   // @list
 public:
   TextParserError splitList(const std::string & value,std::vector<double>& list,
 			    TextParserSortOrder order=TP_SORT_NONE);
 
-  
+
   /**
    * @brief バージョン番号の文字列を返す
    */
 public:
   std::string getVersionInfo()
   {
-    std::string str(TP_VERSION_NO);
+    std::string str(TP_VERSION);
     return str;
   }
 
@@ -173,7 +177,7 @@ public:
    */
 public:
 	bool getInspectedVector(const std::string label, int *vec, const int nvec );
-  
+
   /**
    * @brief 指定ラベルのベクトル値を取得する（double型）
    * @param [in]  label  取得するベクトルのラベル（絶対パス）
@@ -183,8 +187,8 @@ public:
    */
 public:
 	bool getInspectedVector(const std::string label, double *vec, const int nvec );
-  
-  
+
+
   /**
    * @brief 指定ラベルのベクトル値を取得する（float型）
    * @param [in]  label  取得するベクトルのラベル（絶対パス）
@@ -194,8 +198,8 @@ public:
    */
 public:
 	bool getInspectedVector(const std::string label, float *vec, const int nvec );
-  
-  
+
+
   /**
    * @brief 指定ラベルのベクトル値を取得する（文字列型）
    * @param [in]  label  取得するベクトルのラベル（絶対パス）
@@ -205,7 +209,7 @@ public:
    */
 public:
 	bool getInspectedVector(const std::string label, std::string *vec, const int nvec );
-  
+
   /**
    * @brief 指定ラベルの変数を取得する（整数型）
    * @param [in]  label 取得する変数のラベル（絶対パス）
@@ -214,7 +218,7 @@ public:
    */
 public:
 	bool getInspectedValue(const std::string label, int &ct );
-  
+
   /**
    * @brief 指定ラベルの変数を取得する（double実数型）
    * @param [in]  label 取得する変数のラベル（絶対パス）
@@ -223,7 +227,7 @@ public:
    */
 public:
 	bool getInspectedValue(const std::string label, double &ct );
-  
+
   /**
    * @brief 指定ラベルの変数を取得する（float実数型）
    * @param [in]  label 取得する変数のラベル（絶対パス）
@@ -232,7 +236,7 @@ public:
    */
 public:
 	bool getInspectedValue(const std::string label, float &ct );
-  
+
   /**
    * @brief 指定ラベルの変数を取得する（文字列型）
    * @param [in]  label 取得する変数のラベル（絶対パス）
@@ -241,8 +245,8 @@ public:
    */
 public:
 	bool getInspectedValue(const std::string label, std::string &ct );
-  
-  
+
+
   /**
    * @brief ラベルリストを作成し，重複をチェックする
    * @param [in] root  テストするパラメータディレクトリ
@@ -250,8 +254,8 @@ public:
    */
 public:
   bool getLabelVector(const std::string root, std::vector<std::string>& nodes);
-  
-	
+
+
   /**
    * @brief ラベルの有無をチェック
    * @param [in] label チェックするラベル（絶対パス）
@@ -259,7 +263,7 @@ public:
    */
 public:
 	bool chkLabel(const std::string label);
-  
+
   /**
    * @brief ノードの有無をチェック
    * @param [in] label チェックするノード（絶対パス）
@@ -267,7 +271,7 @@ public:
    */
 public:
 	bool chkNode(const std::string label);
-  
+
   /**
    * @brief ノード以下のnnode番目の文字列を取得する
    * @param [in]  label ノードの絶対パス
@@ -277,7 +281,7 @@ public:
    */
 public:
 	bool getNodeStr(const std::string label, const int nnode, std::string &ct);
-  
+
   /**
    * @brief 指定ノード直下のラベルの数を数える
    * @param [in] label ラベルを数えるノードの絶対パス
@@ -303,7 +307,7 @@ private:
   TextParserTree* _data_tree; //!< パラメータデータ構造へのポインタ。
 
  public:
-   TextParser(); //!< デフォルトコンストラクタ 
+   TextParser(); //!< デフォルトコンストラクタ
  public:
   ~TextParser();//!< デストラクタ。パラメータデータ構造を消去します。
  public:
@@ -316,7 +320,7 @@ private:
 #endif /* __cplusplus */
 
 
-// C / Fortran 用　API 関数 
+// C / Fortran 用　API 関数
 
 #ifdef __cplusplus
 extern "C" {
@@ -346,11 +350,11 @@ extern "C" {
   short tp_convertShort(TP_HANDLE tp_hand,char* value,
 			int *error);//!< パラメータの値を文字列から short 型へ変換します。 C用API.
   int tp_convertInt(TP_HANDLE tp_hand,char* value,
-		    int *error); //!< パラメータの値を文字列から int 型へ変換します。C用API. 
+		    int *error); //!< パラメータの値を文字列から int 型へ変換します。C用API.
   long tp_convertLong(TP_HANDLE tp_hand,char* value,
 		      int *error); //!< パラメータの値を文字列から long 型へ変換します。 C用API.
   long long tp_convertLongLong(TP_HANDLE tp_hand,char* value,
-			       int *error);//!< パラメータの値を文字列から long long 型へ変換します。C用API. 
+			       int *error);//!< パラメータの値を文字列から long long 型へ変換します。C用API.
   float tp_convertFloat(TP_HANDLE tp_hand,char* value,
 			int *error);//!< パラメータの値を文字列から float 型へ変換します。 C用API.
   double tp_convertDouble(TP_HANDLE tp_hand,char* value,
@@ -381,7 +385,7 @@ extern "C" {
 
   //
   // @range @list 用API
-  //@range 
+  //@range
   int tp_splitRange(TP_HANDLE tp_hand,char* value,double *from,double *to,double *step);
   int tp_expandRange(TP_HANDLE tp_hand,char* value,double* expanded);
     // @list
@@ -396,13 +400,13 @@ extern "C" {
 
   int tp_read_fort_(long* ptr,char* file,int* length);//!< file からパラメータを読み込みます. Fortran用API.
   int tp_read_local_fort_(long* ptr,char* file,int* length);//!< file からパラメータを読み込みます. Fortran用API.
-  int tp_write_fort_(long* ptr,char* file,int* length);//!< file にパラメータのデータ構造全体を書き込みます. Fortran用API. 
-  int tp_remove_fort_(long* ptr);//!< 格納しているパラメータのデータを破棄します。 Fortran用API. 
-  int tp_get_number_of_leaves_fort_(long* ptr,int* nleaves );//!< リーフの総数を取得します。 Fortran用API. 
-  int tp_get_label_fort_(long* ptr,int* ileaf,char* label,int* length);//!< インデックスで指定したリーフのラベルを取得します。 Fortran用API. 
+  int tp_write_fort_(long* ptr,char* file,int* length);//!< file にパラメータのデータ構造全体を書き込みます. Fortran用API.
+  int tp_remove_fort_(long* ptr);//!< 格納しているパラメータのデータを破棄します。 Fortran用API.
+  int tp_get_number_of_leaves_fort_(long* ptr,int* nleaves );//!< リーフの総数を取得します。 Fortran用API.
+  int tp_get_label_fort_(long* ptr,int* ileaf,char* label,int* length);//!< インデックスで指定したリーフのラベルを取得します。 Fortran用API.
 
-  int tp_get_type_fort_(long* ptr,char* label,int* type,int* label_length);//!< ラベルで指定したリーフのタイプを取得します。 Fortran用API. 
-  int tp_get_value_fort_(long* ptr,char* label,char* value,int* label_length,int* value_length);//!< ラベルで指定したリーフの値を取得します。 Fortran用API. 
+  int tp_get_type_fort_(long* ptr,char* label,int* type,int* label_length);//!< ラベルで指定したリーフのタイプを取得します。 Fortran用API.
+  int tp_get_value_fort_(long* ptr,char* label,char* value,int* label_length,int* value_length);//!< ラベルで指定したリーフの値を取得します。 Fortran用API.
 
   // 型変換用関数
   char tp_convert_char_fort_(long* ptr,char* value,
@@ -410,11 +414,11 @@ extern "C" {
   short tp_convert_short_fort_(long* ptr,char* value,
 			int *error,int* value_length);//!< パラメータの値を文字列から short 型へ変換します。 Fortran用API.
   int tp_convert_int_fort_(long* ptr,char* value,
-		     int *error,int* value_length); //!< パラメータの値を文字列から int 型へ変換します。Fortran用API. 
+		     int *error,int* value_length); //!< パラメータの値を文字列から int 型へ変換します。Fortran用API.
   long tp_convert_long_fort_(long* ptr,char* value,
 		      int *error,int* value_length); //!< パラメータの値を文字列から long 型へ変換します。 Fortran用API.
    long long tp_convert_long_long_fort_(long* ptr,char* value,
-  			       int *error,int* value_length);//!< パラメータの値を文字列から long long 型へ変換します。Fortran用API. 
+  			       int *error,int* value_length);//!< パラメータの値を文字列から long long 型へ変換します。Fortran用API.
   float tp_convert_float_fort_(long* ptr,char* value,
 			       int *error,int* value_length);//!< パラメータの値を文字列から float 型へ変換します。 Fortran用API.
   double tp_convert_double_fort_(long* ptr,char* value,
@@ -422,19 +426,19 @@ extern "C" {
   int tp_convert_logical_fort_(long* ptr,char* value,
 		     int *error,int* value_length);//!< パラメータの値を文字列から int 型 でbool型を表現したものへ変換します。 Fortran用API.
   //ベクトル値の操作
-  int tp_get_number_of_elements_fort_(long* ptr,char* vector_value,unsigned int* nvec,int* vector_length); //!<ベクトル値の要素数の取得  Fortran用API. 
-  int tp_get_ith_element_fort_(long* ptr,char* vector_value, int* ivec,char* velem ,int* vector_value_length,int* velem_length);//!<ベクトル値のivec番目の要素を取得する。 Fortran用API. 
+  int tp_get_number_of_elements_fort_(long* ptr,char* vector_value,unsigned int* nvec,int* vector_length); //!<ベクトル値の要素数の取得  Fortran用API.
+  int tp_get_ith_element_fort_(long* ptr,char* vector_value, int* ivec,char* velem ,int* vector_value_length,int* velem_length);//!<ベクトル値のivec番目の要素を取得する。 Fortran用API.
 
   //カレントノードの取得、ノードの移動 fortran　用 API
-  int tp_current_node_fort_(long* ptr,char* label,int* label_length); //!<現在のカレントノードを取得します。 Fortran用API. 
-  int tp_change_node_fort_(long* ptr,char* lable,int* label_length);//!< ラベルで指定したノードをカレントノードにします。 Fortran用API. 
-  int tp_get_number_of_cnodes_fort_(long* ptr,int* nnodes);//!< カレントノードにある子ノードの数を取得します。 Fortran用API. 
-  int tp_get_number_of_cleaves_fort_(long* ptr,int* nleaves);//!< カレントノードにあるリーフの数を取得します。 Fortran用API. 
-  int tp_get_ith_node_fort_(long* ptr,int* inode,char* node,int* node_length);//!< カレントノードにあるinode番目のノードのラベルを取得します。 Fortran用API. 
-  int tp_get_ith_leaf_fort_(long* ptr,int* ileaf,char* leaf,int* leaf_length);//!< カレントノードにあるileaf番目のリーフのラベルを取得します。 Fortran用API. 
+  int tp_current_node_fort_(long* ptr,char* label,int* label_length); //!<現在のカレントノードを取得します。 Fortran用API.
+  int tp_change_node_fort_(long* ptr,char* lable,int* label_length);//!< ラベルで指定したノードをカレントノードにします。 Fortran用API.
+  int tp_get_number_of_cnodes_fort_(long* ptr,int* nnodes);//!< カレントノードにある子ノードの数を取得します。 Fortran用API.
+  int tp_get_number_of_cleaves_fort_(long* ptr,int* nleaves);//!< カレントノードにあるリーフの数を取得します。 Fortran用API.
+  int tp_get_ith_node_fort_(long* ptr,int* inode,char* node,int* node_length);//!< カレントノードにあるinode番目のノードのラベルを取得します。 Fortran用API.
+  int tp_get_ith_leaf_fort_(long* ptr,int* ileaf,char* leaf,int* leaf_length);//!< カレントノードにあるileaf番目のリーフのラベルを取得します。 Fortran用API.
 
-  int tp_get_ith_node_order_fort_(long* ptr,int* inode,char* node,int* order,int* node_length);//!< カレントノードにあるinode番目のノードのラベルを取得します。 Fortran用API. 
-  int tp_get_ith_leaf_order_fort_(long* ptr,int* ileaf,char* leaf,int* order,int* leaf_length);//!< カレントノードにあるileaf番目のリーフのラベルを取得します。 Fortran用API. 
+  int tp_get_ith_node_order_fort_(long* ptr,int* inode,char* node,int* order,int* node_length);//!< カレントノードにあるinode番目のノードのラベルを取得します。 Fortran用API.
+  int tp_get_ith_leaf_order_fort_(long* ptr,int* ileaf,char* leaf,int* order,int* leaf_length);//!< カレントノードにあるileaf番目のリーフのラベルを取得します。 Fortran用API.
 
   // tree modify 用関数　Fortran API 用関数
   int tp_update_value_fort_(long* ptr,char* label,char* value,
@@ -445,7 +449,7 @@ extern "C" {
 			    int* n_label,int* n_value); //!< リーフを作成する.
 
  // @range @list 用API
-  //@range 
+  //@range
   int tp_split_range_fort_(long* ptr,char* value,double *from,double *to,double *step,
 			   int* nvalue);
   int tp_expand_range_fort_(long* ptr,char* value,double* expanded,int* nvalue);
@@ -458,5 +462,3 @@ extern "C" {
 #endif /*__cplusplus*/
 
 #endif // __TEXTPARSER_H__
-
-

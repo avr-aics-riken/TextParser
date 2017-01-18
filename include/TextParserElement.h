@@ -1,12 +1,16 @@
-// -*- mode : c++ -*- 
+// -*- mode : c++ -*-
 /*
  * TextParser - Text Parsing Library
  *
  * Copyright (C) 2012-2015 Institute of Industrial Science, The University of Tokyo.
  * All rights reserved.
  *
- * Copyright (c) 2014-2015 Advanced Institute for Computational Science, RIKEN.
+ * Copyright (c) 2014-2016 Advanced Institute for Computational Science, RIKEN.
  * All rights reserved.
+ *
+ * Copyright (c) 2016-2017 Research Institute for Information Technology, Kyushu University.
+ * All rights reserved.
+ *
  */
 
 /** @file TextParserElement.h
@@ -41,9 +45,9 @@ class TextParserValue;
 class TextParserElement
 {
 public:
-  //  TextParserElement(TextParserTree* tpt_ptr=TextParser::get_instance_singleton()->dataTree()); 
-  TextParserElement(TextParserTree* tpt_ptr); 
-  TextParserElement(); 
+  //  TextParserElement(TextParserTree* tpt_ptr=TextParser::get_instance_singleton()->dataTree());
+  TextParserElement(TextParserTree* tpt_ptr);
+  TextParserElement();
 
 //private:
 public:
@@ -54,16 +58,16 @@ public:
 
     void setLineN(int nline){_nline=nline;} //!< パラメータファイルでの行数を設定する。
     int line(){return _nline;} //!< パラメータファイルの行数を返す。
-    TextParserTree* owner_tree(){return _tpt_ptr;} //!< 自分が所属する。　TPTree pointer 
+    TextParserTree* owner_tree(){return _tpt_ptr;} //!< 自分が所属する。　TPTree pointer
 
     std::string GetElementAbsolutePath(TextParserElement* element);
     void SetTree(TextParserTree* tp){_tpt_ptr=tp;}
-    TextParserTree* _tpt_ptr; //!< 自分が所属する。　TPTree pointer 
+    TextParserTree* _tpt_ptr; //!< 自分が所属する。　TPTree pointer
 
  private :
     int  _nline; //!< line# in text file.
 
-    
+
  public:
     TextParserError element_node_sort(const std::vector<std::string>& input,
 				      std::vector<std::string>& output,
@@ -117,7 +121,7 @@ public:
     TextParserError setElement(TextParserValue *value);
     TextParserError removeElement();
     TextParserError writeLeaf(std::ostream& ofs,unsigned int level);
-    
+
 
 //private:
 //private:
@@ -146,15 +150,15 @@ public:
  *  @return 値のタイプ
  */
 
-  TextParserValueType value_type(){return _value_type;}; 
+  TextParserValueType value_type(){return _value_type;};
 
   /** 値(string)を返す関数.
    *
    * @return 値（string型）
    */
 
-  std::string value(){return _value;} 
-    
+  std::string value(){return _value;}
+
 };
 
 typedef std::pair<std::string, TextParserNode *> str_node; //!< stringとTextParserNodeのpair
@@ -167,4 +171,3 @@ typedef std::pair<unsigned int, TextParserLeaf *> uint_leaf; //!< unsigned int�
 
 
 #endif //__TEXTPARSER_ELEMENT_H__
-

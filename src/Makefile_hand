@@ -4,7 +4,10 @@
 # Copyright (C) 2012-2015 Institute of Industrial Science, The University of Tokyo.
 # All rights reserved.
 #
-# Copyright (c) 2014-2015 Advanced Institute for Computational Science, RIKEN.
+# Copyright (c) 2014-2016 Advanced Institute for Computational Science, RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology, Kyushu University.
 # All rights reserved.
 #
 
@@ -23,12 +26,12 @@ MPIOBJS2=TextParserTree_mpi.o
 FOBJS=$(FSRCS:.f90=.o)
 ARFLAGS=
 
-.PHONY: all clean mpi 
+.PHONY: all clean mpi
 
 
-all: $(TARGET) 
+all: $(TARGET)
 
-mpi: $(MPITARGET) 
+mpi: $(MPITARGET)
 
 f90api: $(FTARGET)
 
@@ -48,10 +51,10 @@ $(MPITARGET):$(MPIOBJS) $(MPIOBJS2)
 	$(RANLIB) $@
 
 $(FOBJS):$(FSRCS)
-	$(FC) -c $^ -o $@  $(FFLAGS) 
+	$(FC) -c $^ -o $@  $(FFLAGS)
 
 $(MPIOBJS2):$(MPISRCS2)
-	$(MPICXX) -DENABLE_MPI -DBUILD_MPI $(CXXFLAGS) -c $^ -o$@ 
+	$(MPICXX) -DENABLE_MPI -DBUILD_MPI $(CXXFLAGS) -c $^ -o$@
 
 clean:
 	-rm *.o $(TARGET) $(FTARGET) $(MPITARGET)

@@ -5,8 +5,12 @@
  * Copyright (C) 2012-2015 Institute of Industrial Science, The University of Tokyo.
  * All rights reserved.
  *
- * Copyright (c) 2014-2015 Advanced Institute for Computational Science, RIKEN.
+ * Copyright (c) 2014-2016 Advanced Institute for Computational Science, RIKEN.
  * All rights reserved.
+ *
+ * Copyright (c) 2016-2017 Research Institute for Information Technology, Kyushu University.
+ * All rights reserved.
+ *
  */
 
 /** @file TextParserTree.h
@@ -45,16 +49,16 @@ class TextParserValue;
 class TextParserTree{
 
 private:
-  // 
+  //
   TextParser* _owner; //!< 自分自身を持っているTextParserオブジェクトへのポインタ.
 
 public:
   // constructors. not for using.
 
-  //  TextParserTree(const TextParserTree& rhs){} //!< コピーコンストラクタ 
-  //  TextParserTree& operator=(const TextParserTree& rhs); //!< 代入演算子 
+  //  TextParserTree(const TextParserTree& rhs){} //!< コピーコンストラクタ
+  //  TextParserTree& operator=(const TextParserTree& rhs); //!< 代入演算子
 
-  TextParserTree(); //!< デフォルトコンストラクタ 
+  TextParserTree(); //!< デフォルトコンストラクタ
   ~TextParserTree(); //!< デストラクタ
   void status();
 
@@ -76,7 +80,7 @@ private:
   bool _node_open;    //!< ノードの開閉状態
 
 
-  bool _is_ready;    //!< アクセス可否判定フラッグ  
+  bool _is_ready;    //!< アクセス可否判定フラッグ
 
  public:
   //  static TextParserTree* get_instance(); //!< インスタンスの取得
@@ -96,7 +100,7 @@ private:
   unsigned int GetLeafID();//!< リーフ固有のIDを取得
 
 
-  
+
   // these should be private...
   std::string _label;  //!< ルートディレクトリのラベル
   std::map<std::string, TextParserNode *>_nodes; //!< TextParserNodeクラスのキー付き配列
@@ -120,18 +124,18 @@ private:
 
 public:
   unsigned int current_line(){return _current_line;} //!< 入力中のファイルの現在の行
-  
- 
+
+
    // エレメントの追加、削除と取得
-  
+
   TextParserError addElement(TextParserNode *directory);//!< Elementの追加
   TextParserError removeElement();//!< Elementの削除
   TextParserNode *getNode(const std::string& label);//!< ノードの取得
   TextParserError getNode(std::string& label,
 			  TextParserElement *parent_element,
 			  TextParserNode **dirtectory);//!< ノードの取得
-  
-  
+
+
   // tree モディファイ用
   TextParserError updateValue(const  std::string& label,const std::string& value);
   TextParserError deleteLeaf(const std::string& label);
@@ -208,14 +212,14 @@ private:
   TextParserError parseDependenceExpression(TextParserLeaf *leaf);
   TextParserError parseConditionalExpression(std::string& buffer, TextParserBool& result);
   TextParserError parseDependenceValue(std::string& buffer, TextParserBool set);
-  TextParserError resolveConditionalExpression(std::string& label, 
+  TextParserError resolveConditionalExpression(std::string& label,
 					       std::string& value,
 					       TextParserValueType& value_type,
 					       const TextParserBool is_equal,
 					       TextParserBool& result);
   TextParserBool resolveAnd(TextParserBool& left, TextParserBool& right);
   TextParserBool resolveOr(TextParserBool& left, TextParserBool& right);
-  
+
   int array_label_test(const std::string &label,std::string &key);
 
   //helper for @range
@@ -231,12 +235,12 @@ public:
   TextParserError getElementRelativePath (std::string& path, bool add, TextParserElement **parent_element);
 
   TextParserError getElement(const std::string& path_label, const TextParserElementType type, TextParserElement** element);
-  
+
   // original...
-  //  TextParserError getLeafValue(std::string& path, TextParserValue **value); 
-  
+  //  TextParserError getLeafValue(std::string& path, TextParserValue **value);
+
   TextParserError getLeafValue(const std::string &path, TextParserValue **value);
-  
+
   // パラメータの出力
   TextParserError writeParameters(const std::string& filename,int order=0);
   // パラメータの取得
@@ -251,7 +255,7 @@ public:
   TextParserError getCurrentLeafLabels(std::vector<std::string>& labels);
   TextParserError splitVectorValue(const std::string &vector_value,
 				   std::vector<std::string>& values);
-  
+
   // デバッグ表示
     void debugWrite(bool swt);
     void debugWriteValue(const std::string& value, const TextParserValueType& value_type);
@@ -270,7 +274,7 @@ public:
 			   int iswitch);
   TextParserError nodeSort_2(const std::vector<std::string>& input,
 			     std::vector<std::string>& output);
-  
+
 
 // エラー処理 //moved into TextParserTree
   TextParserError TextParserErrorHandler(const TextParserError error_code, const std::string& sub_message);

@@ -4,12 +4,16 @@
  * Copyright (C) 2012-2015 Institute of Industrial Science, The University of Tokyo.
  * All rights reserved.
  *
- * Copyright (c) 2014-2015 Advanced Institute for Computational Science, RIKEN.
+ * Copyright (c) 2014-2016 Advanced Institute for Computational Science, RIKEN.
  * All rights reserved.
+ *
+ * Copyright (c) 2016-2017 Research Institute for Information Technology, Kyushu University.
+ * All rights reserved.
+ *
  */
 
 /** @file Example3_cpp.cpp
- * サンプルプログラム
+ *  @retval 0-success / 1-fail
  */
 #ifdef ENABLE_MPI
 #include "mpi.h"
@@ -32,7 +36,7 @@ int scan_all_parameters(std::string filename)
     std::cout << "filename: " << filename << std::endl;
     ierror=tp->read_local(filename);
     if (ierror != 0) {
-      std::cout <<  "ERROR in TextParser::read  file: " << filename 
+      std::cout <<  "ERROR in TextParser::read  file: " << filename
 	        << " ERROR CODE "<< ierror << std::endl;
         return ierror;
     }
@@ -41,20 +45,20 @@ int scan_all_parameters(std::string filename)
     std::vector<std::string> labels;
     ierror=tp->getAllLabels(labels);
     if (ierror != 0){
-        std::cout <<  "ERROR in TextParser::getAllLabels file: " << filename 
+        std::cout <<  "ERROR in TextParser::getAllLabels file: " << filename
 	        << " ERROR CODE "<< ierror << std::endl;
         return ierror;
     }
 
     for (int i = 0; i < labels.size(); i++) {
         std::cout << i << " " << labels[i] << std::endl;
-	
+
         //std::string value = MGPPGetValue(labels[i], &ierror);
 	std::string value;
 	ierror=tp->getValue(labels[i],value);
 
         if (ierror!=0){
-        std::cout <<  "ERROR in TextParser::getValue file: " << filename 
+        std::cout <<  "ERROR in TextParser::getValue file: " << filename
 		    << " ERROR CODE "<< ierror << std::endl;
             return ierror;
         }
@@ -62,7 +66,7 @@ int scan_all_parameters(std::string filename)
 
         TextParserValueType type = tp->getType(labels[i], &ierror);
         if (ierror != 0){
-            std::cout <<  "ERROR in TextParser::getType file: " << filename 
+            std::cout <<  "ERROR in TextParser::getType file: " << filename
 		        << " ERROR CODE "<< ierror << std::endl;
             return ierror;
         }
@@ -71,49 +75,49 @@ int scan_all_parameters(std::string filename)
         if (type == TP_NUMERIC_VALUE ) {
             char cval = tp->convertChar(value, &ierror);
             if (ierror != 0) {
-                std::cout <<  "ERROR in TextParser::convertChar file: " << filename 
+                std::cout <<  "ERROR in TextParser::convertChar file: " << filename
 		            << " ERROR CODE "<< ierror << std::endl;
                 return ierror;
             }
             std::cout << i << " convert to char: "<< cval << std::endl;
             short sval = tp->convertShort(value, &ierror);
             if (ierror != 0) {
-                std::cout <<  "ERROR in TextParser::convertShort file: " << filename 
+                std::cout <<  "ERROR in TextParser::convertShort file: " << filename
 		            << " ERROR CODE "<< ierror << std::endl;
                 return ierror;
             }
             std::cout << i << " convert to short: "<< sval << std::endl;
             int ival = tp->convertInt(value, &ierror);
             if (ierror != 0) {
-                std::cout <<  "ERROR in TextParser::convertInt file: " << filename 
+                std::cout <<  "ERROR in TextParser::convertInt file: " << filename
 		            << " ERROR CODE "<< ierror << std::endl;
                 return ierror;
             }
             std::cout << i << " convert to int: "<< ival << std::endl;
             long lval = tp->convertLong(value, &ierror);
             if (ierror != 0) {
-                std::cout <<  "ERROR in TextParser::convertLong file: " << filename 
+                std::cout <<  "ERROR in TextParser::convertLong file: " << filename
 		            << " ERROR CODE "<< ierror << std::endl;
                 return ierror;
             }
             std::cout << i << " convert to long: "<< lval << std::endl;
             long long llval = tp->convertLongLong(value, &ierror);
             if (ierror != 0) {
-                std::cout <<  "ERROR in TextParser::convertLongLong file: " << filename 
+                std::cout <<  "ERROR in TextParser::convertLongLong file: " << filename
 		            << " ERROR CODE "<< ierror << std::endl;
                 return ierror;
             }
             std::cout << i << " convert to long long: "<< llval << std::endl;
             float fval = tp->convertFloat(value, &ierror);
             if (ierror != 0) {
-                std::cout <<  "ERROR in TextParser::convertFloat file: " << filename 
+                std::cout <<  "ERROR in TextParser::convertFloat file: " << filename
 		            << " ERROR CODE "<< ierror << std::endl;
                 return ierror;
             }
             std::cout << i << " convert to float: "<< fval << std::endl;
             double dval = tp->convertDouble(value, &ierror);
             if (ierror != 0) {
-                std::cout <<  "ERROR in TextParser::convertDouble file: " << filename 
+                std::cout <<  "ERROR in TextParser::convertDouble file: " << filename
 		            << " ERROR CODE "<< ierror << std::endl;
                 return ierror;
             }
@@ -122,54 +126,54 @@ int scan_all_parameters(std::string filename)
 #ifdef ENABLE_MPI
 		int myrank;
 		MPI_Comm_rank(MPI_COMM_WORLD,&myrank);
-		std::cout << i << " convert to double: "<< dval 
+		std::cout << i << " convert to double: "<< dval
 			  << " myrank "<< myrank<< std::endl;
 #else
 		std::cout << i << " convert to double: "<< dval <<std::endl;
 #endif
-	    
+
         } else if( type == TP_VECTOR_NUMERIC) {
 	  std::vector<std::string> values;
 	    ierror = tp->splitVector(value,values);
             if (ierror != 0) {
-                std::cout <<  "ERROR in TextParser::SplitVector file: " << filename 
+                std::cout <<  "ERROR in TextParser::SplitVector file: " << filename
 		            << " ERROR CODE "<< ierror << std::endl;
                 return ierror;
             }
             for (int j = 0; j < values.size(); j++) {
                 char cval = tp->convertChar(values[j], &ierror);
                 if (ierror != 0){
-                    std::cout <<  "ERROR in TextParser::convertChar file: " << filename 
+                    std::cout <<  "ERROR in TextParser::convertChar file: " << filename
 		                << " ERROR CODE "<< ierror << std::endl;
                 }
                 short sval = tp->convertShort(values[j], &ierror);
                 if (ierror != 0){
-                    std::cout <<  "ERROR in TextParser::convertShort file: " << filename 
+                    std::cout <<  "ERROR in TextParser::convertShort file: " << filename
 		                << " ERROR CODE "<< ierror << std::endl;
                 }
                 int ival = tp->convertInt(values[j], &ierror);
                 if (ierror != 0){
-                    std::cout <<  "ERROR in TextParser::convertInt file: " << filename 
+                    std::cout <<  "ERROR in TextParser::convertInt file: " << filename
 		                << " ERROR CODE "<< ierror << std::endl;
                 }
                 long lval = tp->convertLong(values[j], &ierror);
                 if (ierror != 0){
-                    std::cout <<  "ERROR in TextParser::convertLong file: " << filename 
+                    std::cout <<  "ERROR in TextParser::convertLong file: " << filename
 		                << " ERROR CODE "<< ierror << std::endl;
                 }
                 long long llval = tp->convertLongLong(values[j], &ierror);
                 if (ierror != 0){
-                    std::cout <<  "ERROR in TextParser::convertLongLong file: " << filename 
+                    std::cout <<  "ERROR in TextParser::convertLongLong file: " << filename
 		                << " ERROR CODE "<< ierror << std::endl;
                 }
                 float fval = tp->convertFloat(values[j], &ierror);
                 if (ierror != 0){
-                    std::cout <<  "ERROR in TextParser::convertFloat file: " << filename 
+                    std::cout <<  "ERROR in TextParser::convertFloat file: " << filename
 		                << " ERROR CODE "<< ierror << std::endl;
                 }
                 double dval = tp->convertDouble(values[j], &ierror);
                 if (ierror != 0){
-                    std::cout <<  "ERROR in TextParser::convertDouble file: " << filename 
+                    std::cout <<  "ERROR in TextParser::convertDouble file: " << filename
 		                << " ERROR CODE "<< ierror << std::endl;
                 }
 
@@ -179,7 +183,7 @@ int scan_all_parameters(std::string filename)
 		std::cout <<"myrank " <<myrank << " ";
 #else
 		// do nothing
-#endif		
+#endif
 		std::cout << j << " " << values[j]
 			  << " char: " << cval
 			  << " short: " << sval
@@ -193,10 +197,10 @@ int scan_all_parameters(std::string filename)
             }
 
         } else if (type == TP_VECTOR_STRING) {
-	  std::vector<std::string> values; 
+	  std::vector<std::string> values;
 	  ierror=tp->splitVector(value, values);
             if (ierror != 0){
-                std::cout <<  "ERROR in TextParser::splitVector file: " << filename 
+                std::cout <<  "ERROR in TextParser::splitVector file: " << filename
                     << " ERROR CODE "<< ierror << std::endl;
             }
             for (int j = 0; j < values.size(); j++) {
@@ -209,7 +213,7 @@ int scan_all_parameters(std::string filename)
     // パラメータの削除
     ierror=tp->remove();
     if (ierror != 0) {
-        std::cout <<  "ERROR in TextParser::Remove file: " << filename 
+        std::cout <<  "ERROR in TextParser::Remove file: " << filename
 	        << " ERROR CODE "<< ierror << std::endl;
     }
     std::cout << std::endl;
@@ -220,6 +224,8 @@ int scan_all_parameters(std::string filename)
 int main(int argc, char* argv[])
 {
   int nprocs, myrank;
+  int status = 0;
+
 #ifdef ENABLE_MPI
   MPI_Init(&argc,&argv);
   MPI_Comm_size(MPI_COMM_WORLD,&nprocs);
@@ -235,7 +241,7 @@ int main(int argc, char* argv[])
     filename = "./tpp_examples/correct_label_10.txt";
   }
 
-    scan_all_parameters(filename);
+  if ( scan_all_parameters(filename) ) status=1;
     //    filename = "Input1-1.txt";
     //    scan_all_parameters(filename);
     //    filename = "Input4-1.txt";
@@ -245,6 +251,6 @@ int main(int argc, char* argv[])
 #ifdef ENABLE_MPI
     MPI_Finalize();
 #endif //ENABLE_MPI
-    return 0;
-}
 
+  return (status==0)?0:1;
+}

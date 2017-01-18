@@ -4,8 +4,16 @@
  * Copyright (C) 2012-2015 Institute of Industrial Science, The University of Tokyo.
  * All rights reserved.
  *
- * Copyright (c) 2014-2015 Advanced Institute for Computational Science, RIKEN.
+ * Copyright (c) 2014-2016 Advanced Institute for Computational Science, RIKEN.
  * All rights reserved.
+ *
+ * Copyright (c) 2016-2017 Research Institute for Information Technology, Kyushu University.
+ * All rights reserved.
+ *
+ */
+
+/* @file Example6_cpp.cpp
+ * @retval 0-success / 1-fail
  */
 
 #include <iostream>
@@ -13,6 +21,20 @@
 #include <vector>
 #include "TextParser.h"
 
+int disp(TextParserValueType mtype)
+{
+  int status = 0;
+
+  if(mtype==TP_UNDEFFINED_VALUE) {
+    std::cout << "!!! UNDEF !!!"<< std::endl;
+    status++;
+  }
+  if(mtype==TP_VECTOR_UNDEFFINED) {
+    std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+    status++;
+  }
+  return status;
+}
 
 int main(){
   TextParser* tp=new TextParser;
@@ -21,17 +43,18 @@ int main(){
   int i;
   TextParserError error;
   TextParserValueType type;
-  
 
-file="./tpp_examples/correct_cond_1.txt";
+  int status=0;
+
+
+ file="./tpp_examples/correct_cond_1.txt";
  tp->read(file);
  label="/Average_operation/start_time";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
  std::cout << file << std::endl;
  std::cout << label << " " << type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
  tp->remove();
 
 file="./tpp_examples/correct_cond_2.txt";
@@ -42,15 +65,13 @@ file="./tpp_examples/correct_cond_2.txt";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
  std::cout << label << " " << type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
 
  label="/Average_operation/start_time2";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
  std::cout << label << " " << type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
  tp->remove();
 
 
@@ -63,15 +84,13 @@ file="./tpp_examples/correct_cond_3.txt";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
  std::cout << label << " " << type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
 
  label="/Average_operation/vector1";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
  std::cout << label << " " << type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
  tp->remove();
 
 
@@ -83,29 +102,25 @@ file="./tpp_examples/correct_cond_4.txt";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
  std::cout << label << " " << type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
 
  label="/Average_operation/vector1";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
  std::cout << label << " " << type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
 
  label="/Average_operation/vector2";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
  std::cout << label << " " << type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
 
  label="/Average_operation/vector3";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
  std::cout << label << " " << type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
  tp->remove();
 
 file="./tpp_examples/correct_cond_5.txt";
@@ -117,15 +132,13 @@ file="./tpp_examples/correct_cond_5.txt";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
  std::cout << label << " " << type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
 
  label="/Average_operation/value1";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
  std::cout << label << " " << type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
 
  tp->remove();
 
@@ -136,15 +149,13 @@ file="./tpp_examples/correct_cond_6.txt";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
  std::cout << label << " " << type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
 
  label="/Average_operation/value1";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
  std::cout << label << " " << type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
 
  tp->remove();
 
@@ -156,8 +167,7 @@ file="./tpp_examples/correct_cond_7.txt";
  type = tp->getType(label,&i);
  std::cout << file << std::endl;
  std::cout << label << " " << type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
  tp->remove();
 
 file="./tpp_examples/correct_cond_8.txt";
@@ -169,8 +179,7 @@ file="./tpp_examples/correct_cond_8.txt";
  type = tp->getType(label,&i);
  std::cout << file << std::endl;
  std::cout << label << " " << type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
  //----------------------------------
  tp->remove();
 
@@ -194,8 +203,7 @@ file="./tpp_examples/correct_cond_9.txt";
    type = tp->getType(label,&i);
 
    std::cout << label << " " << type <<std::endl;
-   if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
-   if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+   status += disp(type);
 
  }
  //----------------------------------
@@ -214,16 +222,14 @@ file="./tpp_examples/correct_cond_9.txt";
  type = tp->getType(label,&i);
  std::cout << file << std::endl;
  std::cout << label << " " << type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
 
  label="/Average_operation/value1";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
  std::cout << file << std::endl;
  std::cout << label << " " << type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
  //----------------------------------
 
  // file="tmp.tpp";
@@ -240,8 +246,7 @@ file="./tpp_examples/correct_cond_9.txt";
  std::cout << file << std::endl;
 
  std::cout << label << " " << value << " "<< type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
 
  label="/Average_operation/switch4";
  error = tp->getValue(label,value);
@@ -249,16 +254,14 @@ file="./tpp_examples/correct_cond_9.txt";
  std::cout << file << std::endl;
 
  std::cout << label << " " << value << " "<< type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
 
  label="/Average_operation/result";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
  std::cout << file << std::endl;
  std::cout << label << " " << value << " "<< type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
  //------------------------------------------------------------------------
  tp->remove();
 
@@ -271,24 +274,21 @@ file="./tpp_examples/correct_cond_9.txt";
  type = tp->getType(label,&i);
 
  std::cout << label << " " << value << " "<< type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
 
  label="/Average_operation/switch4";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
 
  std::cout << label << " " << value << " "<< type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
 
  label="/Average_operation/result";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
 
  std::cout << label << " " << value << " "<< type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
  //------------------------------------------------------------------------
  tp->remove();
 
@@ -304,16 +304,14 @@ file="./tpp_examples/correct_cond_9.txt";
  type = tp->getType(label,&i);
 
  std::cout << label << " " << value << " "<< type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
 
  label="/Average_operation/Directory1/value1";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
 
  std::cout << label << " " << value << " "<< type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
  //------------------------------------------------------------------------
  tp->remove();
 
@@ -327,8 +325,7 @@ file="./tpp_examples/correct_cond_9.txt";
  type = tp->getType(label,&i);
  std::cout << file << std::endl;
  std::cout << label << " " << value<<" "<<type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
  //----------------------------------
  tp->remove();
 
@@ -341,15 +338,13 @@ file="./tpp_examples/correct_cond_9.txt";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
  std::cout << label << " " << value<<" "<<type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
 
  label="/Average_operation/start_time2";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
  std::cout << label << " " << value<<" "<<type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
  //----------------------------------
  tp->remove();
 
@@ -362,15 +357,13 @@ file="./tpp_examples/correct_cond_9.txt";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
  std::cout << label << " " << value<<" "<<type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
 
  label="/Average_operation/value1";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
  std::cout << label << " " << value<<" "<<type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
  //----------------------------------
  tp->remove();
 
@@ -383,15 +376,13 @@ file="./tpp_examples/correct_cond_9.txt";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
  std::cout << label << " " << value<<" "<<type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
 
  label="/Average_operation/value1";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
  std::cout << label << " " << value<<" "<<type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
  //----------------------------------
  tp->remove();
 
@@ -403,8 +394,7 @@ file="./tpp_examples/correct_cond_9.txt";
  type = tp->getType(label,&i);
  std::cout << file << std::endl;
  std::cout << label << " " << value<<" "<<type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
  //----------------------------------
  tp->remove();
 
@@ -426,8 +416,7 @@ file="./tpp_examples/correct_cond_9.txt";
    type = tp->getType(label,&i);
 
    std::cout << label << " " << type <<std::endl;
-   if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
-   if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+   status += disp(type);
 
  }
  //----------------------------------
@@ -445,26 +434,23 @@ file="./tpp_examples/correct_cond_9.txt";
  type = tp->getType(label,&i);
 
  std::cout << label << " " << value << " "<< type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
 
  label="/Average_operation/switch4";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
 
  std::cout << label << " " << value << " "<< type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
 
  label="/Average_operation/result";
  error = tp->getValue(label,value);
  type = tp->getType(label,&i);
 
  std::cout << label << " " << value << " "<< type <<std::endl;
- if(type==TP_UNDEFFINED_VALUE) std::cout << "!!! UNDEF !!!"<< std::endl;
- if(type==TP_VECTOR_UNDEFFINED) std::cout << "!!! Vector UNDEF !!!"<< std::endl;
+ status += disp(type);
  //------------------------------------------------------------------------
  tp->remove();
 
- return 0;
+ return (status==0)?0:1;
 }

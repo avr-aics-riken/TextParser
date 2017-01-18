@@ -4,16 +4,23 @@
  * Copyright (C) 2012-2015 Institute of Industrial Science, The University of Tokyo.
  * All rights reserved.
  *
- * Copyright (c) 2014-2015 Advanced Institute for Computational Science, RIKEN.
+ * Copyright (c) 2014-2016 Advanced Institute for Computational Science, RIKEN.
  * All rights reserved.
+ *
+ * Copyright (c) 2016-2017 Research Institute for Information Technology, Kyushu University.
+ * All rights reserved.
+ *
  */
+
+ /* @file Example7_c.c
+  * @retval 0-success / 1-fail
+  */
 
 #include "TextParser.h"
 #include <stdio.h>
 #include <string.h>
 
 int main(){
-
 
   TP_HANDLE tp_hand;
   int status;
@@ -31,7 +38,7 @@ int main(){
   double check4[5]={19,10.3,0.4,-3,-3,};
   int check_count;
 
-  tp_hand=tp_createInstance();
+  tp_hand= tp_createInstance();
   status = tp_read(tp_hand,"./tpp_examples/correct_range_list_1.tpp");
   status = tp_write(tp_hand,"./ctest.tpp");
 
@@ -45,7 +52,7 @@ int main(){
   strcpy(label,"gridx3");
   printf("after strcmp \n");
   printf("%s",label);
-  status = tp_getValue(tp_hand,label,value);  
+  status = tp_getValue(tp_hand,label,value);
   printf("%s %s",label,value);
   printf("%s %s",label,value);
 
@@ -60,7 +67,7 @@ int main(){
   }
 
   status = tp_expandRange(tp_hand,value,expanded);
-  
+
   check_count=0;
   for(i=0;i<6;++i){
     printf("%d %lf \n",i, expanded[i]);
@@ -72,8 +79,6 @@ int main(){
   } else {
     printf("expandRange failed\n");
   }
-
-
 
   status = tp_getValue(tp_hand,"gridx4",value);
   status = tp_splitList(tp_hand,value,expanded,0);
@@ -114,7 +119,6 @@ int main(){
   } else {
     printf("expandList failed\n");
   }
-
 
   tp_deleteInstance(tp_hand);
 
