@@ -23,7 +23,7 @@ set(tp_files
 if(SERIALTARGET)
 	add_library(TP STATIC ${tp_files})
 
-  # tpVersion.hをサーチするために先に書く
+  # tpVersion.hをサーチするためにBINARYを先に書く
   include_directories(${PROJECT_BINARY_DIR}/include ${PROJECT_SOURCE_DIR}/include)
 
 	install(TARGETS TP DESTINATION lib)
@@ -31,7 +31,7 @@ if(SERIALTARGET)
 else(SERIALTARGET)
 	add_library(TPmpi STATIC ${tp_files})
   include_directories(${PROJECT_BINARY_DIR}/include)
-	include_directories(${PROJECT_SOURCE_DIR}/include ${MPI_DIR}/include)
+	include_directories(${PROJECT_SOURCE_DIR}/include)
 
 	add_definitions(-DENABLE_MPI)
 	add_definitions(-DBUILD_MPI)
@@ -56,7 +56,8 @@ if(USE_FAPI)
   if(SERIALTARGET)
     include_directories(${PROJECT_SOURCE_DIR}/include)
   else()
-    include_directories(${PROJECT_SOURCE_DIR}/include ${MPI_DIR}/include)
+    #include_directories(${PROJECT_SOURCE_DIR}/include ${MPI_DIR}/include)
+    include_directories(${PROJECT_SOURCE_DIR}/include)
   endif()
 
   set_target_properties (TP_fapi PROPERTIES LINKER_LANGUAGE CXX)

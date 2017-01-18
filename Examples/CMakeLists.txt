@@ -29,8 +29,8 @@ if(TP_BUILD_MPI)
 else()
   target_link_libraries(Example1_cpp -lTP)
 endif()
-add_test(test_cpp_1 Example1_cpp WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/tmp)
-
+add_test(test_cpp_1 Example1_cpp)
+#add_test(test_cpp_1 Example1_cpp WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/tmp)
 ##
 
 add_executable(Example2_cpp Example2_cpp.cpp)
@@ -127,6 +127,7 @@ if(TP_BUILD_MPI)
 else()
   target_link_libraries(Example1_c -lTP)
 endif()
+target_link_libraries(Example1_c ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
 add_test(test_c_1 Example1_c)
 
 ##
@@ -137,6 +138,7 @@ if(TP_BUILD_MPI)
 else()
   target_link_libraries(Example2_c -lTP)
 endif()
+target_link_libraries(Example2_c ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
 add_test(test_c_2 Example2_c)
 
 ##
@@ -147,6 +149,7 @@ if(TP_BUILD_MPI)
 else()
   target_link_libraries(Example3_c -lTP)
 endif()
+target_link_libraries(Example3_c ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
 add_test(test_c_3 Example3_c)
 
 ##
@@ -157,6 +160,7 @@ if(TP_BUILD_MPI)
 else()
   target_link_libraries(Example4_c -lTP)
 endif()
+target_link_libraries(Example4_c ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
 add_test(test_c_4 Example4_c)
 
 ##
@@ -167,7 +171,8 @@ if(TP_BUILD_MPI)
 else()
   target_link_libraries(Example5_c -lTP)
 endif()
- add_test(test_c_5 Example5_c)
+target_link_libraries(Example5_c ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
+add_test(test_c_5 Example5_c)
 
 ##
 
@@ -177,6 +182,7 @@ if(TP_BUILD_MPI)
 else()
   target_link_libraries(Example7_c -lTP)
 endif()
+target_link_libraries(Example7_c ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
 add_test(test_c_7 Example7_c)
 
 
@@ -187,60 +193,66 @@ if(USE_FAPI)
 
   add_executable(Example1_f90 Example1_f90.f90)
   if(TP_BUILD_MPI)
-    target_link_libraries(Example1_f90 -lTPmpi -lTP_fapi ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
+    target_link_libraries(Example1_f90 -lTPmpi)
   else()
-    target_link_libraries(Example1_f90 -lTP -lTP_fapi ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
+    target_link_libraries(Example1_f90 -lTP)
   endif()
+  target_link_libraries(Example1_f90 -lTP_fapi ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
   add_test(test_f90_1 Example1_f90)
 
 ##
 
   add_executable(Example2_f90 Example2_f90.f90)
   if(TP_BUILD_MPI)
-    target_link_libraries(Example2_f90 -lTPmpi -lTP_fapi ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
+    target_link_libraries(Example2_f90 -lTPmpi)
   else()
-    target_link_libraries(Example2_f90 -lTP -lTP_fapi ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
+    target_link_libraries(Example2_f90 -lTP)
   endif()
+  target_link_libraries(Example2_f90 -lTP_fapi ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
   add_test(test_f90_2 Example2_f90)
 
 ##
 
   add_executable(Example3_f90 Example3_f90.f90)
   if(TP_BUILD_MPI)
-    target_link_libraries(Example3_f90 -lTPmpi -lTP_fapi ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
+    target_link_libraries(Example3_f90 -lTPmpi)
   else()
-    target_link_libraries(Example3_f90 -lTP -lTP_fapi ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
+    target_link_libraries(Example3_f90 -lTP)
   endif()
+  target_link_libraries(Example3_f90 -lTP_fapi ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
   add_test(test_f90_3 Example3_f90)
 
 ##
 
   add_executable(Example4_f90 Example4_f90.f90)
   if(TP_BUILD_MPI)
-    target_link_libraries(Example4_f90 -lTPmpi -lTP_fapi ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
+    target_link_libraries(Example4_f90 -lTPmpi)
   else()
-    target_link_libraries(Example4_f90 -lTP -lTP_fapi ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
+    target_link_libraries(Example4_f90 -lTP)
   endif()
+  target_link_libraries(Example4_f90 -lTP_fapi ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
   add_test(test_f90_4 Example4_f90)
 
 ##
 
   add_executable(Example5_f90 Example5_f90.f90)
   if(TP_BUILD_MPI)
-    target_link_libraries(Example5_f90 -lTPmpi -lTP_fapi ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
+    target_link_libraries(Example5_f90 -lTPmpi)
   else()
-    target_link_libraries(Example5_f90 -lTP -lTP_fapi ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
+    target_link_libraries(Example5_f90 -lTP)
   endif()
+  target_link_libraries(Example5_f90 -lTP_fapi ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
   # add_test(test_f90_5 Example5_f90)
 
 ##
 
   add_executable(Example7_f90 Example7_f90.f90)
   if(TP_BUILD_MPI)
-    target_link_libraries(Example7_f90 -lTPmpi -lTP_fapi ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
+    target_link_libraries(Example7_f90 -lTPmpi)
   else()
-    target_link_libraries(Example7_f90 -lTP_fapi -lTP ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
+    target_link_libraries(Example7_f90 -lTP)
   endif()
+  target_link_libraries(Example7_f90 -lTP_fapi ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
   add_test(test_f90_7 Example7_f90)
 
 endif()

@@ -8,6 +8,19 @@
 ## REVISION HISTORY
 
 ---
+- 2017-01-18 Version 1.7.1
+  - add `target_link_libraries(Example?_c ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})` for Examples/CMakeLists.txt
+  - add `CMAKE_C_LINK_EXECUTABLE` and `CMAKE_Fortran_LINK_EXECUTABLE`, Linker must be a CXX compiler.
+  - Tested
+  
+    |Compiler|Serial|S-Ex.C|S-Test|MPI |M-Ex.C|M-Test|
+    |:--     |:--:  |:--:  |:--:  |:--:|:--:  |:--:  |
+    |Intel 17.0.1 |OK|OK|5 items failed|OK|OK|95% failed|
+    |GNU 6.2.0    |OK|OK|5 items failed|OK|OK|95% failed|
+    |FJ      |OK|OK|all failed|OK|OK|all failed|
+
+
+
 - 2017-01-18 Version 1.7.0
   - Cmake only
   - modify file structure, build process

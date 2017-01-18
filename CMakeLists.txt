@@ -43,7 +43,7 @@ endif()
 
 
 project(TextParser)
-set(PROJECT_VERSION "1.7.0")
+set(PROJECT_VERSION "1.7.1")
 
 # project()でCMAKE_INSTALL_PREFIX=/usr/localとなるので、再定義
 set (CMAKE_INSTALL_PREFIX "${INSTALL_DIR}")
@@ -81,9 +81,9 @@ if(comp_kind STREQUAL "FJ")
   IF (CMAKE_SYSTEM_PROCESSOR MATCHES "s64fx")
     message("Compiler: FJ native")
 
-    if(USE_FAPI)
-      set(MPI_FCLIBS "${MPI_FCLIBS} ${MPI_LIBS} libmpi_f77.a libmpi_f90.a")
-    endif()
+    #if(USE_FAPI)
+    #  set(MPI_FCLIBS "${MPI_FCLIBS} ${MPI_LIBS} libmpi_f77.a libmpi_f90.a")
+    #endif()
 
     # gcc compatible flag(-Xg)
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Xg")
@@ -118,9 +118,10 @@ if(comp_kind STREQUAL "FJ")
   IF (TP_BUILD_CROSS)
     message("Compiler: FJ cross")
 
-    if(USE_FAPI)
-      set(MPI_FCLIBS "${MPI_FCLIBS} ${MPI_LIBS} libmpi_f77.a libmpi_f90.a")
-    endif()
+    set(CMAKE_C_LINK_EXECUTABLE "${CMAKE_CXX_COMPILER}")
+    set(CMAKE_Fortran_LINK_EXECUTABLE "${CMAKE_CXX_COMPILER}")
+    message("C_LIHNKER  : ${CMAKE_C_LINK_EXECUTABLE}")
+    message("F_LIHNKER  : ${CMAKE_Fortran_LINK_EXECUTABLE}")
 
     # Prevent CMake from adding GNU-specific linker flags (-rdynamic)
     SET(CMAKE_C_COMPILER_ID "Fujitsu" CACHE STRING "Fujitsu C cross-compiler" FORCE)
@@ -148,6 +149,7 @@ if(comp_kind STREQUAL "FJ")
     # FindOpenMP.cmake does not try -Kopenmp, but the package will try specific
     # flags based on the compier ID.
     SET(OMP_FLAG_Fujitsu "-Kopenmp")
+
   endif()
 endif()
 
@@ -167,13 +169,6 @@ else()
       message("MPI-LNK-FLAGS: ${MPI_CXX_LINK_FLAGS}")
       message("MPI-LIBS     : ${MPI_CXX_LIBRARIES}")
     endif(MPI_CXX_FOUND)
-
-    # MPI Library for fortran
-
-    if(USE_FAPI)
-      set(MPI_LIBS "${MPI_LIBS} libmpi.a")
-      set(MPI_FCLIBS "${MPI_FCLIBS} ${MPI_LIBS} libmpi_f77.a libmpi_f90.a")
-    endif()
 
   endif()
 
@@ -352,7 +347,7 @@ set (CPACK_SOURCE_GENERATOR "TGZ;ZIP")
 # config for source installer
 set (CPACK_SOURCE_OUTPUT_CONFIG_FILE "${PROJECT_BINARY_DIR}/CPackSourceConfig.cmake")
 
-set (CPACK_SOURCE_IGNORE_FILES "/BUILD/;/.git/;.#;/#;/.DS_Store" CACHE STRING "CPACK will ignore this files" )
+set (CPACK_SOURCE_IGNORE_FILES "/BUILD/;/build/;/.git/;.#;/#;/.DS_Store" CACHE STRING "CPACK will ignore this files" )
 
 # config for binary installer
 #set (CPACK_OUTPUT_CONFIG_FILE "${PROJECT_BINARY_DIR}/CPackConfig.cmake")
