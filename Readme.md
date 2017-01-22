@@ -36,40 +36,17 @@ $ sudo make install
    installed at `install_directory/lib` and the header files are placed at
    `install_directory/include`.
 
-`-D comp_kind=(INTEL|FJ|GNU)`
-
->  If Fujitsu compiler is used, specify FJ. This option is _mandatory_.
-
 `-D enable_fapi=(no|yes)`
 
 >  This option is for building Fortran API. Default is no.
 
-`-D enable_test=(yes|no)`
+`-D enable_test=(no|yes)`
 
->  This option turns on compiling sample codes and execute the tests. Default is yes.
+>  This option turns on compiling sample codes and execute the tests. Default is no.
 
-`-D TP_BUILD_CROSS=(OFF|ON)`
+`-D with_MPI=(no|yes)`
 
->  Specify TP_BUILD_CROSS=ON in the case of cross-compilation, otherwise OFF or you can omit.
-
-`-D TP_BUILD_MPI=(OFF|ON)`
-
->  If you use an MPI library, specify `TP_BUILD_MPI=ON`, otherwise OFF or you can omit.
-
-`-D TP_BUILD_OMP=(OFF|ON)`
-
->  If you activate OpenMP directives, specify `TP_BUILD_OMP=ON`, otherwise OFF or you can omit.
-
-`-D CXX=CXX_COMPILER`
-
->  Specify C++ compiler or a wrapper compiler for MPI. If a wrapper compiler is
-   specified, set string as `-DCXX=mpicxx` without directory prefix.
-
-`-D CC=C_COMPILER`
->  Specify C compiler or a wrapper compiler for MPI.
-
-`-D F90=FORTRAN90_COMPILER`
->   Specify Fortran90 compiler or a wrapper compiler for MPI.
+>  If you use an MPI library, specify `with_MPI=yes`, otherwise no or you can omit.
 
 
 The default compiler options are described at the top level CMakeLists.txt file.
@@ -87,85 +64,50 @@ you can specify by `CMAKE_C_FLAGS`, `CMAKE_CXX_FLAGS`, and `CMAKE_Fortran_FLAGS`
 
 ## Configure Examples
 
-### INTEL compiler
+### INTEL/GNU compiler
 
 #### Serial
 * C/C++ only with test
 
 	~~~
-	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Dcomp_kind=INTEL -DCC=icc -DCXX=icpc -Wno-dev ..
+	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Denable_test=yes ..
 	~~~
 
-  * Suppress example test
+* With fortran API and test
 
 	~~~
-	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Dcomp_kind=INTEL -DCC=icc -DCXX=icpc -Denable_test=no -Wno-dev ..
-	~~~
-
-* With fortran API
-
-	~~~
-	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Dcomp_kind=INTEL -DCC=icc -DCXX=icpc -DF90=ifort -Denable_fapi=yes -Wno-dev ..
+	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Denable_fapi=yes -Denable_test=yes ..
 	~~~
 
 
 #### MPI
-* C/C++ by a wrapper compiler
+* C/C++ by a wrapper compiler with test
 
 	~~~
-	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Dcomp_kind=INTEL -DCC=mpicc -DCXX=mpicxx -DTP_BUILD_MPI=ON -Wno-dev ..
+	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Denable_test=yes -Dwith_MPI=yes ..
 	~~~
 	Before compiling, OpenMPI shuold be compiled by Intel compiler.
 
-* With fortran API
+* With fortran API and test
 
   ~~~
-  $ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Dcomp_kind=INTEL -DCC=mpicc -DCXX=mpicxx -DTP_BUILD_MPI=ON -DF90=mpif90 -Denable_fapi=yes -Wno-dev ..
+  $ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Denable_fapi=yes -Denable_test=yes -Dwith_MPI=yes ..
   ~~~
-
-
-### GNU compiler
-
-#### Serial
-* C/C++ only
-
-	~~~
-	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Dcomp_kind=GNU -DCC=gcc -DCXX=g++ -Wno-dev ..
-	~~~
-
-* With fortran API
-
-	~~~
-	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Dcomp_kind=GNU -DCC=gcc -DCXX=g++ -DF90=gfortran -Denable_fapi=yes -Wno-dev ..
-	~~~
-
-#### MPI
-* C/C++ by a wrapper compiler
-
-	~~~
-	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Dcomp_kind=GNU -DCC=mpicc -DCXX=mpicxx -DTP_BUILD_MPI=ON -Wno-dev ..
-	~~~
-
-* With fortran API
-
-	~~~
-	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Dcomp_kind=GNU -DCC=mpicc -DCXX=mpicxx -DTP_BUILD_MPI=ON -DF90=mpif90 -Denable_fapi=yes -Wno-dev ..
-  	~~~
 
 
 ### FUJITSU compiler / FX, K computer on login nodes (Cross compilation)
 
 #### Serial
-* C/C++ only
+* C/C++ only /w test
 
 	~~~
-	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Dcomp_kind=FJ -DCC=fccpx -DCXX=FCCpx -DTP_BUILD_CROSS=ON -Wno-dev ..
+	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Denable_test=yes -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain_fx10.cmake ..
 	~~~
 
-* With fortran API
+* With fortran API and test
 
   ~~~
-  $ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Dcomp_kind=FJ -DCC=fccpx -DCXX=FCCpx -DF90=frtpx -Denable_fapi=yes -DTP_BUILD_CROSS=ON -Wno-dev ..
+  $ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Denable_fapi=yes -Denable_test=yes -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain_fx10.cmake ..
   ~~~
 
 
@@ -174,29 +116,23 @@ you can specify by `CMAKE_C_FLAGS`, `CMAKE_CXX_FLAGS`, and `CMAKE_Fortran_FLAGS`
 * C/C++ only
 
 	~~~
-	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Dcomp_kind=FJ -DCC=mpifccpx -DCXX=mpiFCCpx -DTP_BUILD_MPI=ON -DTP_BUILD_CROSS=ON -Wno-dev ..
+	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Dcomp_kind=FJ -DCC=mpifccpx -DCXX=mpiFCCpx -Dwith_MPI=ON -DTP_BUILD_CROSS=ON -Wno-dev ..
 	~~~
 
 * with fortran API
 
 	~~~
-	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Dcomp_kind=FJ -DCC=mpifccpx -DCXX=mpiFCCpx -DF90=mpifrtpx -Denable_fapi=yes -DTP_BUILD_MPI=ON -DTP_BUILD_CROSS=ON -Wno-dev ..
+	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Dcomp_kind=FJ -DCC=mpifccpx -DCXX=mpiFCCpx -DF90=mpifrtpx -Denable_fapi=yes -Dwith_MPI=ON -DTP_BUILD_CROSS=ON -Wno-dev ..
 	~~~
 
 
 ##### Note
 - Before building, execute following command for clean. `$ make distclean`
 
-- Available target
-	- `mpi`	Build a library for MPI. _Disable_ is default.
-	- `f90_api` Specify to build API for fortran90. _Disable_ is default.
-
-- Build library is only static library and installed lib/ directory.
-
 
 
 ## TEST
-* If you specify the test option by `-Denable_test=yes` (default), you can
+* If you specify the test option by `-Denable_test=yes`, you can
 execute the intrinsic tests by;
 
 	`$ make test`

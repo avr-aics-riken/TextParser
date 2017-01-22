@@ -17,52 +17,42 @@
 
 set(tp_files
        TextParser.cpp
-			 TextParserElement.cpp
-			 TextParserTree.cpp)
+       TextParserElement.cpp
+       TextParserTree.cpp)
 
-if(SERIALTARGET)
-	add_library(TP STATIC ${tp_files})
+if(NOT with_MPI)
+  add_library(TP STATIC ${tp_files})
 
   # tpVersion.hをサーチするためにBINARYを先に書く
   include_directories(${PROJECT_BINARY_DIR}/include ${PROJECT_SOURCE_DIR}/include)
 
-	install(TARGETS TP DESTINATION lib)
+  install(TARGETS TP DESTINATION lib)
 
-else(SERIALTARGET)
-	add_library(TPmpi STATIC ${tp_files})
+else()
+  add_library(TPmpi STATIC ${tp_files})
   include_directories(${PROJECT_BINARY_DIR}/include)
-	include_directories(${PROJECT_SOURCE_DIR}/include)
+  include_directories(${PROJECT_SOURCE_DIR}/include)
 
-	add_definitions(-DENABLE_MPI)
-	add_definitions(-DBUILD_MPI)
+  install(TARGETS TPmpi DESTINATION lib)
 
-	install(TARGETS TPmpi DESTINATION lib)
-
-endif(SERIALTARGET)
+endif()
 
 set(EXTRA_DIST "${EXTRA_DIST} Makefile_hand")
 
 install(FILES ${PROJECT_SOURCE_DIR}/include/TextParser.h
               ${PROJECT_SOURCE_DIR}/include/TextParserCommon.h
               ${PROJECT_SOURCE_DIR}/include/TextParserElement.h
-							${PROJECT_SOURCE_DIR}/include/TextParserTree.h
-
+              ${PROJECT_SOURCE_DIR}/include/TextParserTree.h
               ${PROJECT_BINARY_DIR}/include/tpVersion.h
         DESTINATION include )
 
-if(USE_FAPI)
+if(enable_fapi)
   add_library(TP_fapi STATIC TextParser_fapi.f90)
+  include_directories(${PROJECT_SOURCE_DIR}/include)
+  target_link_libraries(TP_fapi ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
 
-  if(SERIALTARGET)
-    include_directories(${PROJECT_SOURCE_DIR}/include)
-  else()
-    #include_directories(${PROJECT_SOURCE_DIR}/include ${MPI_DIR}/include)
-    include_directories(${PROJECT_SOURCE_DIR}/include)
-  endif()
-
-  set_target_properties (TP_fapi PROPERTIES LINKER_LANGUAGE CXX)
   install (TARGETS TP_fapi DESTINATION lib)
   install (FILES ${PROJECT_SOURCE_DIR}/include/TextParser.inc DESTINATION include)
-endif(USE_FAPI)
+endif(enable_fapi)
 
 ###
