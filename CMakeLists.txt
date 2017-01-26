@@ -54,12 +54,19 @@ else()
   project(TextParser C CXX)
 endif()
 
-set(PROJECT_VERSION "1.7.2")
-
 # project()でCMAKE_INSTALL_PREFIX=/usr/localとなるので、再定義
 set (CMAKE_INSTALL_PREFIX "${INSTALL_DIR}")
 
 set(CMAKE_BUILD_TYPE Release)
+
+
+
+#######
+set(PROJECT_VERSION "1.7.3")
+set(LIB_REVISION "20170127_0800")
+#######
+
+
 
 
 #######
@@ -120,7 +127,6 @@ elseif()
 endif()
 
 message("${PROJECT_NAME} Version : ${PROJECT_VERSION}")
-set(LIB_REVISION "20170122_2200")
 
 
 #######

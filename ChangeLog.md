@@ -8,6 +8,10 @@
 ## REVISION HISTORY
 
 ---
+- 2017-01-22 Version 1.7.3
+  - Change install command line for fx10
+  
+---
 - 2017-01-22 Version 1.7.2
   - Change the description of CMakeLists.txt with module.cmake
   

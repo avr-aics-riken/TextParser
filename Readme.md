@@ -67,11 +67,6 @@ you can specify by `CMAKE_C_FLAGS`, `CMAKE_CXX_FLAGS`, and `CMAKE_Fortran_FLAGS`
 ### INTEL/GNU compiler
 
 #### Serial
-* C/C++ only with test
-
-	~~~
-	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Denable_test=yes ..
-	~~~
 
 * With fortran API and test
 
@@ -81,48 +76,32 @@ you can specify by `CMAKE_C_FLAGS`, `CMAKE_CXX_FLAGS`, and `CMAKE_Fortran_FLAGS`
 
 
 #### MPI
-* C/C++ by a wrapper compiler with test
-
-	~~~
-	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Denable_test=yes -Dwith_MPI=yes ..
-	~~~
-	Before compiling, OpenMPI shuold be compiled by Intel compiler.
 
 * With fortran API and test
 
   ~~~
-  $ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Denable_fapi=yes -Denable_test=yes -Dwith_MPI=yes ..
+  $ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Dwith_MPI=yes -Denable_fapi=yes -Denable_test=yes ..
   ~~~
+  Before compiling, OpenMPI shuold be compiled by Intel compiler.
 
 
 ### FUJITSU compiler / FX, K computer on login nodes (Cross compilation)
 
 #### Serial
-* C/C++ only /w test
-
-	~~~
-	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Denable_test=yes -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain_fx10.cmake ..
-	~~~
 
 * With fortran API and test
 
   ~~~
-  $ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Denable_fapi=yes -Denable_test=yes -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain_fx10.cmake ..
+  $ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain_fx10.cmake -Denable_fapi=yes -Denable_test=yes ..
   ~~~
 
 
 #### MPI
 
-* C/C++ only
+* with fortran API and test
 
 	~~~
-	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Dcomp_kind=FJ -DCC=mpifccpx -DCXX=mpiFCCpx -Dwith_MPI=ON -DTP_BUILD_CROSS=ON -Wno-dev ..
-	~~~
-
-* with fortran API
-
-	~~~
-	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Dcomp_kind=FJ -DCC=mpifccpx -DCXX=mpiFCCpx -DF90=mpifrtpx -Denable_fapi=yes -Dwith_MPI=ON -DTP_BUILD_CROSS=ON -Wno-dev ..
+	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain_fx10.cmake -Dwith_MPI=yes -Denable_fapi=yes -Denable_test=yes ..
 	~~~
 
 
@@ -135,7 +114,7 @@ you can specify by `CMAKE_C_FLAGS`, `CMAKE_CXX_FLAGS`, and `CMAKE_Fortran_FLAGS`
 * If you specify the test option by `-Denable_test=yes`, you can
 execute the intrinsic tests by;
 
-	`$ make test`
+	`$ make test` or `$ ctest`
 
 * The detailed results are written in `BUILD/Testing/Temporary/LastTest.log` file.
 Meanwhile, the summary is displayed for stdout.
