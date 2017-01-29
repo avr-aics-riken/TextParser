@@ -9,9 +9,9 @@
 Text Parser library allows us to describe and to parse JSON like simple parameter structure.
 
 
-## PREREQUISITE
+## SOFTWARE REQUIREMENT
 - Cmake
-- MPI library
+- MPI library (option)
 
 
 ## HOW TO BUILD
