@@ -8,6 +8,10 @@
 ## REVISION HISTORY
 
 ---
+- 2017-01-30 Version 1.7.5
+  - Remove tp-config
+
+---
 - 2017-01-29 Version 1.7.4
   - Move Doxygen related files from top to doc
 

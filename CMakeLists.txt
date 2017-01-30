@@ -62,8 +62,8 @@ set(CMAKE_BUILD_TYPE Release)
 
 
 #######
-set(PROJECT_VERSION "1.7.4")
-set(LIB_REVISION "20170129_1800")
+set(PROJECT_VERSION "1.7.5")
+set(LIB_REVISION "20170130_1800")
 #######
 
 
@@ -159,26 +159,10 @@ add_definitions(-DHAVE_CONFIG_H)
 #######
 
 if(with_MPI)
-  set(LIB_NAME "TPmpi")
-    add_definitions(-DENABLE_MPI)
-    add_definitions(-DBUILD_MPI)
-else()
-  set(LIB_NAME "TP")
+  add_definitions(-DENABLE_MPI)
+  add_definitions(-DBUILD_MPI)
 endif()
 
-
-#######
-# String for tp-config
-#######
-
-if(enable_fapi)
-  set(LIB_FC ${CMAKE_Fortran_COMPILER})
-	set(LIB_FC_LD ${CMAKE_Fortran_COMPILER})
-
-	if(CMAKE_CXX_COMPILER MATCHES ".*FCCpx$")
-		set(LIB_FC_LD ${CMAKE_CXX_COMPILER})
-	endif()
-endif()
 
 
 #######
@@ -215,24 +199,12 @@ endif()
 #######
 
 configure_file( config.h.in.cmake config.h )
-configure_file( tp-config.in.cmake tp-config)
 configure_file( include/tpVersion.h.in ${PROJECT_BINARY_DIR}/include/tpVersion.h)
 
 
 #######
 # Install files
 #######
-
-install(FILES  ${PROJECT_BINARY_DIR}/tp-config
-        DESTINATION bin
-        PERMISSIONS
-        OWNER_READ
-        OWNER_WRITE
-        OWNER_EXECUTE
-        GROUP_READ
-        GROUP_EXECUTE
-        WORLD_READ
-        WORLD_EXECUTE)
 
 install(FILES  ChangeLog.md
                Readme.md
