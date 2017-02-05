@@ -32,7 +32,6 @@ else()
   add_library(TPmpi STATIC ${tp_files})
   include_directories(${PROJECT_BINARY_DIR}/include)
   include_directories(${PROJECT_SOURCE_DIR}/include)
-
   install(TARGETS TPmpi DESTINATION lib)
 
 endif()

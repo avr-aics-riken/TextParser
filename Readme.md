@@ -59,46 +59,19 @@ you can specify by `CMAKE_C_FLAGS`, `CMAKE_CXX_FLAGS`, and `CMAKE_Fortran_FLAGS`
 -D CMAKE_Fortran_FLAGS=options
 ~~~
 
-* `-Wno-dev` option suppresses warnings for developpers.
+* `-Wno-dev` option suppresses warnings for developers.
 
 
 ## Configure Examples
 
 ### INTEL/GNU compiler
 
-#### Serial
-
-* With fortran API and test
-
-	~~~
-	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Denable_fapi=yes -Denable_test=yes ..
-	~~~
-
-
-#### MPI
-
-* With fortran API and test
-
   ~~~
   $ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Dwith_MPI=yes -Denable_fapi=yes -Denable_test=yes ..
   ~~~
-  Before compiling, OpenMPI shuold be compiled by Intel compiler.
 
 
 ### FUJITSU compiler / FX, K computer on login nodes (Cross compilation)
-
-#### Serial
-
-* With fortran API and test
-
-  ~~~
-  $ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain_fx10.cmake -Denable_fapi=yes -Denable_test=yes ..
-  ~~~
-
-
-#### MPI
-
-* with fortran API and test
 
 	~~~
 	$ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain_fx10.cmake -Dwith_MPI=yes -Denable_fapi=yes -Denable_test=yes ..

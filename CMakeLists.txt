@@ -62,8 +62,8 @@ set(CMAKE_BUILD_TYPE Release)
 
 
 #######
-set(PROJECT_VERSION "1.7.5")
-set(LIB_REVISION "20170130_1800")
+set(PROJECT_VERSION "1.7.6")
+set(LIB_REVISION "20170205_1300")
 #######
 
 
