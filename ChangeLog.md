@@ -8,6 +8,10 @@
 ## REVISION HISTORY
 
 ---
+- 2017-02-11 Version 1.7.7
+  - modify Readme.md
+
+---
 - 2017-01-30 Version 1.7.6
   - change ctest for mpi version
   - split examples into serial and MPI

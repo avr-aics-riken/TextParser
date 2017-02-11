@@ -30,21 +30,21 @@ $ sudo make install
 
 ### Options
 
-`-D INSTALL_DIR=install_directory`
+`-D INSTALL_DIR=` *Install_directory*
 
 >  Specify the directory that this library will be installed. Built library is
    installed at `install_directory/lib` and the header files are placed at
    `install_directory/include`.
 
-`-D enable_fapi=(no|yes)`
+`-D enable_fapi=` {no | yes}
 
 >  This option is for building Fortran API. Default is no.
 
-`-D enable_test=(no|yes)`
+`-D enable_test=` {no | yes}
 
 >  This option turns on compiling sample codes and execute the tests. Default is no.
 
-`-D with_MPI=(no|yes)`
+`-D with_MPI=` {no | yes}
 
 >  If you use an MPI library, specify `with_MPI=yes`, otherwise no or you can omit.
 
@@ -96,7 +96,7 @@ Meanwhile, the summary is displayed for stdout.
 
 ## CONTRIBUTORS
 
-* Kenji    Ono        _keno@{cc.kyushu-u.ac, riken, iis.u-tokyo.ac}.jp_
+* Kenji    Ono        *keno@{cc.kyushu-u.ac, riken, iis.u-tokyo.ac}.jp*
 * Tomohiro Kawanabe
 * Takafumi Suzuki
 * Satoshi  Fuchikami

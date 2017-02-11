@@ -23,11 +23,11 @@
 #
 # -D INSTALL_DIR=install_directory
 #
-# -D enable_fapi=(no|yes)
+# -D enable_fapi={no|yes)}
 #
-# -D enable_test=(no|yes)
+# -D enable_test={no|yes}
 #
-# -D with_MPI=(no|yes)
+# -D with_MPI={no|yes}
 #
 
 cmake_minimum_required(VERSION 2.8)
@@ -62,8 +62,8 @@ set(CMAKE_BUILD_TYPE Release)
 
 
 #######
-set(PROJECT_VERSION "1.7.6")
-set(LIB_REVISION "20170205_1300")
+set(PROJECT_VERSION "1.7.7")
+set(LIB_REVISION "20170211_1400")
 #######
 
 
