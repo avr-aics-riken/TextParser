@@ -112,7 +112,7 @@ if(enable_fapi)
 endif()
 
 if(CMAKE_CXX_COMPILER MATCHES ".*FCCpx$")
-elseif()
+else()
   if(with_MPI)
     include(FindMPI)
 
