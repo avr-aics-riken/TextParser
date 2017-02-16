@@ -62,10 +62,9 @@ set(CMAKE_BUILD_TYPE Release)
 
 
 #######
-set(PROJECT_VERSION "1.7.7")
-set(LIB_REVISION "20170211_1400")
+set(PROJECT_VERSION "1.7.8")
+set(LIB_REVISION "20170216_2200")
 #######
-
 
 
 
@@ -199,7 +198,7 @@ endif()
 #######
 
 configure_file( config.h.in.cmake config.h )
-configure_file( include/tpVersion.h.in ${PROJECT_BINARY_DIR}/include/tpVersion.h)
+configure_file( include/tpVersion.h.in ${PROJECT_BINARY_DIR}/include/tpVersion.h @ONLY)
 
 
 #######

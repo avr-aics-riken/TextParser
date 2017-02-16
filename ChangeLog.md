@@ -8,6 +8,10 @@
 ## REVISION HISTORY
 
 ---
+- 2017-02-16 Version 1.7.8
+  - enable TP_VERSION
+
+---
 - 2017-02-11 Version 1.7.7
   - modify Readme.md
 
