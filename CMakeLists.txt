@@ -30,7 +30,7 @@
 # -D with_MPI={no|yes}
 #
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.6)
 
 
 #######
@@ -62,8 +62,8 @@ set(CMAKE_BUILD_TYPE Release)
 
 
 #######
-set(PROJECT_VERSION "1.7.8")
-set(LIB_REVISION "20170216_2200")
+set(PROJECT_VERSION "1.8.0")
+set(LIB_REVISION "20170222_1700")
 #######
 
 

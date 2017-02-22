@@ -8,6 +8,10 @@
 ## REVISION HISTORY
 
 ---
+- 2017-02-22 Version 1.8.0
+  - modify Toolchain_K.cmake so that user can build with cmake version 2.6 on K
+
+---
 - 2017-02-16 Version 1.7.8
   - enable TP_VERSION
 
