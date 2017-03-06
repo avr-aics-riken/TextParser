@@ -136,8 +136,13 @@ if(enable_fapi)
 
 ##
 add_executable(Example1_f90 Example1_f90.f90)
-# CXXでリンクのこと
-set_target_properties(Example1_f90 PROPERTIES LINKER_LANGUAGE CXX)
+
+# Intel compiler 以外CXXでリンク
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+else()
+  set_target_properties(Example1_f90 PROPERTIES LINKER_LANGUAGE CXX)
+endif()
+
 # リンクはTP_fapiを先に
 target_link_libraries(Example1_f90 -lTP_fapi)
 target_link_libraries(Example1_f90 -lTP)
@@ -153,7 +158,10 @@ add_test(test_f90_1 Example1_f90)
 
 ##
 add_executable(Example2_f90 Example2_f90.f90)
-set_target_properties(Example2_f90 PROPERTIES LINKER_LANGUAGE CXX)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+else()
+  set_target_properties(Example2_f90 PROPERTIES LINKER_LANGUAGE CXX)
+endif()
 target_link_libraries(Example2_f90 -lTP_fapi)
 target_link_libraries(Example2_f90 -lTP)
 
@@ -168,7 +176,10 @@ add_test(test_f90_2 Example2_f90)
 ##
 
 add_executable(Example3_f90 Example3_f90.f90)
-set_target_properties(Example3_f90 PROPERTIES LINKER_LANGUAGE CXX)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+else()
+  set_target_properties(Example3_f90 PROPERTIES LINKER_LANGUAGE CXX)
+endif()
 target_link_libraries(Example3_f90 -lTP_fapi)
 target_link_libraries(Example3_f90 -lTP)
 
@@ -182,7 +193,10 @@ add_test(test_f90_3 Example3_f90)
 
 ##
 add_executable(Example4_f90 Example4_f90.f90)
-set_target_properties(Example4_f90 PROPERTIES LINKER_LANGUAGE CXX)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+else()
+  set_target_properties(Example4_f90 PROPERTIES LINKER_LANGUAGE CXX)
+endif()
 target_link_libraries(Example4_f90 -lTP_fapi)
 target_link_libraries(Example4_f90 -lTP)
 
@@ -196,7 +210,10 @@ add_test(test_f90_4 Example4_f90)
 
 ##
 add_executable(Example5_f90 Example5_f90.f90)
-set_target_properties(Example5_f90 PROPERTIES LINKER_LANGUAGE CXX)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+else()
+  set_target_properties(Example5_f90 PROPERTIES LINKER_LANGUAGE CXX)
+endif()
 target_link_libraries(Example5_f90 -lTP_fapi)
 target_link_libraries(Example5_f90 -lTP)
 
@@ -210,7 +227,10 @@ add_test(test_f90_5 Example5_f90)
 
 ##
 add_executable(Example7_f90 Example7_f90.f90)
-set_target_properties(Example7_f90 PROPERTIES LINKER_LANGUAGE CXX)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+else()
+  set_target_properties(Example7_f90 PROPERTIES LINKER_LANGUAGE CXX)
+endif()
 target_link_libraries(Example7_f90 -lTP_fapi)
 target_link_libraries(Example7_f90 -lTP)
 
