@@ -62,8 +62,8 @@ set(CMAKE_BUILD_TYPE Release)
 
 
 #######
-set(PROJECT_VERSION "1.8.1")
-set(LIB_REVISION "20170307_0900")
+set(PROJECT_VERSION "1.8.2")
+set(LIB_REVISION "20170329_1800")
 #######
 
 
@@ -85,7 +85,6 @@ if(enable_fapi)
 endif()
 
 AddOptimizeOption()
-
 
 
 #######
@@ -208,6 +207,7 @@ configure_file( include/tpVersion.h.in ${PROJECT_BINARY_DIR}/include/tpVersion.h
 install(FILES  ChangeLog.md
                Readme.md
                License.txt
+               ${PROJECT_BINARY_DIR}/CMakeCache.txt
         DESTINATION share)
 
 

@@ -22,10 +22,11 @@
 #message("         : enable_test        = " ${enable_test})
 #message("         : with_MPI           = " ${with_MPI})
 #message("         : IMPLICIT_LINK_LIBS = " ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
-
+#message("         : CMAKE_EXE_LINKER_FLAGS = " ${CMAKE_EXE_LINKER_FLAGS})
 
 include_directories(${PROJECT_BINARY_DIR}/include ${PROJECT_SOURCE_DIR}/include)
 link_directories(${PROJECT_BINARY_DIR}/src)
+
 
 
 # Test for MPI

@@ -8,6 +8,11 @@
 ## REVISION HISTORY
 
 ---
+- 2017-03-29 Version 1.8.2
+  - install CMakeCache.txt into ${INSTALL_DIR}/share for install memo.
+
+
+---
 - 2017-03-07 Version 1.8.1
   - add fx100 entry
   - In case of Intel compiler, change linker from CXX to Fortran for f90 examples
