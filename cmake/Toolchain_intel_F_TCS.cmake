@@ -3,18 +3,18 @@ set(CMAKE_SYSTEM_NAME Linux)
 include(CMakeForceCompiler)
 
 if(with_MPI)
-  CMAKE_FORCE_C_COMPILER(mpifccpx GNU)
-  CMAKE_FORCE_CXX_COMPILER(mpiFCCpx GNU)
-  CMAKE_FORCE_Fortran_COMPILER(mpifrtpx GNU)
+  CMAKE_FORCE_C_COMPILER(mpifcc GNU)
+  CMAKE_FORCE_CXX_COMPILER(mpiFCC GNU)
+  CMAKE_FORCE_Fortran_COMPILER(mpifrt GNU)
 
   #CMAKE_FORCE_Fortran_Compiler is not supported ver. 2.6
   #set(CMAKE_Fortran_COMPILER mpifrtpx GNU)
   #set(CMAKE_Fortran_COMPILER_WORKS true)
   #set(CMAKE_Fortran_LINK_EXECUTABLE "${CMAKE_CXX_COMPILER}")
 else()
-  CMAKE_FORCE_C_COMPILER(fccpx GNU)
-  CMAKE_FORCE_CXX_COMPILER(FCCpx GNU)
-  CMAKE_FORCE_Fortran_COMPILER(frtpx GNU)
+  CMAKE_FORCE_C_COMPILER(fcc GNU)
+  CMAKE_FORCE_CXX_COMPILER(FCC GNU)
+  CMAKE_FORCE_Fortran_COMPILER(frt GNU)
 
   #CMAKE_FORCE_Fortran_Compiler is not supported ver. 2.6
   #set(CMAKE_Fortran_COMPILER frtpx GNU)
@@ -22,13 +22,13 @@ else()
   #set(CMAKE_Fortran_LINK_EXECUTABLE "${CMAKE_CXX_COMPILER}")
 endif()
 
-set(CMAKE_FIND_ROOT_PATH /opt/FJSVfxlang/1.2.1)
-set(CMAKE_INCLUDE_PATH /opt/FJSVfxlang/1.2.1/include)
-set(CMAKE_LIBRARY_PATH /opt/FJSVfxlang/1.2.1/lib64)
+set(CMAKE_FIND_ROOT_PATH /opt/FJSVpclang/1.2.0)   # RIIT CX400
+set(CMAKE_INCLUDE_PATH /opt/FJSVpclang/1.2.0/include)
+set(CMAKE_LIBRARY_PATH /opt/FJSVpclang/1.2.0/lib64)
 
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
-set(TARGET_ARCH "FX100")
+set(TARGET_ARCH "INTEL_F_TCS")
 set(USE_F_TCS "YES")

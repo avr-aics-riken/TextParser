@@ -17,7 +17,7 @@
 ## Compile option selector
 ##
 macro (AddOptimizeOption)
-  if (TARGET_ARCH STREQUAL "FX10")
+  if (USE_F_TCS STREQUAL "YES")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Kfast -Xg")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Kfast -Xg")
     # -Xg   : gcc compatible flag
@@ -25,20 +25,6 @@ macro (AddOptimizeOption)
     if(enable_fapi)
       set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -Kfast")
     endif()
-
-  elseif (TARGET_ARCH STREQUAL "FX100")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Kfast -Xg")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Kfast -Xg")
-  if(enable_fapi)
-    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -Kfast")
-  endif()
-
-  elseif (TARGET_ARCH STREQUAL "K")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Kfast -Xg")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Kfast -Xg")
-  if(enable_fapi)
-    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -Kfast")
-  endif()
 
   elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wall")
@@ -73,8 +59,10 @@ macro (AddSSE)
     else()
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
     endif()
+
   elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -xHost")
+
   elseif(CMAKE_CXX_COMPILER_ID STREQUAL "PGI")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fastsse")
   endif()
@@ -83,12 +71,18 @@ endmacro()
 macro (FreeForm)
   if(CMAKE_Fortran_COMPILER MATCHES ".*frtpx$")
     #set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS}")
+
   elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -ffree-form")
+
   elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "Intel")
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -free")
+
   elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "PGI")
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -Mfree")
+
+  elseif(TARGET_ARCH STREQUAL "INTEL_F_TCS")
+    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -Free")
   endif()
 endmacro()
 
@@ -109,7 +103,7 @@ endmacro()
 
 macro(checkOpenMP)
   if(enable_OPENMP)
-    if(CMAKE_CXX_COMPILER MATCHES ".*FCCpx$")
+    if(USE_F_TCS STREQUAL "YES")
       set(OpenMP_C_FLAGS "-Kopenmp")
       set(OpenMP_CXX_FLAGS "-Kopenmp")
       set(OpenMP_Fortran_FLAGS "-Kopenmp")

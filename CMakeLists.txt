@@ -62,8 +62,8 @@ set(CMAKE_BUILD_TYPE Release)
 
 
 #######
-set(PROJECT_VERSION "1.8.2")
-set(LIB_REVISION "20170329_1800")
+set(PROJECT_VERSION "1.8.3")
+set(LIB_REVISION "20170601_0630")
 #######
 
 
@@ -109,7 +109,7 @@ if(enable_fapi)
   message( STATUS "CMAKE_Fortran_FLAGS: "            ${CMAKE_Fortran_FLAGS})
 endif()
 
-if(CMAKE_CXX_COMPILER MATCHES ".*FCCpx$")
+if(USE_F_TCS STREQUAL "YES")
 else()
   if(with_MPI)
     include(FindMPI)

@@ -8,6 +8,11 @@
 ## REVISION HISTORY
 
 ---
+- 2017-06-01 Version 1.8.3
+  - Add INTEL_F_TCS environment to cmake
+
+
+---
 - 2017-03-29 Version 1.8.2
   - install CMakeCache.txt into ${INSTALL_DIR}/share for install memo.
 
