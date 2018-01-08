@@ -8,7 +8,7 @@
 # Copyright (c) 2014-2016 Advanced Institute for Computational Science, RIKEN.
 # All rights reserved.
 #
-# Copyright (c) 2016-2017 Research Institute for Information Technology, Kyushu University.
+# Copyright (c) 2016-2018 Research Institute for Information Technology, Kyushu University.
 # All rights reserved.
 #
 #
@@ -138,8 +138,11 @@ if(enable_fapi)
 ##
 add_executable(Example1_f90 Example1_f90.f90)
 
-# Intel compiler 以外CXXでリンク
+# Intel / PGI compilerはfortran compilerを使う
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+  #
+elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "PGI")
+  #
 else()
   set_target_properties(Example1_f90 PROPERTIES LINKER_LANGUAGE CXX)
 endif()
@@ -160,6 +163,9 @@ add_test(test_f90_1 Example1_f90)
 ##
 add_executable(Example2_f90 Example2_f90.f90)
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+  #
+elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "PGI")
+  #
 else()
   set_target_properties(Example2_f90 PROPERTIES LINKER_LANGUAGE CXX)
 endif()
@@ -178,6 +184,9 @@ add_test(test_f90_2 Example2_f90)
 
 add_executable(Example3_f90 Example3_f90.f90)
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+  #
+elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "PGI")
+  #
 else()
   set_target_properties(Example3_f90 PROPERTIES LINKER_LANGUAGE CXX)
 endif()
@@ -195,6 +204,9 @@ add_test(test_f90_3 Example3_f90)
 ##
 add_executable(Example4_f90 Example4_f90.f90)
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+  #
+elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "PGI")
+  #
 else()
   set_target_properties(Example4_f90 PROPERTIES LINKER_LANGUAGE CXX)
 endif()
@@ -212,6 +224,9 @@ add_test(test_f90_4 Example4_f90)
 ##
 add_executable(Example5_f90 Example5_f90.f90)
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+  #
+elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "PGI")
+  #
 else()
   set_target_properties(Example5_f90 PROPERTIES LINKER_LANGUAGE CXX)
 endif()
@@ -229,6 +244,9 @@ add_test(test_f90_5 Example5_f90)
 ##
 add_executable(Example7_f90 Example7_f90.f90)
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+  #
+elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "PGI")
+  #
 else()
   set_target_properties(Example7_f90 PROPERTIES LINKER_LANGUAGE CXX)
 endif()

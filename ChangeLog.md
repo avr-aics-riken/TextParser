@@ -2,10 +2,16 @@
 
  - Copyright (c) 2012-2015 Institute of Industrial Science, The University of Tokyo. All rights reserved.
  - Copyright (c) 2014-2016 Advanced Institute for Computational Science, RIKEN. All rights reserved.
- - Copyright (c) 2016-2017 Research Institute for Information Technology, Kyushu University. All rights reserved.
+ - Copyright (c) 2016-2018 Research Institute for Information Technology, Kyushu University. All rights reserved.
 
 
 ## REVISION HISTORY
+
+---
+- 2018-01-08 Version 1.8.6
+  - Build by PGI Compiler
+  - modify Examples/CMakeLIsts.txt for PGI
+
 
 ---
 - 2017-07-05 Version 1.8.5

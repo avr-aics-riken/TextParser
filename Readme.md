@@ -2,7 +2,7 @@
 
 - Copyright (c) 2012-2015 Institute of Industrial Science, The University of Tokyo. All rights reserved.
 - Copyright (c) 2014-2016 Advanced Institute for Computational Science, RIKEN. All rights reserved.
-- Copyright (c) 2016-2017 Research Institute for Information Technology, Kyushu University. All rights reserved.
+- Copyright (c) 2016-2018 Research Institute for Information Technology, Kyushu University. All rights reserved.
 
 
 ## OUTLINE
@@ -64,7 +64,7 @@ you can specify by `CMAKE_C_FLAGS`, `CMAKE_CXX_FLAGS`, and `CMAKE_Fortran_FLAGS`
 
 ## Configure Examples
 
-### INTEL/GNU compiler
+### INTEL/GNU/PGI compiler
 
   ~~~
   $ cmake -DINSTALL_DIR=${TP_HOME}/TextParser -Dwith_MPI=yes -Denable_fapi=yes -Denable_test=yes ..

@@ -8,7 +8,7 @@
 # Copyright (c) 2014-2016 Advanced Institute for Computational Science, RIKEN.
 # All rights reserved.
 #
-# Copyright (c) 2016-2017 Research Institute for Information Technology, Kyushu University.
+# Copyright (c) 2016-2018 Research Institute for Information Technology, Kyushu University.
 # All rights reserved.
 #
 ###################################################################################
@@ -62,8 +62,8 @@ set(CMAKE_BUILD_TYPE Release)
 
 
 #######
-set(PROJECT_VERSION "1.8.5")
-set(LIB_REVISION "20170705_2230")
+set(PROJECT_VERSION "1.8.6")
+set(LIB_REVISION "20180108_1400")
 #######
 
 
@@ -80,12 +80,11 @@ include(${PROJECT_SOURCE_DIR}/cmake/tp_package.cmake)
 # Options
 #######
 
+AddOptimizeOption()
+
 if(enable_fapi)
   FreeForm()
 endif()
-
-AddOptimizeOption()
-
 
 #######
 # Find libraries to depend

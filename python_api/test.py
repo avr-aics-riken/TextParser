@@ -11,7 +11,7 @@
 # Copyright (c) 2014-2016 Advanced Institute for Computational Science, RIKEN.
 # All rights reserved.
 #
-# Copyright (c) 2016-2017 Research Institute for Information Technology, Kyushu University.
+# Copyright (c) 2016-2018 Research Institute for Information Technology, Kyushu University.
 # All rights reserved.
 #
 ###################################################################################
