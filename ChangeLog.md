@@ -8,6 +8,13 @@
 ## REVISION HISTORY
 
 ---
+- 2018-09-24 Version 1.8.7
+  - PGI compiler option, suppress messages
+  - CMP0012
+  - CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS TRUE
+
+
+---
 - 2018-01-08 Version 1.8.6
   - Build by PGI Compiler
   - modify Examples/CMakeLIsts.txt for PGI
