@@ -8,6 +8,11 @@
 ## REVISION HISTORY
 
 ---
+- 2018-09-25 Version 1.8.8
+  - checkOpenMPマクロを明示的に変更
+
+
+---
 - 2018-09-24 Version 1.8.7
   - PGI compiler option, suppress messages
   - CMP0012
